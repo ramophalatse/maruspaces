@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Director's Loan Model — Maru Spaces</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --bg:           #F7F6F3;
+      --surface:      #FFFFFF;
+      --surface-2:    #F0EEE9;
+      --border:       rgba(0,0,0,0.08);
+      --border-mid:   rgba(0,0,0,0.14);
+      --text-primary: #1A1917;
+      --text-secondary:#6B6860;
+      --text-hint:    #9E9C96;
+      --blue:         #185FA5;
+      --blue-light:   #E6F1FB;
+      --blue-text:    #0C447C;
+      --green:        #3B6D11;
+      --green-light:  #EAF3DE;
+      --green-text:   #27500A;
+      --amber:        #854F0B;
+      --amber-light:  #FAEEDA;
+      --amber-text:   #633806;
+      --radius-sm:    6px;
+      --radius-md:    10px;
+      --radius-lg:    14px;
+      --chart-blue:   #378ADD;
+      --chart-green:  #639922;
+      --chart-amber:  #BA7517;
+      --chart-red:    #E24B4A;
+      --chart-grid:   rgba(0,0,0,0.07);
+      --chart-tick:   #9E9C96;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #141312;
+        --surface:      #1E1D1B;
+        --surface-2:    #272522;
+        --border:       rgba(255,255,255,0.07);
+        --border-mid:   rgba(255,255,255,0.13);
+        --text-primary: #F0EDE8;
+        --text-secondary:#9E9C96;
+        --text-hint:    #6B6860;
+        --blue:         #85B7EB;
+        --blue-light:   #0C2540;
+        --blue-text:    #B5D4F4;
+        --green:        #97C459;
+        --green-light:  #172A06;
+        --green-text:   #C0DD97;
+        --amber:        #EF9F27;
+        --amber-light:  #2A1A04;
+        --amber-text:   #FAC775;
+        --chart-grid:   rgba(255,255,255,0.06);
+        --chart-tick:   #6B6860;
+      }
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 0.5px solid var(--border-mid);
+    }
+
+    .wordmark {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-hint);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 strong {
+      font-weight: 500;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ── Sections ── */
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-hint);
+      margin: 2rem 0 1rem;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 2rem;
+    }
+
+    @media (max-width: 540px) {
+      .controls-grid { grid-template-columns: 1fr; }
+    }
+
+    .divider {
+      grid-column: 1 / -1;
+      border: none;
+      border-top: 0.5px solid var(--border);
+      margin: 1rem 0;
+    }
+
+    .control-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .control-label-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .control-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border-mid);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      background: var(--text-primary);
+      cursor: pointer;
+    }
+
+    /* ── Metrics ── */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 600px) {
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 360px) {
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+
+    .metric {
+      background: var(--surface-2);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-hint);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .metric-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .metric-value.blue  { color: var(--blue); }
+    .metric-value.amber { color: var(--amber); }
+    .metric-value.green { color: var(--green); }
+
+    .metric-sub {
+      font-size: 10px;
+      color: var(--text-hint);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* ── Verdict ── */
+    .verdict {
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: 13px;
+      line-height: 1.65;
+      border: 0.5px solid transparent;
+    }
+
+    .verdict.green {
+      background: var(--green-light);
+      color: var(--green-text);
+      border-color: rgba(59,109,17,0.2);
+    }
+
+    .verdict.blue {
+      background: var(--blue-light);
+      color: var(--blue-text);
+      border-color: rgba(24,95,165,0.2);
+    }
+
+    .verdict.amber {
+      background: var(--amber-light);
+      color: var(--amber-text);
+      border-color: rgba(133,79,11,0.2);
+    }
+
+    .verdict strong {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-bottom: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── Chart ── */
+    .chart-wrap {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.25rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
+
+    @media (max-width: 480px) {
+      .chart-container { height: 240px; }
+    }
+
+    /* ── Note ── */
+    .note {
+      font-size: 12px;
+      color: var(--text-hint);
+      line-height: 1.7;
+      padding: 1rem 1.1rem;
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 0.5px solid var(--border);
+      font-size: 11px;
+      color: var(--text-hint);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer span {
+      font-family: 'DM Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="wordmark">Maru Spaces — Financial Advisory</p>
+    <h1>Director's Loan <strong>Repayment Model</strong></h1>
+    <p class="subtitle">Section 7C analysis · Compare repayment cost against dividends tax · Adjust assumptions to model scenarios</p>
+  </header>
+
+  <!-- Controls -->
+  <p class="section-label">Assumptions</p>
+  <div class="controls">
+    <div class="controls-grid">
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label-text">Loan amount</span>
+          <span class="control-value" id="loan-out">R642,500</span>
+        </div>
+        <input type="range" id="loan" min="100000" max="900000" step="1000" value="642500">
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label-text">Interest rate on loan</span>
+          <span class="control-value" id="loanRate-out">8.25%</span>
+        </div>
+        <input type="range" id="loanRate" min="0" max="15" step="0.25" value="8.25">
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label-text">Repayment term</span>
+          <span class="control-value" id="term-out">24 months</span>
+        </div>
+        <input type="range" id="term" min="6" max="60" step="1" value="24">
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label-text">SARS official rate (Section 7C)</span>
+          <span class="control-value" id="officialRate-out">8.25%</span>
+        </div>
+        <input type="range" id="officialRate" min="4" max="15" step="0.25" value="8.25">
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metric-grid">
+    <div class="metric">
+      <p class="metric-label">Monthly repayment</p>
+      <p class="metric-value blue" id="monthly-val">—</p>
+      <p class="metric-sub">Principal + interest</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Total interest paid</p>
+      <p class="metric-value amber" id="interest-val">—</p>
+      <p class="metric-sub">Mapula's cost above principal</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Section 7C exposure</p>
+      <p class="metric-value" id="s7c-val">—</p>
+      <p class="metric-sub" id="s7c-sub">Donations tax over term</p>
+    </div>
+    <div class="metric">
+      <p class="metric-label">Dividends tax (one-off)</p>
+      <p class="metric-value" id="dwt-val">—</p>
+      <p class="metric-sub">Alternative benchmark</p>
+    </div>
+  </div>
+
+  <!-- Verdict -->
+  <div class="verdict green" id="verdict-box">
+    <strong id="verdict-head"></strong>
+    <span id="verdict-body"></span>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-wrap">
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#378ADD;"></span>Outstanding loan balance</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#639922;"></span>Cumulative interest paid</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#BA7517;"></span>Dividends tax reference</span>
+      <span class="legend-item" id="s7c-legend-item"><span class="legend-dot" style="background:#E24B4A;"></span>Section 7C donations tax (if interest-free)</span>
+    </div>
+    <div class="chart-container">
+      <canvas id="mainChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="note">
+    Monthly repayment calculated as a standard amortising loan (equal instalments). Section 7C donations tax assumes a zero-interest loan for the same term — it represents the cost avoided by charging interest at or above the official rate. If the loan rate equals or exceeds the official rate, Section 7C is fully neutralised. Interest received by Maru Spaces is taxable at 27% corporate tax rate. The dividends tax line is a flat reference and does not reduce over time. Tax brackets and official rates sourced from SARS (sars.gov.za), confirmed February 2026. This model is for advisory purposes only — confirm positions with a qualified tax advisor before processing any payments.
+  </div>
+
+  <footer>
+    <span>Maru Spaces · Director's Loan Model</span>
+    <span>2026/27 tax year · SARS official rate: 8.25%</span>
+  </footer>
+
+</div>
+
+<script>
+  const fmt = v => 'R\u202F' + Math.round(v).toLocaleString('en-ZA');
+  const fmtPct = v => parseFloat(v).toFixed(2) + '%';
+
+  function amortise(principal, annualRate, months) {
+    if (annualRate === 0) {
+      const pmt = principal / months;
+      let bal = principal;
+      const schedule = [];
+      for (let m = 0; m < months; m++) {
+        bal = Math.max(0, bal - pmt);
+        schedule.push({ balance: bal, cumInterest: 0 });
+      }
+      return { pmt, schedule, totalInterest: 0 };
+    }
+    const r = annualRate / 100 / 12;
+    const pmt = principal * r * Math.pow(1 + r, months) / (Math.pow(1 + r, months) - 1);
+    let bal = principal;
+    let cumInt = 0;
+    const schedule = [];
+    for (let m = 0; m < months; m++) {
+      const intCharge = bal * r;
+      bal = Math.max(0, bal - (pmt - intCharge));
+      cumInt += intCharge;
+      schedule.push({ balance: bal, cumInterest: cumInt });
+    }
+    return { pmt, schedule, totalInterest: cumInt };
+  }
+
+  function s7cCumulative(principal, officialRate, months) {
+    const annualDonTax = principal * (officialRate / 100) * 0.20;
+    return Array.from({ length: months }, (_, i) => annualDonTax * (i + 1) / 12);
+  }
+
+  // Detect dark mode for chart colours
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const gridColor  = dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
+  const tickColor  = dark ? '#6B6860' : '#9E9C96';
+  const axisColor  = dark ? '#6B6860' : '#9E9C96';
+
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Loan balance',
+          data: [],
+          borderColor: '#378ADD',
+          backgroundColor: dark ? 'rgba(55,138,221,0.12)' : 'rgba(55,138,221,0.08)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          borderWidth: 2
+        },
+        {
+          label: 'Cumulative interest paid',
+          data: [],
+          borderColor: '#639922',
+          fill: false,
+          tension: 0.35,
+          pointRadius: 0,
+          borderWidth: 2
+        },
+        {
+          label: 'Dividends tax',
+          data: [],
+          borderColor: '#BA7517',
+          borderDash: [6, 3],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false
+        },
+        {
+          label: 'S7C donations tax (if interest-free)',
+          data: [],
+          borderColor: '#E24B4A',
+          borderDash: [3, 3],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: dark ? '#2A2825' : '#FFFFFF',
+          borderColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+          borderWidth: 1,
+          titleColor: dark ? '#F0EDE8' : '#1A1917',
+          bodyColor: dark ? '#9E9C96' : '#6B6860',
+          titleFont: { family: 'DM Mono', size: 11 },
+          bodyFont: { family: 'DM Sans', size: 12 },
+          padding: 10,
+          callbacks: {
+            title: items => 'Month ' + items[0].label,
+            label: c => ' ' + c.dataset.label + ':  R' + Math.round(c.parsed.y).toLocaleString('en-ZA')
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            font: { family: 'DM Mono', size: 10 },
+            color: tickColor,
+            maxRotation: 0,
+            autoSkip: false,
+            callback: function(val, index) {
+              const term = parseInt(document.getElementById('term').value);
+              const m = index + 1;
+              if (term <= 24) return m;
+              if (term <= 36) return m % 2 === 0 ? m : '';
+              if (term <= 48) return m % 3 === 0 ? m : '';
+              return m % 4 === 0 ? m : '';
+            }
+          },
+          grid: { color: gridColor },
+          title: {
+            display: true,
+            text: 'Month',
+            font: { family: 'DM Sans', size: 11 },
+            color: axisColor
+          }
+        },
+        y: {
+          ticks: {
+            font: { family: 'DM Mono', size: 10 },
+            color: tickColor,
+            callback: v => 'R' + (v >= 1000 ? Math.round(v / 1000) + 'K' : Math.round(v))
+          },
+          grid: { color: gridColor }
+        }
+      }
+    }
+  });
+
+  function update() {
+    const loan         = parseInt(document.getElementById('loan').value);
+    const loanRate     = parseFloat(document.getElementById('loanRate').value);
+    const term         = parseInt(document.getElementById('term').value);
+    const officialRate = parseFloat(document.getElementById('officialRate').value);
+    const dwt          = loan * 0.25;
+
+    document.getElementById('loan-out').textContent         = fmt(loan);
+    document.getElementById('loanRate-out').textContent     = fmtPct(loanRate);
+    document.getElementById('term-out').textContent         = term + ' month' + (term === 1 ? '' : 's');
+    document.getElementById('officialRate-out').textContent = fmtPct(officialRate);
+    document.getElementById('dwt-val').textContent          = fmt(dwt);
+
+    const { pmt, schedule, totalInterest } = amortise(loan, loanRate, term);
+    const s7cPts       = s7cCumulative(loan, officialRate, term);
+    const neutralised  = loanRate >= officialRate;
+    const s7cFinal     = neutralised ? 0 : s7cPts[s7cPts.length - 1];
+
+    document.getElementById('monthly-val').textContent  = fmt(pmt);
+    document.getElementById('interest-val').textContent = fmt(totalInterest);
+    document.getElementById('s7c-val').textContent      = neutralised ? 'R\u202F0' : fmt(s7cFinal);
+    document.getElementById('s7c-sub').textContent      = neutralised
+      ? 'Fully neutralised — rate ≥ official rate'
+      : 'Donations tax over term (interest-free basis)';
+    document.getElementById('s7c-val').className = 'metric-value ' + (neutralised ? 'green' : 'amber');
+
+    const s7cLegend = document.getElementById('s7c-legend-item');
+    s7cLegend.style.opacity = neutralised ? '0.3' : '1';
+
+    const labels = schedule.map((_, i) => i + 1);
+    chart.data.labels              = labels;
+    chart.data.datasets[0].data   = schedule.map(s => Math.round(s.balance));
+    chart.data.datasets[1].data   = schedule.map(s => Math.round(s.cumInterest));
+    chart.data.datasets[2].data   = schedule.map(() => Math.round(dwt));
+    chart.data.datasets[3].data   = neutralised ? [] : s7cPts.map(v => Math.round(v));
+    chart.update('none');
+
+    const vBox  = document.getElementById('verdict-box');
+    const vHead = document.getElementById('verdict-head');
+    const vBody = document.getElementById('verdict-body');
+
+    if (neutralised) {
+      vBox.className  = 'verdict green';
+      vHead.textContent = 'Section 7C fully neutralised.';
+      vBody.textContent = 'The loan rate equals or exceeds the SARS official rate — no donations tax arises. Mapula repays ' + fmt(pmt) + '/month, and her total interest cost of ' + fmt(totalInterest) + ' flows back to Maru Spaces as taxable income. This is the most tax-efficient structure for both parties.';
+    } else {
+      const saving = dwt - totalInterest - s7cFinal;
+      if (saving > 0) {
+        vBox.className  = 'verdict blue';
+        vHead.textContent = 'Repayment route cheaper than dividend by ' + fmt(saving) + '.';
+        vBody.textContent = 'Even with residual Section 7C exposure, Mapula\'s total cost (interest + donations tax) is less than the ' + fmt(dwt) + ' dividends tax alternative. Raise the loan rate to ' + fmtPct(officialRate) + ' to eliminate the Section 7C liability entirely.';
+      } else {
+        vBox.className  = 'verdict amber';
+        vHead.textContent = 'Consider raising the loan rate.';
+        vBody.textContent = 'At the current rate, combined interest and Section 7C cost exceeds the dividend route. Setting the loan rate to at least ' + fmtPct(officialRate) + ' neutralises Section 7C and keeps the repayment route optimal.';
+      }
+    }
+  }
+
+  ['loan', 'loanRate', 'term', 'officialRate'].forEach(id =>
+    document.getElementById(id).addEventListener('input', update)
+  );
+
+  // Re-run on system colour scheme change
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    location.reload();
+  });
+
+  update();
+</script>
+</body>
+</html>
