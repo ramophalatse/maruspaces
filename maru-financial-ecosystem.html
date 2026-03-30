@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maru Spaces — Financial Management Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #f5f4f0;
+    --bg2:       #eceae4;
+    --bg3:       #e2e0d8;
+    --surface:   #ffffff;
+    --border:    rgba(0,0,0,0.10);
+    --border2:   rgba(0,0,0,0.06);
+    --text:      #1a1916;
+    --text2:     #5a5850;
+    --text3:     #8a8780;
+
+    --teal-fill:   #d4ede6; --teal-border: #0f6e56; --teal-text: #085041;
+    --purple-fill: #e4e2f8; --purple-border: #534ab7; --purple-text: #3c3489;
+    --coral-fill:  #fae8e2; --coral-border: #993c1d; --coral-text: #712b13;
+    --amber-fill:  #fdf0d6; --amber-border: #ba7517; --amber-text: #854f0b;
+    --blue-fill:   #dceefb; --blue-border: #185fa5; --blue-text: #0c447c;
+    --green-fill:  #e4f0d4; --green-border: #3b6d11; --green-text: #27500a;
+    --red-fill:    #fce8e8; --red-border:  #a32d2d; --red-text:   #791f1f;
+    --pink-fill:   #fbeaf0; --pink-border: #993556; --pink-text:  #72243e;
+
+    --arrow: rgba(0,0,0,0.22);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #171614;
+      --bg2:       #1f1e1b;
+      --bg3:       #272520;
+      --surface:   #1f1e1b;
+      --border:    rgba(255,255,255,0.10);
+      --border2:   rgba(255,255,255,0.06);
+      --text:      #e8e6df;
+      --text2:     #a09d94;
+      --text3:     #6a6760;
+
+      --teal-fill:   #04342c; --teal-border: #5dcaa5; --teal-text: #9fe1cb;
+      --purple-fill: #26215c; --purple-border: #afa9ec; --purple-text: #cecbf6;
+      --coral-fill:  #4a1b0c; --coral-border: #f0997b; --coral-text: #f5c4b3;
+      --amber-fill:  #412402; --amber-border: #ef9f27; --amber-text: #fac775;
+      --blue-fill:   #042c53; --blue-border: #85b7eb; --blue-text: #b5d4f4;
+      --green-fill:  #173404; --green-border: #97c459; --green-text: #c0dd97;
+      --red-fill:    #501313; --red-border:  #f09595; --red-text:   #f7c1c1;
+      --pink-fill:   #4b1528; --pink-border: #ed93b1; --pink-text:  #f4c0d1;
+
+      --arrow: rgba(255,255,255,0.20);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 40px 24px 60px;
+  }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  /* HEADER */
+  header {
+    margin-bottom: 44px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 300;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  header h1 em { font-style: italic; }
+  .header-meta {
+    font-size: 12px;
+    color: var(--text3);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green-border);
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* PRINCIPLES */
+  .principles {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .principle {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 11px;
+    flex: 1;
+    min-width: 140px;
+  }
+  .principle strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+    letter-spacing: 0.06em;
+  }
+  .principle span { color: var(--text2); }
+
+  /* LAYER */
+  .layer { margin-bottom: 10px; }
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+  .layer-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+  .layer-rule { flex: 1; height: 1px; background: var(--border2); }
+
+  /* CARD GRID */
+  .card-row { display: grid; gap: 10px; margin-bottom: 4px; }
+  .card-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-row.cols-1 { grid-template-columns: 1fr; }
+  .card-row.cols-2 { grid-template-columns: 1fr 1fr; }
+
+  /* CARD */
+  .card {
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .card-name {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .card-items { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .card-items li {
+    font-size: 11px;
+    color: var(--text2);
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .card-items li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--text3);
+    font-size: 10px;
+  }
+  .card-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .card-note {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border2);
+    font-style: italic;
+  }
+  .card-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  /* colour themes */
+  .theme-pink   { background: var(--pink-fill);   border-color: var(--pink-border); }
+  .theme-pink   .card-name { color: var(--pink-text); }
+  .theme-pink   .card-badge { background: var(--pink-border); color: var(--pink-fill); }
+  .theme-pink   .card-note { border-color: var(--pink-border); opacity: 0.6; color: var(--pink-text); }
+
+  .theme-teal   { background: var(--teal-fill);   border-color: var(--teal-border); }
+  .theme-teal   .card-name { color: var(--teal-text); }
+  .theme-teal   .card-badge { background: var(--teal-border); color: var(--teal-fill); }
+
+  .theme-purple { background: var(--purple-fill); border-color: var(--purple-border); }
+  .theme-purple .card-name { color: var(--purple-text); }
+  .theme-purple .card-badge { background: var(--purple-border); color: var(--purple-fill); }
+
+  .theme-coral  { background: var(--coral-fill);  border-color: var(--coral-border); }
+  .theme-coral  .card-name { color: var(--coral-text); }
+  .theme-coral  .card-badge { background: var(--coral-border); color: var(--coral-fill); }
+
+  .theme-amber  { background: var(--amber-fill);  border-color: var(--amber-border); }
+  .theme-amber  .card-name { color: var(--amber-text); }
+  .theme-amber  .card-badge { background: var(--amber-border); color: var(--amber-fill); }
+
+  .theme-blue   { background: var(--blue-fill);   border-color: var(--blue-border); }
+  .theme-blue   .card-name { color: var(--blue-text); }
+  .theme-blue   .card-badge { background: var(--blue-border); color: var(--blue-fill); }
+
+  .theme-green  { background: var(--green-fill);  border-color: var(--green-border); }
+  .theme-green  .card-name { color: var(--green-text); }
+  .theme-green  .card-badge { background: var(--green-border); color: var(--green-fill); }
+
+  .theme-red    { background: var(--red-fill);    border-color: var(--red-border); }
+  .theme-red    .card-name { color: var(--red-text); }
+  .theme-red    .card-badge { background: var(--red-border); color: var(--red-fill); }
+
+  /* FLOW ARROW */
+  .flow-arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+  .flow-arrow::before, .flow-arrow::after {
+    content: '';
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border2);
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--text3); }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+
+  /* FOOTER */
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border2);
+    font-size: 11px;
+    color: var(--text3);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    body { padding: 24px 16px 48px; }
+    .card-row.cols-3 { grid-template-columns: 1fr; }
+    .card-row.cols-2 { grid-template-columns: 1fr; }
+    .card-cols { grid-template-columns: 1fr; }
+    .principles { flex-direction: column; }
+    header h1 { font-size: 24px; }
+  }
+  @media (min-width: 641px) and (max-width: 800px) {
+    .card-row.cols-3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <p class="header-eyebrow">Maru Spaces (Pty) Ltd</p>
+    <h1>Financial Management<br><em>Ecosystem</em></h1>
+    <div class="header-meta">
+      <span><span class="dot"></span>March 2026</span>
+      <span>Version 1.1</span>
+      <span>Prepared by: Ramo (Fractional CFO/COO)</span>
+    </div>
+  </header>
+
+  <div class="principles">
+    <div class="principle">
+      <strong>Lean</strong>
+      <span>Essential components only. No redundant tools or duplicate data entry.</span>
+    </div>
+    <div class="principle">
+      <strong>Intelligent</strong>
+      <span>Components link to one another. Automation over manual re-keying.</span>
+    </div>
+    <div class="principle">
+      <strong>Scalable</strong>
+      <span>Grows with the business. Scope and complexity add without restructuring.</span>
+    </div>
+  </div>
+
+  <!-- 01 · SET -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">01 · Set</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-1">
+      <div class="card theme-pink">
+        <span class="card-badge">Strategic anchor</span>
+        <div class="card-name">Budget &amp; tracker</div>
+        <div class="card-cols">
+          <ul class="card-items">
+            <li>Income targets by service line &amp; client segment</li>
+            <li>Full opex budget — fixed &amp; variable</li>
+            <li>Annual company targets (monthly P&amp;L cascade)</li>
+            <li>Revenue model: target vs actual comparison</li>
+          </ul>
+          <ul class="card-items">
+            <li>Actuals performance tracker</li>
+            <li>Variable budget monthly log</li>
+            <li>Spend breakdown by category</li>
+            <li>Sets the destination for all layers below</li>
+          </ul>
+        </div>
+        <p class="card-note">The strategic starting point · defines what success looks like · all downstream layers measure performance against these targets</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v10M3 8l5 6 5-6" stroke="var(--arrow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    targets cascade down
+  </div>
+
+  <!-- 02 · CAPTURE -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">02 · Capture</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-3">
+
+      <div class="card theme-teal">
+        <span class="card-badge">Automation</span>
+        <div class="card-name">Sage AutoEntry</div>
+        <ul class="card-items">
+          <li>Scans supplier invoices &amp; receipts</li>
+          <li>Auto-codes line items to GL categories</li>
+          <li>Pushes coded entries to Sage Accounting</li>
+          <li>Eliminates manual invoice capture</li>
+        </ul>
+        <p class="card-note">Input: supplier docs · Output: coded GL entries</p>
+      </div>
+
+      <div class="card theme-teal">
+        <span class="card-badge">Payroll</span>
+        <div class="card-name">Sage Payroll</div>
+        <ul class="card-items">
+          <li>Payslip generation &amp; distribution</li>
+          <li>EMP201 / PAYE submissions to SARS</li>
+          <li>UIF contributions &amp; IRP5 certificates</li>
+          <li>Leave management &amp; HR records</li>
+          <li>Staff cost journals → Sage Accounting</li>
+        </ul>
+        <p class="card-note">Salary lines feed Budget's Human Capital section</p>
+      </div>
+
+      <div class="card">
+        <span class="card-badge" style="background:var(--bg3);color:var(--text2)">Manual</span>
+        <div class="card-name">Bank &amp; manual inputs</div>
+        <ul class="card-items">
+          <li>Client payments received (bank feed)</li>
+          <li>Adhoc income entries</li>
+          <li>Exceptional / once-off expenses</li>
+          <li>Opening balances &amp; corrections</li>
+        </ul>
+        <p class="card-note">Reconciled monthly between Sage and Money Metrics</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="flow-arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v10M3 8l5 6 5-6" stroke="var(--arrow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    raw inputs flow to ledger
+  </div>
+
+  <!-- 03 · RECORD -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">03 · Record</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-1">
+      <div class="card theme-purple">
+        <span class="card-badge">System of record</span>
+        <div class="card-name">Sage Business Cloud Accounting</div>
+        <div class="card-cols">
+          <ul class="card-items">
+            <li>General ledger &amp; chart of accounts</li>
+            <li>Invoicing, debtors &amp; creditors</li>
+            <li>Bank reconciliation</li>
+            <li>Project / job costing codes</li>
+          </ul>
+          <ul class="card-items">
+            <li>VAT201 source data (→ Jacobus)</li>
+            <li>EMP201 / PAYE reconciliation</li>
+            <li>Annual financial statements</li>
+            <li>Statutory compliance anchor</li>
+          </ul>
+        </div>
+        <p class="card-note">Primary source of truth · all capture-layer tools feed here · downstream tools draw actuals from here</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v10M3 8l5 6 5-6" stroke="var(--arrow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    actuals feed operational tracking
+  </div>
+
+  <!-- 04 · MANAGE -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">04 · Manage</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-2">
+
+      <div class="card theme-coral">
+        <span class="card-badge">Fallback record</span>
+        <div class="card-name">Money Metrics</div>
+        <ul class="card-items">
+          <li>Independent transaction log (6,768+ rows)</li>
+          <li>Fixed &amp; variable transaction setup</li>
+          <li>Adhoc income &amp; exceptional expense capture</li>
+          <li>Budget vs actual tracker</li>
+          <li>Fallback if Sage is disrupted</li>
+          <li>Primary data source for dashboard</li>
+        </ul>
+        <p class="card-note">Second source of truth · independent of Sage · feeds the Money Metrics Dashboard</p>
+      </div>
+
+      <div class="card theme-amber">
+        <span class="card-badge">Project-level</span>
+        <div class="card-name">Monthly cost sheets</div>
+        <ul class="card-items">
+          <li>Per-project gross profit tracker</li>
+          <li>Revenue vs COS/COGS per invoice</li>
+          <li>Up to 2 supplier cost lines per entry</li>
+          <li>Real-time GP% by project</li>
+          <li>Invoice-linked records</li>
+          <li>Separate tab per client / project</li>
+        </ul>
+        <p class="card-note">GP actuals feed up to Budget Actuals tab and down to management reports</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="flow-arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v10M3 8l5 6 5-6" stroke="var(--arrow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    actuals + commitments inform forward view
+  </div>
+
+  <!-- 05 · PLAN -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">05 · Plan</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-2">
+
+      <div class="card theme-green">
+        <span class="card-badge">Forward-looking</span>
+        <div class="card-name">Cashflow forecast</div>
+        <ul class="card-items">
+          <li>Monthly income &amp; expense projection</li>
+          <li>Opening / closing cash balance</li>
+          <li>Surplus / deficit signal by month</li>
+          <li>SARS payment plan scheduling</li>
+          <li>Payment timing gate (pre-payment check)</li>
+          <li>Settlement &amp; director's loan planning</li>
+        </ul>
+        <p class="card-note">Decision gate: no large disbursements without cashflow clearance</p>
+      </div>
+
+      <div class="card theme-red">
+        <span class="card-badge">Compliance</span>
+        <div class="card-name">Compliance calendar</div>
+        <ul class="card-items">
+          <li>VAT201 submission deadlines (bi-monthly)</li>
+          <li>EMP201 / PAYE monthly deadlines</li>
+          <li>Provisional tax dates (Aug + Feb)</li>
+          <li>SARS payment arrangement instalments</li>
+          <li>Annual financial statement due dates</li>
+          <li>CIPC annual return filing</li>
+          <li>SACAP / SACPCM registration renewals</li>
+        </ul>
+        <p class="card-note">Tab within Cashflow Forecast · owner: Ramo · reviewed monthly with Jacobus</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="flow-arrow">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2v10M3 8l5 6 5-6" stroke="var(--arrow)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    synthesised outputs for decision-making
+  </div>
+
+  <!-- 06 · REPORT -->
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-label">06 · Report</span>
+      <div class="layer-rule"></div>
+    </div>
+    <div class="card-row cols-2">
+
+      <div class="card theme-coral">
+        <span class="card-badge">Visual</span>
+        <div class="card-name">Money Metrics dashboard</div>
+        <ul class="card-items">
+          <li>Visual P&amp;L and cashflow summary</li>
+          <li>Income vs expense trends (by year)</li>
+          <li>50/30/20 spend breakdown</li>
+          <li>Top expenses ranking</li>
+          <li>Interactive date, category &amp; type filters</li>
+        </ul>
+        <p class="card-note">Source: Money Metrics sheet · shared with Maps at monthly review</p>
+      </div>
+
+      <div class="card theme-blue">
+        <span class="card-badge">Narrative</span>
+        <div class="card-name">Management reports</div>
+        <ul class="card-items">
+          <li>Monthly target vs actual P&amp;L</li>
+          <li>Project-level GP summary (from cost sheets)</li>
+          <li>Cashflow position &amp; 3-month outlook</li>
+          <li>Compliance status (from compliance calendar)</li>
+          <li>Key decisions &amp; open items</li>
+        </ul>
+        <p class="card-note">Monthly cadence · produced by Ramo · reviewed with Maps</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--pink-fill);border-color:var(--pink-border)"></span>
+      Strategic planning
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--teal-fill);border-color:var(--teal-border)"></span>
+      Capture tools
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--purple-fill);border-color:var(--purple-border)"></span>
+      System of record
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--coral-fill);border-color:var(--coral-border)"></span>
+      Transaction tracking
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--amber-fill);border-color:var(--amber-border)"></span>
+      Project management
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--green-fill);border-color:var(--green-border)"></span>
+      Cashflow &amp; forecasting
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--red-fill);border-color:var(--red-border)"></span>
+      Compliance
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background:var(--blue-fill);border-color:var(--blue-border)"></span>
+      Reporting
+    </div>
+  </div>
+
+  <footer>
+    <span>Maru Spaces (Pty) Ltd · Financial Management Ecosystem · v1.1</span>
+    <span>Prepared March 2026 · Ramo (Fractional CFO/COO) · Confidential</span>
+  </footer>
+
+</div>
+</body>
+</html>
