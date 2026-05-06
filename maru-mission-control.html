@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mission Control — Maru Spaces</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens — aligned to monthly summary reference ──────── */
+    :root {
+      --bone:        #f5f0e8;
+      --bone-deep:   #ede7db;
+      --clay:        #c4956a;
+      --clay-light:  #f0e6d8;
+      --clay-deep:   #a07248;
+      --terra:       #a85c38;
+      --terra-light: #eeddd4;
+      --terra-deep:  #7a3f22;
+      --ink:         #1a1814;
+      --ink-60:      #3d3830;
+      --ink-30:      #6b6358;
+      --ink-12:      #ddd8cf;
+      --ink-06:      #eeeae3;
+
+      --bg:             var(--bone);
+      --surface:        #ffffff;
+      --surface-alt:    var(--bone-deep);
+      --text-primary:   var(--ink);
+      --text-secondary: var(--ink-60);
+      --text-muted:     var(--ink-30);
+      --border:         var(--ink-12);
+      --border-light:   var(--ink-06);
+      --accent:         var(--clay);
+      --accent-deep:    var(--terra);
+
+      --f-display:   'DM Serif Display', serif;
+      --f-editorial: 'Cormorant Garamond', serif;
+      --f-body:      'DM Sans', sans-serif;
+      --f-mono:      'JetBrains Mono', monospace;
+
+      /* keep old aliases so nothing else breaks */
+      --font-display:   var(--f-display);
+      --font-editorial: var(--f-editorial);
+      --font-body:      var(--f-body);
+      --font-mono:      var(--f-mono);
+
+      --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+      --transition: 0.35s var(--ease-out);
+    }
+
+    [data-theme="dark"] {
+      --bg:             var(--ink);
+      --surface:        #24211c;
+      --surface-alt:    #2e2a23;
+      --text-primary:   var(--bone);
+      --text-secondary: rgba(245,240,232,0.6);
+      --text-muted:     rgba(245,240,232,0.38);
+      --border:         rgba(245,240,232,0.12);
+      --border-light:   rgba(245,240,232,0.06);
+      --accent:         var(--clay);
+      --accent-deep:    #d4a07a;
+    }
+
+    /* ─── Reset ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--f-body);
+      font-weight: 300;
+      min-height: 100vh;
+      transition: background var(--transition), color var(--transition);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── Header ─────────────────────────────────────────────────────── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    /* Logo SVG — tracks light/dark via currentColor */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      height: 30px;
+      color: var(--text-primary);
+      transition: color var(--transition);
+    }
+    .logo-wrap svg {
+      height: 30px;
+      width: auto;
+      fill: currentColor;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .page-label {
+      font-family: var(--f-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      color: var(--ink-30);
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .page-label { color: var(--text-muted); }
+
+    /* ─── Theme Toggle ───────────────────────────────────────────────── */
+    .theme-toggle {
+      width: 40px;
+      height: 22px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      cursor: pointer;
+      position: relative;
+      transition: border-color var(--transition);
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      transition: transform var(--transition), background var(--transition);
+    }
+    [data-theme="dark"] .theme-toggle::after {
+      transform: translateX(18px);
+      background: var(--clay);
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────────────── */
+    .hero {
+      padding: 160px 48px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--f-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--terra);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out) 0.1s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--f-display);
+      font-size: clamp(42px, 6vw, 80px);
+      line-height: 1.05;
+      color: var(--text-primary);
+      max-width: 640px;
+      opacity: 0;
+      animation: fadeUp 0.9s var(--ease-out) 0.2s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--terra);
+    }
+    .hero-title-light {
+      font-weight: 300;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: inherit;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-rule {
+      width: 48px;
+      height: 1px;
+      background: var(--clay);
+      margin: 40px 0;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out) 0.35s forwards;
+    }
+
+    .hero-sub {
+      font-family: var(--f-editorial);
+      font-size: 1.2rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--ink);
+      max-width: 52ch;
+      opacity: 0;
+      animation: fadeUp 0.8s var(--ease-out) 0.45s forwards;
+    }
+    [data-theme="dark"] .hero-sub { color: var(--text-secondary); }
+
+    /* ─── Grid ───────────────────────────────────────────────────────── */
+    .grid-section {
+      padding: 40px 48px 120px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .grid-label {
+      font-family: var(--f-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-30);
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--ink-12);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: color var(--transition), border-color var(--transition);
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-out) 0.55s forwards;
+    }
+    [data-theme="dark"] .grid-label { color: var(--text-muted); border-color: var(--border); }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    /* ─── Tile ───────────────────────────────────────────────────────── */
+    .tile {
+      background: var(--bg);
+      padding: 40px 36px 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition);
+      opacity: 0;
+      animation: fadeIn 0.6s var(--ease-out) forwards;
+    }
+
+    .tile:nth-child(1) { animation-delay: 0.65s; }
+    .tile:nth-child(2) { animation-delay: 0.72s; }
+    .tile:nth-child(3) { animation-delay: 0.79s; }
+    .tile:nth-child(4) { animation-delay: 0.86s; }
+    .tile:nth-child(5) { animation-delay: 0.93s; }
+    .tile:nth-child(6) { animation-delay: 1.0s; }
+
+    .tile::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--clay);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s var(--ease-out);
+    }
+
+    .tile.active-link:hover { background: var(--surface); }
+    .tile.active-link:hover::before { transform: scaleX(1); }
+    .tile.active-link:hover .tile-icon-wrap { border-color: var(--clay); }
+    .tile.active-link:hover .tile-arrow { opacity: 1; transform: translate(2px, -2px); }
+    .tile.active-link:hover .tile-name { color: var(--text-primary); }
+
+    .tile.inactive { cursor: default; }
+    .tile.inactive .tile-icon-wrap { opacity: 0.45; }
+    .tile.inactive .tile-name { color: var(--text-secondary); }
+    .tile.inactive .tile-index { opacity: 0.35; }
+
+    .tile-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+
+    .tile-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color var(--transition);
+      flex-shrink: 0;
+    }
+
+    .tile-icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* SVG placeholder icon — rendered inline for each tile */
+    .tile-icon-svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .tile-arrow {
+      font-size: 18px;
+      color: var(--accent);
+      opacity: 0;
+      transform: translate(0, 0);
+      transition: opacity 0.3s ease, transform 0.3s var(--ease-out);
+      line-height: 1;
+    }
+
+    .tile-index {
+      font-family: var(--f-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-30);
+      margin-bottom: 10px;
+      transition: color var(--transition);
+    }
+    [data-theme="dark"] .tile-index { color: var(--text-muted); }
+
+    .tile-name {
+      font-family: var(--f-display);
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 14px;
+      transition: color var(--transition);
+    }
+    [data-theme="dark"] .tile-name { color: var(--text-primary); }
+    .tile.active-link { cursor: pointer; }
+
+    .tile-desc {
+      font-family: var(--f-editorial);
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.78;
+      color: var(--ink-60);
+      flex-grow: 1;
+      transition: color var(--transition);
+    }
+    [data-theme="dark"] .tile-desc { color: rgba(245,240,232,0.65); }
+
+    .tile-status {
+      margin-top: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--f-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .tile-status .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .status-live   { color: var(--clay); }
+    .status-live .dot { background: var(--clay); }
+    .status-soon   { color: var(--text-secondary); }
+    .status-soon .dot { background: var(--text-secondary); opacity: 0.4; }
+
+    /* ─── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color var(--transition);
+    }
+
+    .footer-tagline {
+      font-family: var(--f-editorial);
+      font-size: 0.82rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--ink-30);
+      letter-spacing: 0.01em;
+    }
+    [data-theme="dark"] .footer-tagline { color: var(--text-muted); }
+
+    .footer-meta {
+      font-family: var(--f-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-30);
+    }
+    [data-theme="dark"] .footer-meta { color: var(--text-muted); }
+
+    /* ─── Animations ─────────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      header { padding: 0 24px; }
+      .hero, .grid-section { padding-left: 24px; padding-right: 24px; }
+      .nav-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+    @media (max-width: 580px) {
+      .nav-grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 354.2 119.13" aria-label="Maru Spaces">
+        <path d="M95.83,76.46c-1.27-.94-2.06-2.37-2.37-4.31-.31-1.93-.47-6.02-.47-12.28V13.96c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h2.93V1.11h-24.38l-28.95,65.74L24.2,1.11H0v2.7h2.17c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v34.57c0,6.56-.23,11.06-.7,13.48-.47,2.42-1.77,4.46-3.9,6.12-2.13,1.66-4.89,2.59-8.29,2.78v2.7h28.42v-2.7c-3.67-.23-6.52-1.22-8.55-2.96-2.03-1.74-3.24-3.76-3.63-6.06-.39-2.3-.59-6.64-.59-13.01V9.32l31.7,71.25h2.75L81.56,9.32v50.57c0,6.64-.19,10.87-.56,12.69-.37,1.82-1.21,3.15-2.52,4.01-1.31.86-3.64,1.29-7,1.29h-2.81v2.7h37.97v-2.7h-3.52c-3.59,0-6.03-.47-7.29-1.41Z"/>
+        <path d="M327.66,1.11v2.7c3.63.23,6.29.88,7.97,1.93,1.68,1.05,2.77,2.48,3.28,4.28.51,1.8.76,4.94.76,9.43v27.07c0,6.17-.21,10.69-.64,13.56-.43,2.87-1.61,5.66-3.54,8.38-1.93,2.72-4.88,4.98-8.85,6.8-3.96,1.82-8.37,2.72-13.21,2.72-6.17,0-11.11-1.36-14.82-4.07-3.71-2.71-5.97-5.89-6.77-9.52-.8-3.63-1.2-9.79-1.2-18.46v-25.02c0-.36,0-.71,0-1.05v-5.91c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h1.58V1.11h-36.27v2.7h1.82c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v24.73l-.06,8.14c0,6.41,1.04,11.51,3.13,15.32,2.09,3.81,5.59,6.91,10.49,9.32,4.9,2.4,10.89,3.6,17.96,3.6,5.98,0,11.25-.94,15.82-2.81s8.12-4.39,10.63-7.56,4.04-6.39,4.57-9.67.79-8.3.79-15.06v-26.43c0-4.84.2-8.1.59-9.79.39-1.68,1.46-3.19,3.19-4.54,1.74-1.35,4.37-2.14,7.88-2.37V1.11h-26.54Z"/>
+        <path d="M265.25,73.89c-3.44-2.5-8.17-7.79-14.18-15.88-7.38-9.96-12.74-15.74-16.05-17.34,7.42-.9,13.05-3.18,16.88-6.86,3.83-3.67,5.74-8.1,5.74-13.3,0-4.45-1.46-8.28-4.39-11.48-2.93-3.2-6.77-5.51-11.51-6.91s-10.95-1-18.53-1h-29.37v2.7h1.35c4.02,0,6.64.35,7.85,1.05s1.99,1.97,2.34,3.81c.35,1.84.53,5.92.53,12.25v38.96c0,6.64-.18,10.87-.53,12.69s-1.18,3.15-2.49,4.01c-1.31.86-3.66,1.29-7.06,1.29h-2.58v2.7h38.03v-2.7h-3.81c-3.59,0-6.03-.47-7.29-1.41s-2.05-2.37-2.34-4.31-.44-6.02-.44-12.28v-17.64h3.16c2.15,0,3.73.36,4.75,1.08,1.02.72,2.87,2.73,5.57,6.04,2.7,3.3,5.29,6.75,7.79,10.34,7.81,11.25,13.61,18.2,17.4,20.86h21.39v-2.7c-4.69-.16-8.75-1.48-12.19-3.98ZM226.46,39.2c-3.12.16-6.15.27-9.08.35V12.99c-.38-4.28-3.2-9.16-8.12-9.16h8.12c1.88-.16,3.62,0,4.99,0,12.2,0,15.45.84,18.24,4.2,2.79,3.36,4.19,7.83,4.19,13.42,0,3.2-.41,5.9-1.23,8.09-.82,2.19-1.94,3.96-3.37,5.3-1.43,1.35-3.29,2.37-5.6,3.08s-5.02,1.13-8.14,1.29Z"/>
+        <path d="M184.72,75.85c-1.39-1.07-2.49-2.55-3.31-4.42l-3.63-8.32L151.23,0h-2.29l-23.09,55.14c-1.68,3.95-2.62,6.21-2.81,6.8-2.42,6.21-4.49,10.28-6.21,12.22-1.72,1.93-4.34,3.17-7.85,3.72v2.7h23.61v-2.7c-2.54,0-4.62-.62-6.24-1.85-1.62-1.23-2.43-3.04-2.43-5.42,0-2.23,1.52-6.99,4.57-14.3l.97-2.39h0,0s1.08-2.65,1.08-2.65h.02l2.78-6.7,12.32-29.8,14.06,33.87h-.04l.41,1.03,1.72,4.26h0l5,12.06c1.8,4.26,2.7,6.82,2.7,7.68,0,1.68-.67,2.8-2.02,3.37-1.35.57-3.94.85-7.76.85v2.7h31.23v-2.7c-2.77-.27-4.85-.95-6.24-2.02Z"/>
+        <path d="M15.03,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14s2.11.81,3.53.81c1.25,0,2.3-.21,3.15-.63.85-.42,1.51-.98,1.96-1.67.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.18-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37.7.36,1.51.69,2.45.99.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+        <path d="M71.12,118.7v-25.2h7.92c1.94,0,3.55.32,4.82.95,1.27.64,2.21,1.5,2.81,2.59.6,1.09.9,2.33.9,3.73s-.3,2.6-.9,3.71c-.6,1.1-1.53,1.98-2.79,2.63-1.26.65-2.87.97-4.84.97h-5.4v10.62h-2.52ZM73.64,105.92h5.4c2.14,0,3.66-.46,4.57-1.39.91-.92,1.37-2.18,1.37-3.76s-.46-2.9-1.37-3.8-2.44-1.35-4.57-1.35h-5.4v10.3Z"/>
+        <path d="M130.05,118.7l9.29-25.2h2.59l9.29,25.2h-2.66l-7.92-21.89-7.92,21.89h-2.66ZM134.3,111.89l.76-2.09h11.12l.76,2.09h-12.64Z"/>
+        <path d="M207.78,119.13c-2.42,0-4.52-.55-6.3-1.64-1.78-1.09-3.14-2.62-4.1-4.57s-1.44-4.23-1.44-6.82.48-4.87,1.44-6.82,2.33-3.48,4.12-4.57c1.79-1.09,3.88-1.64,6.28-1.64,2.83,0,5.13.67,6.89,2,1.76,1.33,2.9,3.21,3.4,5.63h-2.77c-.38-1.63-1.2-2.95-2.45-3.94-1.25-1-2.94-1.49-5.08-1.49-1.85,0-3.47.43-4.86,1.3-1.39.86-2.47,2.11-3.24,3.73-.77,1.62-1.15,3.56-1.15,5.81s.38,4.19,1.15,5.81c.77,1.62,1.85,2.86,3.24,3.73,1.39.86,3.01,1.3,4.86,1.3,2.14,0,3.82-.49,5.06-1.48,1.24-.98,2.06-2.28,2.47-3.89h2.77c-.53,2.38-1.66,4.23-3.4,5.56s-4.04,2-6.89,2Z"/>
+        <path d="M265.84,118.7v-25.2h15.3v2.09h-12.78v9.4h11.7v2.09h-11.7v9.54h12.78v2.09h-15.3Z"/>
+        <path d="M337.12,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14.94.54,2.11.81,3.53.81,1.25,0,2.3-.21,3.15-.63s1.51-.98,1.96-1.67c.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.17-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37s1.51.69,2.45.99c.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+      </svg>
+    </div>
+    <div class="header-right">
+      <span class="page-label">Mission Control</span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode"></button>
+    </div>
+  </header>
+
+  <!-- ── Hero ───────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <p class="hero-eyebrow">Financial Operations</p>
+    <h1 class="hero-title">A practice of<br /><em><span class="hero-title-light">quiet</span> consequence.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">The financial operating infrastructure of Maru Spaces. Each module below reflects a layer of the practice's strategic and operational backbone.</p>
+  </section>
+
+  <!-- ── Navigation Grid ────────────────────────────────────────────── -->
+  <section class="grid-section">
+    <p class="grid-label">06 modules</p>
+
+    <div class="nav-grid">
+
+      <!-- 01 Retainer Deliverables — link TBD -->
+      <div class="tile inactive">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="6" width="24" height="28" stroke="#c4956a" stroke-width="1"/>
+              <line x1="13" y1="14" x2="27" y2="14" stroke="#c4956a" stroke-width="0.8"/>
+              <line x1="13" y1="19" x2="27" y2="19" stroke="#c4956a" stroke-width="0.8"/>
+              <line x1="13" y1="24" x2="21" y2="24" stroke="#c4956a" stroke-width="0.8"/>
+              <circle cx="29" cy="31" r="4" fill="none" stroke="#a85c38" stroke-width="0.8"/>
+              <line x1="27.5" y1="31" x2="30.5" y2="31" stroke="#a85c38" stroke-width="0.8"/>
+              <line x1="29" y1="29.5" x2="29" y2="32.5" stroke="#a85c38" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">01</p>
+        <h2 class="tile-name">Retainer Deliverables</h2>
+        <p class="tile-desc">Scheduled outputs, cadence tracking, and service delivery status across the Fractional CFO/COO mandate.</p>
+        <div class="tile-status status-soon">
+          <span class="dot"></span>
+          <span>Coming soon</span>
+        </div>
+      </div>
+
+      <!-- 02 Executive Compensation — live -->
+      <a href="https://ramophalatse.github.io/maruspaces/maps-comp-calculator.html" class="tile active-link" target="_blank" rel="noopener">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="15" r="6" stroke="#c4956a" stroke-width="1"/>
+              <path d="M9 34c0-6.075 4.925-11 11-11s11 4.925 11 11" stroke="#c4956a" stroke-width="1"/>
+              <line x1="25" y1="22" x2="33" y2="22" stroke="#a85c38" stroke-width="0.8"/>
+              <polyline points="29,18 33,22 29,26" fill="none" stroke="#a85c38" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">02</p>
+        <h2 class="tile-name">Executive Compensation</h2>
+        <p class="tile-desc">Director remuneration modelling across salary, bonus, dividend, and loan repayment structures with tax implications.</p>
+        <div class="tile-status status-live">
+          <span class="dot"></span>
+          <span>Live</span>
+        </div>
+      </a>
+
+      <!-- 03 Project Profitability — live -->
+      <a href="https://ramophalatse.github.io/maruspaces/maru-project-profitability.html" class="tile active-link" target="_blank" rel="noopener">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="7" y="26" width="6" height="8" stroke="#c4956a" stroke-width="0.9"/>
+              <rect x="17" y="18" width="6" height="16" stroke="#c4956a" stroke-width="0.9"/>
+              <rect x="27" y="10" width="6" height="24" stroke="#c4956a" stroke-width="0.9"/>
+              <polyline points="10,24 20,16 30,8" fill="none" stroke="#a85c38" stroke-width="0.9"/>
+              <circle cx="10" cy="24" r="1.5" fill="#a85c38"/>
+              <circle cx="20" cy="16" r="1.5" fill="#a85c38"/>
+              <circle cx="30" cy="8" r="1.5" fill="#a85c38"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">03</p>
+        <h2 class="tile-name">Project Profitability</h2>
+        <p class="tile-desc">Per-project revenue, cost, and margin tracking. Monitors fee recovery, sub-consultant distribution, and net retained position.</p>
+        <div class="tile-status status-live">
+          <span class="dot"></span>
+          <span>Live</span>
+        </div>
+      </a>
+
+      <!-- 04 Operating Manual — link TBD -->
+      <div class="tile inactive">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="7" y="5" width="18" height="26" rx="0" stroke="#c4956a" stroke-width="1"/>
+              <path d="M7 5h18l8 8v18H15" stroke="#c4956a" stroke-width="1"/>
+              <polyline points="25,5 25,13 33,13" fill="none" stroke="#c4956a" stroke-width="0.8"/>
+              <line x1="11" y1="16" x2="21" y2="16" stroke="#c4956a" stroke-width="0.7"/>
+              <line x1="11" y1="20" x2="21" y2="20" stroke="#c4956a" stroke-width="0.7"/>
+              <line x1="11" y1="24" x2="17" y2="24" stroke="#c4956a" stroke-width="0.7"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">04</p>
+        <h2 class="tile-name">Operating Manual</h2>
+        <p class="tile-desc">SOPs, financial controls, process documentation, and institutional governance for the practice's operations.</p>
+        <div class="tile-status status-soon">
+          <span class="dot"></span>
+          <span>Coming soon</span>
+        </div>
+      </div>
+
+      <!-- 05 FinOps Ecosystem — live -->
+      <a href="https://ramophalatse.github.io/maruspaces/maru-financial-ecosystem.html" class="tile active-link" target="_blank" rel="noopener">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="4" stroke="#a85c38" stroke-width="1"/>
+              <circle cx="9"  cy="13" r="2.5" stroke="#c4956a" stroke-width="0.9"/>
+              <circle cx="31" cy="13" r="2.5" stroke="#c4956a" stroke-width="0.9"/>
+              <circle cx="9"  cy="27" r="2.5" stroke="#c4956a" stroke-width="0.9"/>
+              <circle cx="31" cy="27" r="2.5" stroke="#c4956a" stroke-width="0.9"/>
+              <line x1="11.5" y1="14.5" x2="16.5" y2="17.5" stroke="#c4956a" stroke-width="0.7"/>
+              <line x1="28.5" y1="14.5" x2="23.5" y2="17.5" stroke="#c4956a" stroke-width="0.7"/>
+              <line x1="11.5" y1="25.5" x2="16.5" y2="22.5" stroke="#c4956a" stroke-width="0.7"/>
+              <line x1="28.5" y1="25.5" x2="23.5" y2="22.5" stroke="#c4956a" stroke-width="0.7"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">05</p>
+        <h2 class="tile-name">FinOps Ecosystem</h2>
+        <p class="tile-desc">The full financial operating architecture: systems map, data flows, tooling, and the layer structure of the FinOps stack.</p>
+        <div class="tile-status status-live">
+          <span class="dot"></span>
+          <span>Live</span>
+        </div>
+      </a>
+
+      <!-- 06 Brand Guidelines — live -->
+      <a href="https://ramophalatse.github.io/maruspaces/Maru%20Brand%20Guide.html" class="tile active-link" target="_blank" rel="noopener">
+        <div class="tile-top">
+          <div class="tile-icon-wrap">
+            <svg class="tile-icon-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- A monogram simplified -->
+              <polyline points="20,8 28,32 24,32 20,20 16,32 12,32 20,8" fill="none" stroke="#c4956a" stroke-width="1" stroke-linejoin="round"/>
+              <line x1="14.5" y1="24" x2="25.5" y2="24" stroke="#a85c38" stroke-width="0.8"/>
+            </svg>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+        <p class="tile-index">06</p>
+        <h2 class="tile-name">Brand Guidelines</h2>
+        <p class="tile-desc">The visual and tonal identity of the practice: colour, typography, mark system, and editorial voice.</p>
+        <div class="tile-status status-live">
+          <span class="dot"></span>
+          <span>Live</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────── -->
+  <footer>
+    <p class="footer-tagline">A practice of quiet consequence.</p>
+    <p class="footer-meta">Maru Spaces (Pty) Ltd · 2026</p>
+  </footer>
+
+  <!-- ── Theme Toggle Script ─────────────────────────────────────────── -->
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const html   = document.documentElement;
+
+    // Persist preference
+    const saved = localStorage.getItem('maru-theme');
+    if (saved) html.setAttribute('data-theme', saved);
+
+    toggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next    = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('maru-theme', next);
+    });
+  </script>
+
+</body>
+</html>
