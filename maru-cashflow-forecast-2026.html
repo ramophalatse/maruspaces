@@ -467,11 +467,40 @@
   }
 
   @media (max-width: 900px) {
-    .site-header, .hero, .section, .site-footer { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .hero, .chart-grid, .avg-grid, .insight-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .site-header {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      align-items: start;
+    }
+    .site-header > div:last-child {
+      align-items: flex-start;
+    }
+    .doc-meta { text-align: left; }
+    .theme-toggle { align-self: flex-start; }
+    .logo-svg { width: 140px; }
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2.5rem 1.5rem;
+    }
+    .hero-left h1 { font-size: 2rem; }
+    .section { padding: 2.5rem 1.5rem; }
     .metric-strip { grid-template-columns: repeat(2, 1fr); }
-    .metric-item { padding: 1.5rem; }
+    .metric-item { padding: 1.25rem 1.5rem; border-right: none; border-bottom: 0.5px solid var(--ink-10); }
+    .metric-item:nth-child(odd) { border-right: 0.5px solid var(--ink-10); }
+    .metric-value { font-size: 1.5rem; }
+    .chart-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .insight-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .avg-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .site-footer { padding: 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     .divider { margin: 0 1.5rem; }
+  }
+
+  @media (max-width: 500px) {
+    .metric-strip { grid-template-columns: 1fr; }
+    .metric-item { border-right: none; }
+    .metric-item:nth-child(odd) { border-right: none; }
   }
 </style>
 </head>
