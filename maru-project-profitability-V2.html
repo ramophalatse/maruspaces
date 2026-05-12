@@ -31,7 +31,7 @@
     background: var(--surface); border: 1px solid var(--border2); border-radius: 12px;
     padding: 40px; width: 380px;
   }
-  .auth-logo { margin-bottom: 32px; mix-blend-mode: screen; }
+  .auth-logo { margin-bottom: 32px; }
   .auth-title { font-family: var(--mono); font-size: 11px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px; }
   .auth-error { font-family: var(--mono); font-size: 11px; color: var(--red); background: var(--red-dim); border: 1px solid rgba(242,108,108,0.2); border-radius: 5px; padding: 10px 12px; margin-bottom: 16px; display: none; }
   .auth-error.show { display: block; }
@@ -837,25 +837,35 @@ function fmt(n){if(isNaN(n)||n===null)return '0';return Number(n).toLocaleString
 function fmtK(n){if(n>=1000000)return(n/1000000).toFixed(2)+'m';if(n>=1000)return(n/1000).toFixed(0)+'k';return fmt(n);}
 
 // ── INIT ───────────────────────────────────────
-sb.auth.onAuthStateChange(async (event, session) => {
+async function bootApp(session) {
   if (session?.user) {
     currentUser = session.user;
     document.getElementById('topbarUser').textContent = currentUser.email;
-    // Load projects from Supabase
     projects = await loadProjects();
     activeId = projects.length ? projects[0].id : null;
-    // Show app
     document.getElementById('loadingOverlay').style.display='none';
     document.getElementById('authScreen').style.display='none';
     document.getElementById('appShell').style.display='grid';
     renderAll();
   } else {
-    currentUser = null;
-    projects = [];
-    activeId = null;
+    currentUser = null; projects = []; activeId = null;
     document.getElementById('loadingOverlay').style.display='none';
     document.getElementById('appShell').style.display='none';
     document.getElementById('authScreen').style.display='flex';
+  }
+}
+
+// On refresh, getSession() resolves immediately from localStorage.
+// onAuthStateChange alone can miss this on initial load with sb_publishable keys.
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  await bootApp(session);
+})();
+
+// Keep listening for sign-in / sign-out events during the session.
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+    await bootApp(session);
   }
 });
 </script>
