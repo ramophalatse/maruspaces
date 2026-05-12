@@ -39,7 +39,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html{transition:background .3s;}
 body{
-  font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.55;
+  font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55;
   background:var(--bg);color:var(--text);
   min-height:100vh;padding:44px 24px 60px;
   transition:background .3s,color .3s;
@@ -51,16 +51,16 @@ body{
   background:var(--surface);border:1px solid var(--border);
   border-radius:1px;padding:5px 14px 5px 10px;cursor:pointer;
   display:flex;align-items:center;gap:7px;
-  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
   color:var(--muted);text-transform:uppercase;transition:all .2s;
 }
 .theme-toggle:hover{border-color:var(--accent);color:var(--text);}
-.tog-icon{font-size:12px;line-height:1;}
+.tog-icon{font-size:13px;line-height:1;}
 
 /* ── Header ── */
 .header{text-align:center;margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--border);}
 .eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
   letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;
 }
 .header h1{
@@ -69,11 +69,11 @@ body{
 }
 .header .sub{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:16px;color:var(--muted);margin-top:8px;
+  font-size:17px;color:var(--muted);margin-top:8px;
 }
 .badge{
   display:inline-block;border:1px solid var(--border);
-  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
   color:var(--muted);text-transform:uppercase;
   padding:3px 12px;border-radius:1px;margin-top:14px;
 }
@@ -85,7 +85,7 @@ body{
 /* ── Panels ── */
 .panel{background:var(--surface);border:1px solid var(--border);padding:28px;}
 .panel-label{
-  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.22em;
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;
   text-transform:uppercase;color:var(--muted);
   margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--border);
 }
@@ -93,16 +93,16 @@ body{
 /* ── Field groups ── */
 .fg{margin-bottom:24px;}
 .fl{
-  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
   letter-spacing:.07em;margin-bottom:8px;
   display:flex;justify-content:space-between;align-items:baseline;
 }
 .fl .vd{
-  font-family:'DM Serif Display',serif;font-size:15px;
+  font-family:'DM Serif Display',serif;font-size:16px;
   color:var(--text);font-weight:400;letter-spacing:0;
 }
 .sub-hint{
-  font-family:'JetBrains Mono',monospace;font-size:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
   color:var(--muted);margin-top:5px;letter-spacing:.03em;
 }
 
@@ -110,7 +110,7 @@ body{
 .iw{position:relative;display:flex;align-items:center;}
 .iw .px{
   position:absolute;left:12px;
-  font-family:'DM Sans',sans-serif;font-size:15px;
+  font-family:'DM Sans',sans-serif;font-size:16px;
   color:var(--muted);pointer-events:none;
 }
 input[type=number]{
@@ -127,7 +127,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 /* ── Slider ── */
 .mix-labels{
   display:flex;justify-content:space-between;
-  font-family:'JetBrains Mono',monospace;font-size:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
   color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px;
 }
 .track{
@@ -147,7 +147,7 @@ input[type=range]::-webkit-slider-thumb{
 input[type=range]:focus{outline:none;}
 .mix-amounts{display:flex;justify-content:space-between;margin-top:6px;}
 .pill{
-  font-family:'JetBrains Mono',monospace;font-size:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
   padding:3px 10px;letter-spacing:.04em;
 }
 .pill-s{background:rgba(196,149,106,.09);color:var(--salary-col);border:1px solid rgba(196,149,106,.2);}
@@ -157,8 +157,8 @@ input[type=range]:focus{outline:none;}
 .ftog{display:flex;gap:5px;margin-top:4px;}
 .fbtn{
   flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--muted);
-  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.06em;
-  padding:7px 4px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;
+  padding:8px 4px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;
 }
 .fbtn:hover{border-color:var(--muted);color:var(--text);}
 .fbtn.active{background:rgba(122,158,128,.09);border-color:var(--div-col);color:var(--div-col);}
@@ -170,8 +170,8 @@ input[type=range]:focus{outline:none;}
   display:flex;justify-content:space-between;align-items:center;
 }
 .hl{
-  font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);
-  letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;
 }
 .hv{
   font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;
@@ -179,8 +179,8 @@ input[type=range]:focus{outline:none;}
 }
 .er{text-align:right;}
 .el{
-  font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);
-  letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;
 }
 .ev{
   font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;
@@ -190,16 +190,16 @@ input[type=range]:focus{outline:none;}
 /* ── Cash flow ── */
 .cfs{margin-bottom:20px;}
 .cfl{
-  font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);
-  letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;
 }
 .cfr{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;}
-.cfdot{width:7px;height:7px;flex-shrink:0;margin-top:4px;}
+.cfdot{width:7px;height:7px;flex-shrink:0;margin-top:5px;}
 .cfc{flex:1;}
-.cft{font-size:12px;color:var(--text);margin-bottom:2px;}
-.cfm{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.03em;}
+.cft{font-size:13px;color:var(--text);margin-bottom:2px;}
+.cfm{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.03em;}
 .cfa{
-  font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;
+  font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;
   text-align:right;align-self:center;flex-shrink:0;letter-spacing:-.01em;
 }
 .dotsal{background:var(--salary-col);}
@@ -211,16 +211,16 @@ input[type=range]:focus{outline:none;}
 .divider{height:1px;background:var(--border);margin:15px 0;}
 .br{
   display:flex;justify-content:space-between;align-items:baseline;
-  padding:7px 0;border-bottom:1px solid var(--border);
+  padding:8px 0;border-bottom:1px solid var(--border);
 }
 .br:last-child{border-bottom:none;}
-.bl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.04em;}
-.bv{font-size:11px;font-weight:500;}
+.bl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.bv{font-size:12px;font-weight:500;}
 .bd{color:var(--danger);}
 .bc{color:var(--accent2);}
 .blab{
-  font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);
-  letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;
 }
 
 /* ── Bar viz ── */
@@ -232,15 +232,15 @@ input[type=range]:focus{outline:none;}
 .bleg{display:flex;gap:16px;margin-bottom:16px;}
 .li{
   display:flex;align-items:center;gap:5px;
-  font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.05em;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;
 }
 .ldot{width:7px;height:7px;flex-shrink:0;}
 
 /* ── Scenario strip ── */
 .sstrip{background:var(--surface2);border:1px solid var(--border);padding:14px 16px;margin-top:10px;}
 .srow{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;}
-.srow .sl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.04em;}
-.srow .sv{font-size:11px;font-weight:500;}
+.srow .sl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.srow .sv{font-size:12px;font-weight:500;}
 .sbest{color:var(--accent2)!important;font-weight:600;}
 .sborder{border-top:1px solid var(--border);margin-top:5px;padding-top:9px;}
 
@@ -248,12 +248,12 @@ input[type=range]:focus{outline:none;}
 .fcall{
   background:rgba(122,158,128,.06);border:1px solid rgba(122,158,128,.18);
   padding:10px 14px;margin-top:10px;
-  font-size:10px;color:var(--div-col);line-height:1.65;
+  font-size:11px;color:var(--div-col);line-height:1.65;
 }
 .fcall strong{font-weight:600;}
 .bbadge{
   display:inline-block;border:1px solid rgba(196,149,106,.22);color:var(--accent);
-  font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.07em;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.07em;
   padding:2px 9px;margin-top:5px;
 }
 
@@ -262,7 +262,7 @@ input[type=range]:focus{outline:none;}
 .mbtn{
   flex:1;background:var(--surface2);border:none;border-right:1px solid var(--border);
   color:var(--muted);font-family:'JetBrains Mono',monospace;
-  font-size:8px;letter-spacing:.07em;padding:7px 4px;cursor:pointer;
+  font-size:10px;letter-spacing:.07em;padding:8px 4px;cursor:pointer;
   text-align:center;transition:all .15s;text-transform:uppercase;
 }
 .mbtn:last-child{border-right:none;}
@@ -270,15 +270,15 @@ input[type=range]:focus{outline:none;}
 .mbtn.active{background:rgba(196,149,106,.08);color:var(--accent);}
 .med-callout{
   background:rgba(196,149,106,.05);border:1px solid rgba(196,149,106,.18);
-  padding:10px 14px;margin-top:10px;font-size:10px;color:var(--accent);line-height:1.65;
+  padding:10px 14px;margin-top:10px;font-size:11px;color:var(--accent);line-height:1.65;
 }
 .med-callout strong{font-weight:600;}
-.med-warn{color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:8px;margin-top:5px;letter-spacing:.03em;}
+.med-warn{color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:5px;letter-spacing:.03em;}
 
 /* ── Footer note ── */
 .note{
   text-align:center;
-  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;
   color:var(--muted);margin-top:36px;line-height:2;
 }
 </style>
@@ -417,8 +417,8 @@ input[type=range]:focus{outline:none;}
     <div class="br"><span class="bl">MTC credit (salary only)</span><span class="bv bc" id="bMTC">—</span></div>
     <div class="br"><span class="bl">Medical contribution (annual)</span><span class="bv bd" id="bMedOut">—</span></div>
     <div class="br" style="padding-top:10px;">
-      <span class="bl" style="color:var(--text);font-weight:500;font-size:10px;">Annual net take-home</span>
-      <span class="bv bc" style="font-size:14px;" id="bNetA">—</span>
+      <span class="bl" style="color:var(--text);font-weight:500;font-size:11px;">Annual net take-home</span>
+      <span class="bv bc" style="font-size:15px;" id="bNetA">—</span>
     </div>
     <div class="br"><span class="bl">Monthly salary take-home</span><span class="bv bc" id="bNetM">—</span></div>
   </div>
