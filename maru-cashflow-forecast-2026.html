@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cashflow Forecast — Maru Spaces (Pty) Ltd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bone: #f5f0e8;
+    --bone-dark: #ede6d8;
+    --clay: #c4956a;
+    --clay-light: #d4a97e;
+    --terracotta: #a85c38;
+    --ink: #1a1814;
+    --ink-60: rgba(26,24,20,0.6);
+    --ink-30: rgba(26,24,20,0.3);
+    --ink-10: rgba(26,24,20,0.1);
+    --white: #ffffff;
+    --surplus: #5a8a6a;
+    --deficit: #a85c38;
+    --balance: #c4956a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bone: #1e1c19;
+      --bone-dark: #252320;
+      --clay: #c4956a;
+      --clay-light: #d4a97e;
+      --terracotta: #c4724e;
+      --ink: #f0ebe0;
+      --ink-60: rgba(240,235,224,0.6);
+      --ink-30: rgba(240,235,224,0.3);
+      --ink-10: rgba(240,235,224,0.08);
+      --white: #2a2720;
+      --surplus: #7ab88a;
+      --deficit: #c4724e;
+      --balance: #c4956a;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bone: #1e1c19;
+    --bone-dark: #252320;
+    --clay: #c4956a;
+    --clay-light: #d4a97e;
+    --terracotta: #c4724e;
+    --ink: #f0ebe0;
+    --ink-60: rgba(240,235,224,0.6);
+    --ink-30: rgba(240,235,224,0.3);
+    --ink-10: rgba(240,235,224,0.08);
+    --white: #2a2720;
+    --surplus: #7ab88a;
+    --deficit: #c4724e;
+    --balance: #c4956a;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 0.5px solid var(--ink-30);
+    color: var(--ink-60);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+
+  .theme-toggle:hover { border-color: var(--ink-60); color: var(--ink); }
+  .theme-toggle svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .logo-svg { transition: fill 0.2s; }
+  .logo-svg path { fill: var(--ink); }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--bone);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .site-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: 3rem 4rem 2rem;
+    border-bottom: 0.5px solid var(--ink-30);
+  }
+
+  .wordmark {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .wordmark span {
+    display: block;
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-60);
+    margin-top: 2px;
+  }
+
+  .doc-meta {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-60);
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 4rem 4rem;
+    border-bottom: 0.5px solid var(--ink-10);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .hero-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-left h1 em {
+    font-style: italic;
+    color: var(--clay);
+  }
+
+  .period-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--clay);
+    border: 0.5px solid var(--clay);
+    padding: 5px 12px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-right {
+    padding-top: 0.5rem;
+  }
+
+  .exec-summary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .exec-summary p + p { margin-top: 1.1em; }
+
+  .spreadsheet-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--terracotta);
+    padding-bottom: 2px;
+    transition: opacity 0.2s;
+  }
+
+  .spreadsheet-link:hover { opacity: 0.7; }
+
+  .spreadsheet-link svg { flex-shrink: 0; }
+
+  /* METRIC STRIP */
+  .metric-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 0.5px solid var(--ink-10);
+  }
+
+  .metric-item {
+    padding: 2.5rem 4rem 2.5rem;
+    border-right: 0.5px solid var(--ink-10);
+  }
+
+  .metric-item:last-child { border-right: none; }
+
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+
+  .metric-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .metric-value.pos { color: var(--surplus); }
+  .metric-value.neg { color: var(--deficit); }
+  .metric-value.clay { color: var(--clay); }
+
+  .metric-note {
+    font-size: 11px;
+    color: var(--ink-60);
+    margin-top: 0.4rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 4rem 4rem;
+    border-bottom: 0.5px solid var(--ink-10);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--clay);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  /* CHARTS */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .chart-block {}
+
+  .chart-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-60);
+    margin-bottom: 1rem;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .chart-commentary {
+    margin-top: 1.25rem;
+    font-size: 13px;
+    color: var(--ink-60);
+    line-height: 1.65;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+  }
+
+  /* INSIGHT CARDS */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .insight-card {
+    background: var(--white);
+    border: 0.5px solid var(--ink-10);
+    padding: 1.5rem;
+  }
+
+  .insight-card.accent-clay { border-top: 2px solid var(--clay); }
+  .insight-card.accent-terracotta { border-top: 2px solid var(--terracotta); }
+  .insight-card.accent-surplus { border-top: 2px solid var(--surplus); }
+
+  .insight-heading {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+  }
+
+  .insight-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  /* AVG VIEW SECTION */
+  .avg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .avg-bars { }
+
+  .bar-row {
+    margin-bottom: 1.5rem;
+  }
+
+  .bar-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .bar-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--ink-60);
+  }
+
+  .bar-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 400;
+  }
+
+  .bar-track {
+    height: 6px;
+    background: var(--ink-10);
+    width: 100%;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 1s ease;
+  }
+
+  .bar-fill.clay { background: var(--clay); }
+  .bar-fill.bone-dark { background: var(--clay-light); opacity: 0.5; }
+  .bar-fill.terracotta { background: var(--terracotta); }
+  .bar-fill.surplus { background: var(--surplus); }
+
+  .avg-commentary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  .avg-commentary p + p { margin-top: 1em; }
+
+  .callout {
+    margin-top: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bone-dark);
+    border-left: 2px solid var(--clay);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  .callout strong { font-weight: 500; }
+
+  /* FOOTER */
+  .site-footer {
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-wordmark {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-30);
+  }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-30);
+    letter-spacing: 0.04em;
+  }
+
+  .divider {
+    height: 0.5px;
+    background: var(--ink-10);
+    margin: 0 4rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ink-60);
+  }
+  .legend-sq {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .site-header, .hero, .section, .site-footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .hero, .chart-grid, .avg-grid, .insight-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .metric-strip { grid-template-columns: repeat(2, 1fr); }
+    .metric-item { padding: 1.5rem; }
+    .divider { margin: 0 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div>
+    <svg class="logo-svg" viewBox="0 0 354.2 119.13" xmlns="http://www.w3.org/2000/svg" style="width:180px; height:auto; display:block;">
+      <g>
+        <path d="M95.83,76.46c-1.27-.94-2.06-2.37-2.37-4.31-.31-1.93-.47-6.02-.47-12.28V13.96c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h2.93V1.11h-24.38l-28.95,65.74L24.2,1.11H0v2.7h2.17c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v34.57c0,6.56-.23,11.06-.7,13.48-.47,2.42-1.77,4.46-3.9,6.12-2.13,1.66-4.89,2.59-8.29,2.78v2.7h28.42v-2.7c-3.67-.23-6.52-1.22-8.55-2.96-2.03-1.74-3.24-3.76-3.63-6.06-.39-2.3-.59-6.64-.59-13.01V9.32l31.7,71.25h2.75L81.56,9.32v50.57c0,6.64-.19,10.87-.56,12.69-.37,1.82-1.21,3.15-2.52,4.01-1.31.86-3.64,1.29-7,1.29h-2.81v2.7h37.97v-2.7h-3.52c-3.59,0-6.03-.47-7.29-1.41Z"/>
+        <path d="M327.66,1.11v2.7c3.63.23,6.29.88,7.97,1.93,1.68,1.05,2.77,2.48,3.28,4.28.51,1.8.76,4.94.76,9.43v27.07c0,6.17-.21,10.69-.64,13.56-.43,2.87-1.61,5.66-3.54,8.38-1.93,2.72-4.88,4.98-8.85,6.8-3.96,1.82-8.37,2.72-13.21,2.72-6.17,0-11.11-1.36-14.82-4.07-3.71-2.71-5.97-5.89-6.77-9.52-.8-3.63-1.2-9.79-1.2-18.46v-25.02c0-.36,0-.71,0-1.05v-5.91c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h1.58V1.11h-36.27v2.7h1.82c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v24.73l-.06,8.14c0,6.41,1.04,11.51,3.13,15.32,2.09,3.81,5.59,6.91,10.49,9.32,4.9,2.4,10.89,3.6,17.96,3.6,5.98,0,11.25-.94,15.82-2.81s8.12-4.39,10.63-7.56,4.04-6.39,4.57-9.67.79-8.3.79-15.06v-26.43c0-4.84.2-8.1.59-9.79.39-1.68,1.46-3.19,3.19-4.54,1.74-1.35,4.37-2.14,7.88-2.37V1.11h-26.54Z"/>
+        <path d="M265.25,73.89c-3.44-2.5-8.17-7.79-14.18-15.88-7.38-9.96-12.74-15.74-16.05-17.34,7.42-.9,13.05-3.18,16.88-6.86,3.83-3.67,5.74-8.1,5.74-13.3,0-4.45-1.46-8.28-4.39-11.48-2.93-3.2-6.77-5.51-11.51-6.91s-10.95-1-18.53-1h-29.37v2.7h1.35c4.02,0,6.64.35,7.85,1.05s1.99,1.97,2.34,3.81c.35,1.84.53,5.92.53,12.25v38.96c0,6.64-.18,10.87-.53,12.69s-1.18,3.15-2.49,4.01c-1.31.86-3.66,1.29-7.06,1.29h-2.58v2.7h38.03v-2.7h-3.81c-3.59,0-6.03-.47-7.29-1.41s-2.05-2.37-2.34-4.31-.44-6.02-.44-12.28v-17.64h3.16c2.15,0,3.73.36,4.75,1.08,1.02.72,2.87,2.73,5.57,6.04,2.7,3.3,5.29,6.75,7.79,10.34,7.81,11.25,13.61,18.2,17.4,20.86h21.39v-2.7c-4.69-.16-8.75-1.48-12.19-3.98ZM226.46,39.2c-3.12.16-6.15.27-9.08.35V12.99c-.38-4.28-3.2-9.16-8.12-9.16h8.12c1.88-.16,3.62,0,4.99,0,12.2,0,15.45.84,18.24,4.2,2.79,3.36,4.19,7.83,4.19,13.42,0,3.2-.41,5.9-1.23,8.09-.82,2.19-1.94,3.96-3.37,5.3-1.43,1.35-3.29,2.37-5.6,3.08s-5.02,1.13-8.14,1.29Z"/>
+        <path d="M184.72,75.85c-1.39-1.07-2.49-2.55-3.31-4.42l-3.63-8.32L151.23,0h-2.29l-23.09,55.14c-1.68,3.95-2.62,6.21-2.81,6.8-2.42,6.21-4.49,10.28-6.21,12.22-1.72,1.93-4.34,3.17-7.85,3.72v2.7h23.61v-2.7c-2.54,0-4.62-.62-6.24-1.85-1.62-1.23-2.43-3.04-2.43-5.42,0-2.23,1.52-6.99,4.57-14.3l.97-2.39h0,0s1.08-2.65,1.08-2.65h.02l2.78-6.7,12.32-29.8,14.06,33.87h-.04l.41,1.03,1.72,4.26h0l5,12.06c1.8,4.26,2.7,6.82,2.7,7.68,0,1.68-.67,2.8-2.02,3.37-1.35.57-3.94.85-7.76.85v2.7h31.23v-2.7c-2.77-.27-4.85-.95-6.24-2.02Z"/>
+        <path d="M15.03,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14s2.11.81,3.53.81c1.25,0,2.3-.21,3.15-.63.85-.42,1.51-.98,1.96-1.67.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.18-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37.7.36,1.51.69,2.45.99.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+        <path d="M71.12,118.7v-25.2h7.92c1.94,0,3.55.32,4.82.95,1.27.64,2.21,1.5,2.81,2.59.6,1.09.9,2.33.9,3.73s-.3,2.6-.9,3.71c-.6,1.1-1.53,1.98-2.79,2.63-1.26.65-2.87.97-4.84.97h-5.4v10.62h-2.52ZM73.64,105.92h5.4c2.14,0,3.66-.46,4.57-1.39.91-.92,1.37-2.18,1.37-3.76s-.46-2.9-1.37-3.8-2.44-1.35-4.57-1.35h-5.4v10.3Z"/>
+        <path d="M130.05,118.7l9.29-25.2h2.59l9.29,25.2h-2.66l-7.92-21.89-7.92,21.89h-2.66ZM134.3,111.89l.76-2.09h11.12l.76,2.09h-12.64Z"/>
+        <path d="M207.78,119.13c-2.42,0-4.52-.55-6.3-1.64-1.78-1.09-3.14-2.62-4.1-4.57s-1.44-4.23-1.44-6.82.48-4.87,1.44-6.82,2.33-3.48,4.12-4.57c1.79-1.09,3.88-1.64,6.28-1.64,2.83,0,5.13.67,6.89,2,1.76,1.33,2.9,3.21,3.4,5.63h-2.77c-.38-1.63-1.2-2.95-2.45-3.94-1.25-1-2.94-1.49-5.08-1.49-1.85,0-3.47.43-4.86,1.3-1.39.86-2.47,2.11-3.24,3.73-.77,1.62-1.15,3.56-1.15,5.81s.38,4.19,1.15,5.81c.77,1.62,1.85,2.86,3.24,3.73,1.39.86,3.01,1.3,4.86,1.3,2.14,0,3.82-.49,5.06-1.48,1.24-.98,2.06-2.28,2.47-3.89h2.77c-.53,2.38-1.66,4.23-3.4,5.56s-4.04,2-6.89,2Z"/>
+        <path d="M265.84,118.7v-25.2h15.3v2.09h-12.78v9.4h11.7v2.09h-11.7v9.54h12.78v2.09h-15.3Z"/>
+        <path d="M337.12,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14.94.54,2.11.81,3.53.81,1.25,0,2.3-.21,3.15-.63s1.51-.98,1.96-1.67c.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.17-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37s1.51.69,2.45.99c.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+      </g>
+    </svg>
+  </div>
+  <div style="display:flex; flex-direction:column; align-items:flex-end; gap:0.75rem;">
+    <div class="doc-meta">
+      Cashflow Forecast Reference<br>
+      May 2026 – January 2027<br>
+      Prepared: 12 May 2026<br>
+      Confidential
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" id="toggleIcon">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+      <span id="toggleLabel">Light</span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="period-badge">May 2026 – Jan 2027</div>
+    <h1>Cash position<br>& forward-<em>looking</em><br>analysis</h1>
+  </div>
+  <div class="hero-right">
+    <div class="exec-summary">
+      <p>Maru Spaces enters the forecast period in a position of material liquidity strength, with an opening cash balance of R5.69M — the direct result of the GDID settlement receipt and active financial stewardship over the preceding period.</p>
+      <p>On contracted work alone, the practice operates at a modest average monthly shortfall against its cost base. This is not a structural concern: architectural fees are stage-gated by design, with large milestone billings at fixed points across the project lifecycle. The appropriate measure is not month-by-month cash movement, but average monthly inflows against average monthly costs — a view that shows the business at or near operating breakeven on committed work.</p>
+      <p>With the R6.8M total pipeline (Bongolethu JPS and King Hintsa TVET College, inclusive of contracted billings) spread across 18 months, average monthly inflows reach R378k against an operating cost base of approximately R392k — a gap of under R15k per month, and one that closes entirely as further mandates are formalised. The R5.69M opening balance provides runway well in excess of any near-term timing risk.</p>
+      <p>The forward position is sound. The priority is converting pipeline and ensuring provisional tax is modelled before the August P1 window. The forecast also incorporates a September dividend declaration of R148,000 to Maps, with R37,000 in Dividends Withholding Tax (DWT) remitted to SARS within 5 business days of declaration — a combined R185,000 outflow from Maru, reflected in the September figures.</p>
+    </div>
+    <a class="spreadsheet-link" href="https://docs.google.com/spreadsheets/d/1gIjNqPnNg66vcQGGvZNoj8n_oUPuzjrwPh-zTuLrgrQ/edit?usp=sharing" target="_blank" rel="noopener">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Open forecast spreadsheet ↗
+    </a>
+  </div>
+</section>
+
+<!-- METRIC STRIP -->
+<div class="metric-strip">
+  <div class="metric-item">
+    <span class="metric-label">Opening balance</span>
+    <div class="metric-value clay">R5.69M</div>
+    <div class="metric-note">1 May 2026 · actual</div>
+  </div>
+  <div class="metric-item">
+    <span class="metric-label">Contracted income</span>
+    <div class="metric-value">R2.54M</div>
+    <div class="metric-note">Approved billings only</div>
+  </div>
+  <div class="metric-item">
+    <span class="metric-label">Total expenses</span>
+    <div class="metric-value neg">R4.07M</div>
+    <div class="metric-note">Incl. VAT, dividend + DWT</div>
+  </div>
+  <div class="metric-item">
+    <span class="metric-label">Closing balance</span>
+    <div class="metric-value pos">R4.15M</div>
+    <div class="metric-note">Jan 2027 · projected floor</div>
+  </div>
+</div>
+
+<!-- SECTION 1: MONTHLY CASHFLOW -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-number">01</span>
+    <h2 class="section-title">Monthly cashflow movement</h2>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-block">
+      <div class="chart-label">Surplus / deficit by month (R'000)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-sq" style="background:var(--surplus);"></div>Surplus</div>
+        <div class="legend-item"><div class="legend-sq" style="background:var(--deficit);"></div>Deficit</div>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="surplusChart" role="img" aria-label="Bar chart of monthly surplus and deficit May 2026 to January 2027">Monthly cashflow ranges from a R451k surplus in October to a R437k deficit in May, driven by stage-gated project billing events.</canvas>
+      </div>
+      <div class="chart-commentary">June and October are the two billing event months in the contracted forecast — both generating surpluses that offset the fixed-cost deficit months on either side.</div>
+    </div>
+
+    <div class="chart-block">
+      <div class="chart-label">Closing cash balance (R'000)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-sq" style="background:var(--balance);"></div>Closing balance</div>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="balanceChart" role="img" aria-label="Line chart of closing cash balance May 2026 to January 2027">Balance trends from R5.25M in May to R4.15M in January. September reflects the dividend payment event (R148k) and DWT (R37k). Recovery peaks in June and October correspond to major project billing events.</canvas>
+      </div>
+      <div class="chart-commentary">The balance floor across the forecast period is R4.15M — a projected minimum inclusive of the September dividend payment (R148k) and DWT (R37k). Pipeline conversion will push the actual closing position materially higher.</div>
+    </div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card accent-surplus">
+      <div class="insight-heading">Liquidity floor</div>
+      <div class="insight-body">R4.15M closing balance is built on contracted work only, and includes the September dividend payment of R148k and DWT of R37k. With R6.8M total pipeline not yet fully reflected, the actual floor is materially higher — this is a conservative base case by design.</div>
+    </div>
+    <div class="insight-card accent-clay">
+      <div class="insight-heading">Stage-gated billing pattern</div>
+      <div class="insight-body">Deficit months are not a sign of financial stress — they are the normal rhythm of an architectural practice. Income is milestone-driven; the cost base runs continuously between those events.</div>
+    </div>
+    <div class="insight-card accent-terracotta">
+      <div class="insight-heading">Items to model</div>
+      <div class="insight-body">Provisional tax (P1 August window) is unmodelled and should be estimated before the filing date. VAT outflows of R361k are scheduled and appear correctly timed against billing receipt months.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: AVERAGED VIEW -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-number">02</span>
+    <h2 class="section-title">Averaged inflows vs cost base</h2>
+  </div>
+
+  <div class="avg-grid">
+    <div class="avg-bars">
+      <div class="chart-label" style="margin-bottom:1.5rem;">Monthly average comparison (R)</div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg project billings (contracted)</span>
+          <span class="bar-amount">R267,215</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill clay" style="width:63.5%;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg recurring inflows (dir. loan)</span>
+          <span class="bar-amount">R15,090</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill bone-dark" style="width:3.6%;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg total contracted inflows</span>
+          <span class="bar-amount">R282,305</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill clay" style="width:67.1%;"></div></div>
+      </div>
+
+      <div style="margin: 1.5rem 0; height:0.5px; background:var(--ink-10);"></div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg monthly expenses (total)</span>
+          <span class="bar-amount">R432,093</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill terracotta" style="width:100%;"></div></div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg monthly expenses (excl. VAT)</span>
+          <span class="bar-amount">R391,995</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill terracotta" style="width:90.7%; opacity:0.7;"></div></div>
+      </div>
+
+      <div style="margin: 1.5rem 0; height:0.5px; background:var(--ink-10);"></div>
+
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span class="bar-name">Avg inflows — pipeline (R6.8M ÷ 18)</span>
+          <span class="bar-amount">R377,778</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill surplus" style="width:89.8%;"></div></div>
+      </div>
+
+      <div class="callout">
+        <strong>Pipeline gap vs operating cost base:</strong> R377,778 − R391,995 = −R14,217 / month<br>
+        <strong>Pipeline gap vs total cost base:</strong> R377,778 − R432,093 = −R54,315 / month<br>
+        <strong>The R14k operating gap closes with a single additional mandate.</strong>
+      </div>
+    </div>
+
+    <div class="avg-commentary">
+      <p>The averaged view normalises the distortion of stage-gated billing and reveals the underlying economics of the practice more clearly than any single month's cash movement.</p>
+      <p>On contracted work alone, Maru runs at an average shortfall of approximately R150k per month against its total cost base — but this figure includes R361k of VAT outflows across the period, which are tax settlements rather than operating costs. Stripping VAT, the operating gap narrows to roughly R110k per month on contracted work.</p>
+      <p>Against the full R6.8M pipeline spread across 18 months, average monthly inflows reach R378k. Against the operating cost base of R392k, the gap is under R15k per month — a rounding difference in the context of a practice with R5.69M in opening reserves.</p>
+      <p>The business is at or near operating breakeven on committed work. It is one additional mandate from moving into sustained operating surplus. The opening balance provides full runway for that conversion without financial pressure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: INCOME CONCENTRATION -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-number">03</span>
+    <h2 class="section-title">Income profile & concentration</h2>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-block">
+      <div class="chart-label">Contracted income by project (R)</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-sq" style="background:var(--clay);"></div>Bongolethu JPS</div>
+        <div class="legend-item"><div class="legend-sq" style="background:var(--clay-light); opacity:0.7;"></div>Teko Campus</div>
+        <div class="legend-item"><div class="legend-sq" style="background:var(--ink-30);"></div>Director loan repayment</div>
+      </div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="incomeChart" role="img" aria-label="Doughnut chart of contracted income by source">Bongolethu JPS represents 66% of contracted income, Teko Campus 28%, and director loan repayment 5%.</canvas>
+      </div>
+    </div>
+
+    <div class="chart-block" style="padding-top:2rem;">
+      <div class="insight-card accent-terracotta" style="margin-bottom:1rem;">
+        <div class="insight-heading">Concentration note</div>
+        <div class="insight-body">Bongolethu JPS drives R1.69M of R2.54M total contracted income (66%). Seven Lakes Trauma Hospital shows R0 in the forecast — if this is a live mandate with pending billings, it should be added to the base case. A single additional active project materially reduces concentration risk.</div>
+      </div>
+      <div class="insight-card accent-clay">
+        <div class="insight-heading">Pipeline diversification</div>
+        <div class="insight-body">King Hintsa TVET College (revenue from 2027) represents a second substantial income stream alongside Bongolethu JPS. Once both are flowing, the income profile becomes meaningfully more diversified and the averaged monthly position moves into clear surplus.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="divider"></div>
+<footer class="site-footer">
+  <div class="footer-wordmark">Maru Spaces (Pty) Ltd · Reg. 2015/408854/07</div>
+  <div class="footer-note">Prepared by Fractional CFO/COO · Confidential · Not for distribution</div>
+</footer>
+
+<script>
+const months = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+const surplus = [-437441, 255321, -337727, -124133, -555587, 450624, -41981, -370587, -370587];
+const closing = [5247941, 5503262, 5165536, 5041403, 4485816, 4936440, 4894459, 4523872, 4153285];
+
+const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? 'rgba(240,235,224,0.08)' : 'rgba(26,24,20,0.08)';
+const tickColor = isDark ? 'rgba(240,235,224,0.5)' : 'rgba(26,24,20,0.5)';
+
+const baseFont = { family: 'DM Mono, monospace', size: 10 };
+
+new Chart(document.getElementById('surplusChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [{
+      data: surplus,
+      backgroundColor: surplus.map(v => v >= 0 ? '#5a8a6a' : '#a85c38'),
+      borderRadius: 2,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { label: ctx => {
+        const v = ctx.parsed.y;
+        return (v < 0 ? '-R' : 'R') + Math.abs(Math.round(v/1000)) + 'k';
+      }}
+    }},
+    scales: {
+      x: { ticks: { font: baseFont, color: tickColor, autoSkip: false }, grid: { display: false }, border: { display: false } },
+      y: { ticks: { font: baseFont, color: tickColor, callback: v => (v < 0 ? '-R' : 'R') + Math.abs(v/1000) + 'k' }, grid: { color: gridColor }, border: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('balanceChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      data: closing.map(v => v/1000),
+      borderColor: '#c4956a',
+      backgroundColor: isDark ? 'rgba(196,149,106,0.06)' : 'rgba(196,149,106,0.08)',
+      fill: true,
+      tension: 0.35,
+      pointRadius: 4,
+      pointBackgroundColor: '#c4956a',
+      pointBorderColor: isDark ? '#1e1c19' : '#f5f0e8',
+      pointBorderWidth: 2,
+      borderWidth: 1.5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      callbacks: { label: ctx => 'R' + Math.round(ctx.parsed.y).toLocaleString() + 'k' }
+    }},
+    scales: {
+      x: { ticks: { font: baseFont, color: tickColor, autoSkip: false }, grid: { display: false }, border: { display: false } },
+      y: { min: 4000, ticks: { font: baseFont, color: tickColor, callback: v => 'R' + v + 'k' }, grid: { color: gridColor }, border: { display: false } }
+    }
+  }
+});
+
+new Chart(document.getElementById('incomeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Bongolethu JPS', 'Teko Campus', 'Director loan repayment'],
+    datasets: [{
+      data: [1690730, 715201, 135813],
+      backgroundColor: ['#c4956a', 'rgba(196,149,106,0.45)', 'rgba(26,24,20,0.2)'],
+      borderColor: isDark ? '#1e1c19' : '#f5f0e8',
+      borderWidth: 3,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = Math.round(ctx.parsed / total * 100);
+            return ctx.label + ': R' + Math.round(ctx.parsed).toLocaleString() + ' (' + pct + '%)';
+          }
+        }
+      }
+    }
+  }
+});
+</script>
+
+<script>
+(function() {
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('toggleLabel');
+  const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  const sunIcon = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  const icon = document.getElementById('toggleIcon');
+
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function getEffectiveTheme() {
+    if (root.dataset.theme) return root.dataset.theme;
+    return prefersDark.matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      root.dataset.theme = 'dark';
+      label.textContent = 'Light';
+      icon.innerHTML = moonIcon;
+    } else {
+      root.dataset.theme = 'light';
+      label.textContent = 'Dark';
+      icon.innerHTML = sunIcon;
+    }
+  }
+
+  applyTheme(getEffectiveTheme());
+
+  prefersDark.addEventListener('change', (e) => {
+    if (!root.dataset.theme) {
+      applyTheme(e.matches ? 'dark' : 'light');
+    }
+  });
+
+  btn.addEventListener('click', () => {
+    const current = getEffectiveTheme();
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+})();
+</script>
+</body>
+</html>
