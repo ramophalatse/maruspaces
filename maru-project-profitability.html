@@ -365,12 +365,18 @@ async function handleAuth() {
     } else {
       result = await sb.auth.signUp({email, password});
     }
-    if (result.error) { showAuthError(result.error.message); }
+    console.log('Auth result:', JSON.stringify({
+      error: result.error ? {message: result.error.message, status: result.error.status} : null,
+      hasSession: !!result.data?.session,
+      hasUser: !!result.data?.user,
+    }));
+    if (result.error) { showAuthError(result.error.message + ' (check console for details)'); }
     else if (authMode==='signup' && !result.data.session) {
       showAuthError('Account created — check your email to confirm, or ask your admin to disable email confirmation in Supabase Auth settings.');
     }
   } catch(e) {
-    showAuthError('Connection error. Please try again.');
+    console.error('Auth exception:', e);
+    showAuthError('Connection error: ' + e.message);
   }
   btn.disabled = false;
   btn.textContent = authMode==='signin' ? 'Sign In' : 'Create Account';
