@@ -632,8 +632,23 @@ function renderSetupPanel(p) {
     <div class="panel-section">
       <div class="section-title">Sub-Consultant Budget by Stage (R — sits inside production budget)</div>
       <div class="section-note" id="scNote">Total sub-consultant budget: R${fmt(totalSc)} of R${fmt(prodBud)} production budget · Staff budget remaining: R${fmt(prodBud-totalSc)}</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:14px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Rate × Hours Calculator</div>
+        <div style="display:grid;grid-template-columns:140px repeat(7,1fr);gap:8px;align-items:end;">
+          <div class="stage-cell">
+            <label>Rate / hr (R)</label>
+            <input type="number" id="scCalcRate" min="0" step="50" placeholder="0"
+              oninput="recalcScBudget()">
+          </div>
+          ${STAGE_KEYS.map((k,i)=>`<div class="stage-cell">
+            <label>${STAGES[i]} (hrs)</label>
+            <input type="number" id="scCalcHrs_${k}" min="0" step="0.5" placeholder="0"
+              oninput="recalcScBudget()">
+          </div>`).join('')}
+        </div>
+      </div>
       <div class="stage-grid">
-        ${STAGE_KEYS.map((k,i)=>`<div class="stage-cell"><label>${STAGES[i]}</label><input type="number" value="${a.subConsultBudget[k]||0}" min="0" step="1000" onchange="updateScBudget('${k}',parseFloat(this.value)||0)"></div>`).join('')}
+        ${STAGE_KEYS.map((k,i)=>`<div class="stage-cell"><label>${STAGES[i]}</label><input type="number" id="scBudget_${k}" value="${a.subConsultBudget[k]||0}" min="0" step="100" onchange="updateScBudget('${k}',parseFloat(this.value)||0)"></div>`).join('')}
       </div>
     </div>
 
@@ -687,6 +702,16 @@ function updateStageSplit(k,val){
   const el=document.getElementById('stageSumLabel');
   if(el){el.className=`stage-sum ${Math.abs(sum-100)<0.01?'ok':'bad'}`;el.textContent=`Sum: ${sum.toFixed(1)}% ${Math.abs(sum-100)<0.01?'✓':'— must equal 100%'}`;}
   renderSidebar(); scheduleSave(p);
+}
+function recalcScBudget() {
+  const rate = parseFloat(document.getElementById('scCalcRate').value) || 0;
+  STAGE_KEYS.forEach(k => {
+    const hrs = parseFloat(document.getElementById('scCalcHrs_' + k)?.value) || 0;
+    const val = Math.round(rate * hrs);
+    const input = document.getElementById('scBudget_' + k);
+    if (input) input.value = val;
+    updateScBudget(k, val);
+  });
 }
 function updateScBudget(k,val){const p=getProject(activeId);p.assumptions.subConsultBudget[k]=val;refreshScNote(p);scheduleSave(p);}
 function updateStaffMix(k,c,val){
