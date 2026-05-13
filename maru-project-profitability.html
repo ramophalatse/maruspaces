@@ -857,9 +857,24 @@ async function bootApp(session) {
 
 // On refresh, getSession() resolves immediately from localStorage.
 // onAuthStateChange alone can miss this on initial load with sb_publishable keys.
+// Safety timeout: if bootApp hangs for any reason, fall through to auth screen.
+const _bootTimeout = setTimeout(() => {
+  document.getElementById('loadingOverlay').style.display = 'none';
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+}, 5000);
+
 (async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  await bootApp(session);
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    clearTimeout(_bootTimeout);
+    await bootApp(session);
+  } catch(e) {
+    clearTimeout(_bootTimeout);
+    console.error('Boot error:', e);
+    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+  }
 })();
 
 // Keep listening for sign-in / sign-out events during the session.
