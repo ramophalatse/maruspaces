@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Summary — April 2026 | Maru Spaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bone:        #f5f0e8;
+    --bone-deep:   #ede7db;
+    --clay:        #c4956a;
+    --clay-light:  #f0e6d8;
+    --clay-deep:   #a07248;
+    --terra:       #a85c38;
+    --terra-light: #eeddd4;
+    --terra-deep:  #7a3f22;
+    --ink:         #1a1814;
+    --ink-60:      #3d3830;
+    --ink-30:      #6b6358;
+    --ink-12:      #ddd8cf;
+    --ink-06:      #eeeae3;
+    --f-display:   'DM Serif Display', serif;
+    --f-editorial: 'Cormorant Garamond', serif;
+    --f-body:      'DM Sans', sans-serif;
+    --f-mono:      'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--f-body);
+    background: var(--bone);
+    color: var(--ink);
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 880px; margin: 0 auto; padding: 4rem 2.5rem 7rem; }
+
+  .header { border-bottom: 1px solid var(--ink-12); padding-bottom: 2.5rem; margin-bottom: 3.5rem; }
+  .header-top { display: flex; justify-content: flex-end; margin-bottom: 2rem; }
+  .period-tag { font-family: var(--f-mono); font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); background: var(--terra-light); padding: 0.3rem 0.75rem; border-radius: 1px; }
+  .header h1 { font-family: var(--f-display); font-size: clamp(2.4rem, 5.5vw, 3.4rem); font-weight: 400; line-height: 1.1; color: var(--ink); margin-bottom: 2rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 2.5rem; }
+  .meta-label { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-30); margin-bottom: 0.2rem; }
+  .meta-value { font-size: 0.85rem; color: var(--ink-60); font-weight: 400; }
+
+  .intro { font-family: var(--f-editorial); font-size: 1.15rem; font-weight: 300; line-height: 1.85; color: var(--ink-60); max-width: 64ch; margin-bottom: 3.5rem; padding-left: 1.5rem; border-left: 1.5px solid var(--clay); }
+
+  .section { margin-bottom: 3.5rem; }
+  .section-label { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-30); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .section-label::after { content: ''; flex: 1; height: 0.5px; background: var(--ink-12); }
+
+  .summary-strip { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--ink-12); border-radius: 2px; overflow: hidden; }
+  @media (max-width: 600px) { .summary-strip { grid-template-columns: repeat(2, 1fr); } }
+  .strip-cell { background: var(--bone-deep); padding: 1.5rem 1.25rem 1.25rem; border-right: 1px solid var(--ink-12); }
+  .strip-cell:last-child { border-right: none; }
+  .strip-number { font-family: var(--f-display); font-size: 2.8rem; line-height: 1; color: var(--ink); margin-bottom: 0.5rem; }
+  .strip-number.accent { color: var(--terra); }
+  .strip-label { font-size: 0.78rem; color: var(--ink-60); font-weight: 400; line-height: 1.4; }
+  .strip-sub { font-family: var(--f-mono); font-size: 0.58rem; color: var(--ink-30); margin-top: 0.3rem; line-height: 1.4; }
+
+  .ws-stack { display: flex; flex-direction: column; gap: 1px; background: var(--ink-12); border: 1px solid var(--ink-12); border-radius: 2px; overflow: hidden; }
+  .ws-card { background: var(--bone); padding: 1.75rem 2rem; }
+  .ws-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+  .ws-title { font-family: var(--f-display); font-size: 1.15rem; font-weight: 400; color: var(--ink); line-height: 1.2; }
+  .ws-badge { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.65rem; border-radius: 1px; white-space: nowrap; flex-shrink: 0; margin-top: 0.2rem; }
+  .badge-done { color: var(--clay-deep); background: var(--clay-light); }
+  .badge-prog { color: var(--terra-deep); background: var(--terra-light); }
+  .badge-risk { color: #6b2010; background: #f5d4cc; }
+  .ws-body { font-family: var(--f-editorial); font-size: 1rem; font-weight: 300; color: var(--ink-60); line-height: 1.75; margin-bottom: 0.9rem; }
+  .ws-outcomes { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.9rem; }
+  .ws-outcome { display: flex; gap: 0.75rem; font-size: 0.83rem; color: var(--ink-60); align-items: flex-start; line-height: 1.6; }
+  .ws-outcome::before { content: '—'; color: var(--clay); flex-shrink: 0; margin-top: 0.05rem; }
+  .ws-flag { padding: 0.7rem 1rem; border-left: 2px solid; font-size: 0.8rem; line-height: 1.65; border-radius: 0 1px 1px 0; }
+  .flag-risk { border-color: var(--terra); background: var(--terra-light); color: var(--terra-deep); }
+  .flag-note { border-color: var(--clay); background: var(--clay-light); color: var(--clay-deep); }
+  .flag-info { border-color: var(--ink-30); background: var(--ink-06); color: var(--ink-60); }
+
+  .risk-wrap { border: 1px solid var(--ink-12); border-radius: 2px; overflow: hidden; }
+  .risk-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .risk-table thead tr { background: var(--bone-deep); border-bottom: 1px solid var(--ink-12); }
+  .risk-table th { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-30); font-weight: 400; padding: 0.85rem 1rem; text-align: left; }
+  .risk-table td { padding: 0.9rem 1rem; border-bottom: 0.5px solid var(--ink-06); vertical-align: top; color: var(--ink-60); line-height: 1.55; background: var(--bone); }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-table td:first-child { color: var(--ink); font-weight: 400; width: 28%; }
+  .risk-table td:last-child { width: 10%; text-align: right; }
+  .rpill { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 1px; white-space: nowrap; }
+  .rpill-h { color: #6b2010; background: #f5d4cc; }
+  .rpill-m { color: var(--clay-deep); background: var(--clay-light); }
+  .rpill-l { color: var(--ink-60); background: var(--ink-06); }
+
+  /* TIME INVESTMENT */
+  .time-summary { display: grid; grid-template-columns: auto 1fr; gap: 0 2.5rem; align-items: start; margin-bottom: 1.75rem; }
+  .time-total-block { }
+  .time-total-num { font-family: var(--f-display); font-size: 3.2rem; line-height: 1; color: var(--ink); }
+  .time-total-label { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-30); margin-top: 0.35rem; }
+  .time-note { font-family: var(--f-editorial); font-size: 0.92rem; font-style: italic; color: var(--ink-30); margin-top: 0.6rem; line-height: 1.6; max-width: 44ch; }
+  .time-bars { display: flex; flex-direction: column; gap: 0.75rem; padding-top: 0.3rem; }
+  .time-bar-row { display: flex; flex-direction: column; gap: 0.25rem; }
+  .time-bar-meta { display: flex; justify-content: space-between; align-items: baseline; }
+  .time-bar-label { font-size: 0.78rem; color: var(--ink-60); font-weight: 400; }
+  .time-bar-val { font-family: var(--f-mono); font-size: 0.65rem; color: var(--ink-30); }
+  .time-bar-track { height: 3px; background: var(--ink-12); border-radius: 1px; overflow: hidden; }
+  .time-bar-fill { height: 100%; background: var(--clay); border-radius: 1px; }
+
+  .footer { border-top: 1px solid var(--ink-12); padding-top: 1.75rem; margin-top: 4rem; }
+  .footer-note { font-family: var(--f-editorial); font-size: 0.82rem; font-style: italic; color: var(--ink-30); line-height: 1.6; }
+
+  @media print { body { background: white; } .page { max-width: 100%; padding: 2rem; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div class="header-top">
+      <span class="period-tag">April 2026</span>
+    </div>
+    <h1>Monthly Summary<br>Fractional CFO / COO</h1>
+    <div class="meta-row">
+      <div class="meta-item"><div class="meta-label">Prepared by</div><div class="meta-value">Ramotse Phalatse</div></div>
+      <div class="meta-item"><div class="meta-label">Period</div><div class="meta-value">1 – 30 April 2026</div></div>
+      <div class="meta-item"><div class="meta-label">Engagement month</div><div class="meta-value">1 of 3 — Trial Period</div></div>
+    </div>
+  </header>
+
+  <p class="intro">April was the first formal month of the engagement, and a consequential one. The business navigated a material cash event in the GDID settlement receipt and the distribution thereof, a complex payroll discrepancy, a high-risk DEET contract requiring careful analysis and considered response, and longstanding tax reconciliation and bookkeeping work. The outcomes below reflect what was resolved, what remains open, and where attention is needed.</p>
+
+  <!-- AT A GLANCE -->
+  <div class="section">
+    <div class="section-label">At a glance</div>
+    <div class="summary-strip">
+      <div class="strip-cell">
+        <div class="strip-number">6</div>
+        <div class="strip-label">Active workstreams</div>
+        <div class="strip-sub">All initiated in April</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-number">5</div>
+        <div class="strip-label">Closed / resolved</div>
+        <div class="strip-sub">VAT recon · Payroll · Aon PI · Exec comp · Briteworx</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-number">1</div>
+        <div class="strip-label">Carrying to May</div>
+        <div class="strip-sub">DEET contract response</div>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-number accent">1</div>
+        <div class="strip-label">Risk requiring decision</div>
+        <div class="strip-sub">DEET contract — do not sign as-is</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSTREAMS -->
+  <div class="section">
+    <div class="section-label">Workstreams delivered</div>
+    <div class="ws-stack">
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">VAT Reconciliation — Sage vs SARS</div>
+          <span class="ws-badge badge-done">Resolved</span>
+        </div>
+        <p class="ws-body">A period-by-period reconciliation of the Sage VAT control account against the SARS eFiling ledger was completed, isolating and clearing historical discrepancies accumulated across multiple filing periods.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">Sage and SARS VAT positions are now materially aligned across all prior periods.</div>
+          <div class="ws-outcome">Root cause identified: timing differences and a Lenhle Quantity Surveyors credit note posted to a nil-return period rather than the correct VAT period.</div>
+          <div class="ws-outcome">The Lenhle credit note will be carried to the correct period in the 202604 VAT return.</div>
+        </div>
+        <div class="ws-flag flag-info">The 202604 VAT return (due late June 2026) will be the first filing to capture the GDID settlement output VAT. This is a material liability and requires close review before submission.</div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">Payroll — Lerato Sefoka</div>
+          <span class="ws-badge badge-done">Resolved</span>
+        </div>
+        <p class="ws-body">A multi-period payroll discrepancy was identified, investigated, and fully resolved. Root cause: Sage Payroll's cumulative PAYE recalculation after a salary reduction generated negative PAYE added to net pay, inflating take-home across several months while EMP201s were filed with positive PAYE figures.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">Root cause fully understood, documented, and remediated on a roll-forward basis — no edits to historical payroll periods.</div>
+          <div class="ws-outcome">Lerato's payroll regime restored to a fixed monthly salary, consistent with the historical arrangement prior to the discrepancy period.</div>
+          <div class="ws-outcome">An annual bonus was provisioned and processed in recognition of Lerato's personal sacrifices and contribution to the business during a difficult period.</div>
+          <div class="ws-outcome">Personal payments made by Maps on Maru's behalf during the discrepancy period have been flagged for credit to the Maps loan account.</div>
+          <div class="ws-outcome">Over-remittance position to be resolved through the EMP501 annual reconciliation with Junior.</div>
+        </div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">Briteworx Re-engagement</div>
+          <span class="ws-badge badge-done">Completed</span>
+        </div>
+        <p class="ws-body">A structured agenda was prepared for the resumption of Briteworx's retained accounting services, establishing a clear division of responsibility between execution and strategic oversight.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">Briteworx mandate clearly delineated from the Fractional CFO/COO role — no duplication of effort.</div>
+          <div class="ws-outcome">Key agenda items confirmed: 202604 VAT return, annual financial statements, income tax, and payroll reconciliation.</div>
+          <div class="ws-outcome">Protocol established: Briteworx prepares; Ramo reviews and signs off prior to any SARS submission or client-facing financial output.</div>
+        </div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">Bongolethu JPS Contract Review — DEET</div>
+          <span class="ws-badge badge-risk">Action required</span>
+        </div>
+        <p class="ws-body">The CIDB SLA and addendum issued by the Gauteng Department of Employment and Tourism for the Bongolethu JPS project were reviewed in full. Five material risk clauses were identified, assessed, and documented.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">Double-recovery penalty: exposes Maru Spaces to paying twice for the same alleged shortfall with no performance appeal mechanism.</div>
+          <div class="ws-outcome">PI insurance cession to DEET: transferring PI policy rights to a client is non-standard and potentially uninsurable — Aon must be consulted via the LRMS service (Sam Varela / Siva Naidoo) before any response is issued.</div>
+          <div class="ws-outcome">Open-ended retention and 10-year liability tail: both disproportionate to a professional services agreement at standard fee levels.</div>
+          <div class="ws-outcome">Fee linkage to SACAP-conflicting conditions: creates a regulatory conflict that cannot be resolved without SACAP's explicit approval.</div>
+        </div>
+        <div class="ws-flag flag-risk">Do not sign this contract as-is. A written objection prioritising the three highest-risk clauses should be submitted before the deadline.</div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">Executive Compensation Modelling</div>
+          <span class="ws-badge badge-done">Resolved</span>
+        </div>
+        <p class="ws-body">Following receipt of the GDID settlement funds, a financial model was constructed to assess available director extraction routes — dividend declaration, salary, and director's loan account repayment — against their respective tax, timing, and compliance consequences.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">Net retained cash and net VAT payable to SARS calculated post-distribution to sub-consultants, legal costs, and the Pholosang facilitation fee.</div>
+          <div class="ws-outcome">Modelling concluded with an 80/20 salary/dividend split as the optimal extraction structure.</div>
+          <div class="ws-outcome">Mapula's April remuneration was captured and processed within the May payroll cycle, with backpay for April accommodated.</div>
+          <div class="ws-outcome">Repayment of the existing director's loan balance (R57,992.99 credit in Maps' favour) confirmed as a tax-free repayment event, separate from the extraction structure.</div>
+        </div>
+      </div>
+
+      <div class="ws-card">
+        <div class="ws-head">
+          <div class="ws-title">PI Insurance — Aon Premium Review</div>
+          <span class="ws-badge badge-done">Resolved</span>
+        </div>
+        <p class="ws-body">An error in Aon's calculation of Maru Spaces' professional indemnity insurance premium was identified and addressed directly with the broker.</p>
+        <div class="ws-outcomes">
+          <div class="ws-outcome">The basis of the fee income declaration on the proposal form was identified as incorrect — the GDID litigation settlement receipt had been treated as professional fee income, which it is not.</div>
+          <div class="ws-outcome">The distinction between settlement proceeds and remuneration for work undertaken was communicated to Aon to ensure the declaration accurately reflects Maru's actual fee income.</div>
+          <div class="ws-outcome">Correction ensures no disclosure risk at claim stage under the iToo Special Risks (Hollard) policy.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RISK REGISTER -->
+  <div class="section">
+    <div class="section-label">Material risks and open items</div>
+    <div class="risk-wrap">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>Risk / open item</th>
+            <th>Status</th>
+            <th>Owner</th>
+            <th style="text-align:right;">Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DEET contract — PI cession and four other onerous clauses</td>
+            <td>Written objection to be filed; Aon LRMS consultation required before signing</td>
+            <td>Maps + Ramo</td>
+            <td><span class="rpill rpill-h">High</span></td>
+          </tr>
+          <tr>
+            <td>202604 VAT return — large output VAT from GDID invoice</td>
+            <td>Return due late June 2026; Briteworx to prepare, Ramo to review and sign off</td>
+            <td>Briteworx / Ramo</td>
+            <td><span class="rpill rpill-m">Medium</span></td>
+          </tr>
+          <tr>
+            <td>Payroll — EMP501 annual reconciliation</td>
+            <td>Over-remittance position to be resolved through EMP501 with Junior</td>
+            <td>Ramo + Junior</td>
+            <td><span class="rpill rpill-m">Medium</span></td>
+          </tr>
+          <tr>
+            <td>Director extraction — board resolution and loan repayment</td>
+            <td>Extraction structure confirmed; board resolution and loan agreement to be executed</td>
+            <td>Maps + Ramo</td>
+            <td><span class="rpill rpill-l">Low</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TIME INVESTMENT -->
+  <div class="section">
+    <div class="section-label">Time investment</div>
+    <div class="time-summary">
+      <div class="time-total-block">
+        <div class="time-total-num">6.1</div>
+        <div class="time-total-label">Hours logged</div>
+        <p class="time-note">Logged sessions represent a partial record. The VAT reconciliation, DEET contract review, and executive compensation modelling are not reflected in the session data above.</p>
+      </div>
+      <div class="time-bars">
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">Payroll</span>
+            <span class="time-bar-val">1.5h · 24%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:24%"></div></div>
+        </div>
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">Invoice processing</span>
+            <span class="time-bar-val">1.5h · 24%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:24%"></div></div>
+        </div>
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">Briteworx engagement</span>
+            <span class="time-bar-val">0.9h · 15%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:15%"></div></div>
+        </div>
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">Tax and SARS reconciliation</span>
+            <span class="time-bar-val">0.8h · 13%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:13%"></div></div>
+        </div>
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">Retainer formalisation</span>
+            <span class="time-bar-val">0.5h · 9%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:9%"></div></div>
+        </div>
+        <div class="time-bar-row">
+          <div class="time-bar-meta">
+            <span class="time-bar-label">PI insurance (Aon)</span>
+            <span class="time-bar-val">0.4h · 7%</span>
+          </div>
+          <div class="time-bar-track"><div class="time-bar-fill" style="width:7%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-note">Prepared in accordance with clause 2.3 of the Fractional CFO/COO Retainer Agreement dated 31 March 2026. This is a transparency and communication document, not a timesheet or invoice.</p>
+  </footer>
+
+</div>
+</body>
+</html>
