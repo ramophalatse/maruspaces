@@ -392,6 +392,33 @@
       opacity: 0;
       transform: scale(0);
     }
+    /* Tile sub-link — secondary action inside a tile */
+    .tile-sub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      font-family: var(--f-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      width: fit-content;
+    }
+    .tile-sub-link:hover {
+      color: var(--clay);
+      border-bottom-color: var(--clay);
+    }
+    .tile-sub-link svg {
+      width: 8px; height: 8px;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .tile-sub-link { color: var(--text-muted); }
+
     /* "Updated" label — injected via JS, sits below the status row */
     .tile-updated-label {
       display: inline-flex;
@@ -580,7 +607,11 @@
       </div>
       <div class="nav-grid">
       <!-- Project Profitability — live -->
-      <a href="https://ramophalatse.github.io/maruspaces/maru-project-profitability.html" class="tile active-link" target="_blank" rel="noopener" data-attention="true">
+      <div class="tile active-link" role="link" tabindex="0"
+           data-href="https://ramophalatse.github.io/maruspaces/maru-project-profitability.html"
+           data-attention="true"
+           onclick="if(event.target.closest('.tile-sub-link'))return; window.open(this.dataset.href,'_blank')"
+           onkeydown="if(event.key==='Enter')window.open(this.dataset.href,'_blank')">
         <div class="tile-top">
           <div class="tile-icon-wrap">
 <svg class="tile-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35.38 30.89">
@@ -598,7 +629,15 @@
           <span class="dot"></span>
           <span>Live</span>
         </div>
-      </a>
+        <a class="tile-sub-link"
+           href="https://ramophalatse.github.io/maruspaces/profit-tracker-user-guide.html"
+           target="_blank" rel="noopener">
+          <svg viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 4h6M4 1l3 3-3 3" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          User Guide
+        </a>
+      </div>
       <!-- FinOps Ecosystem — live -->
       <a href="https://ramophalatse.github.io/maruspaces/maru-financial-ecosystem.html" class="tile active-link" target="_blank" rel="noopener">
         <div class="tile-top">
@@ -798,8 +837,8 @@
     }
 
     function getTileId(tile) {
-      // Use the href as a stable ID for link tiles; fall back to tile name
-      const link = tile.getAttribute('href');
+      // <a> tiles use href; <div> tiles use data-href
+      const link = tile.getAttribute('href') || tile.getAttribute('data-href');
       if (link) return link;
       const name = tile.querySelector('.tile-name');
       return name ? name.textContent.trim() : null;
