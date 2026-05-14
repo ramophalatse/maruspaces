@@ -4,110 +4,283 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Executive Compensation Calculator — Maru Spaces</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0f0e0c;--surface:#1a1916;--surface2:#222119;--border:#2e2c27;
-    --accent:#c9a84c;--accent2:#3a8f5e;--danger:#c96b5a;--text:#e8e4db;--muted:#7a7670;
-    --salary-col:#c9a84c;--div-col:#8fbf9f;
-  }
-  :root.light {
-    --bg:#f5f2ec;--surface:#ffffff;--surface2:#f0ece3;--border:#ddd8cc;
-    --accent:#a07828;--accent2:#2a7048;--danger:#b84e3a;--text:#1a1814;--muted:#8a8278;
-    --salary-col:#a07828;--div-col:#3a8f5e;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{transition:background .25s,color .25s;}
-  body{font-family:'DM Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;padding:32px 24px 48px;transition:background .25s,color .25s;}
-  /* Theme toggle */
-  .theme-toggle{position:fixed;top:16px;right:20px;z-index:100;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;transition:all .2s;}
-  .theme-toggle:hover{border-color:var(--accent);color:var(--text);}
-  .theme-toggle .tog-icon{font-size:14px;line-height:1;}
-  .header{text-align:center;margin-bottom:36px;padding-bottom:22px;border-bottom:1px solid var(--border);}
-  .header .eyebrow{font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
-  .header h1{font-family:'Libre Baskerville',serif;font-size:22px;font-weight:400;color:var(--text);line-height:1.3;}
-  .header .sub{font-size:11px;color:var(--muted);margin-top:6px;}
-  .badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);color:var(--accent);font-size:10px;letter-spacing:.1em;padding:3px 10px;border-radius:2px;margin-top:10px;}
-  .layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:860px;margin:0 auto;}
-  @media(max-width:660px){.layout{grid-template-columns:1fr;}}
-  .panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:24px;}
-  .panel-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-  .fg{margin-bottom:22px;}
-  .fl{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
-  .fl .vd{font-size:13px;color:var(--text);font-weight:500;}
-  .iw{position:relative;display:flex;align-items:center;}
-  .iw .px{position:absolute;left:12px;font-size:13px;color:var(--muted);pointer-events:none;}
-  input[type=number]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:'DM Mono',monospace;font-size:18px;padding:10px 12px 10px 28px;outline:none;transition:border-color .2s;}
-  input[type=number]:focus{border-color:var(--accent);}
-  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
-  .mix-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
-  .track{position:relative;height:6px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);margin-bottom:12px;}
-  .fill-l{position:absolute;left:0;top:0;bottom:0;border-radius:3px 0 0 3px;background:var(--salary-col);}
-  .fill-r{position:absolute;right:0;top:0;bottom:0;border-radius:0 3px 3px 0;background:var(--div-col);}
-  input[type=range]{-webkit-appearance:none;position:absolute;left:0;top:-5px;width:100%;height:16px;background:transparent;cursor:pointer;z-index:2;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--text);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--border);cursor:grab;}
-  input[type=range]:focus{outline:none;}
-  .mix-amounts{display:flex;justify-content:space-between;margin-top:4px;}
-  .pill{font-size:10px;padding:3px 10px;border-radius:2px;font-weight:500;}
-  .pill-s{background:rgba(201,168,76,.12);color:var(--salary-col);border:1px solid rgba(201,168,76,.25);}
-  .pill-d{background:rgba(143,191,159,.12);color:var(--div-col);border:1px solid rgba(143,191,159,.25);}
-  .ftog{display:flex;gap:6px;margin-top:4px;}
-  .fbtn{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.05em;padding:7px 4px;border-radius:3px;cursor:pointer;text-align:center;transition:all .15s;}
-  .fbtn:hover{border-color:var(--muted);color:var(--text);}
-  .fbtn.active{background:rgba(143,191,159,.12);border-color:var(--div-col);color:var(--div-col);font-weight:600;}
-  .hcard{background:var(--surface2);border:1px solid var(--accent);border-radius:3px;padding:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
-  .hcard .hl{font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px;}
-  .hcard .hv{font-family:'Libre Baskerville',serif;font-size:26px;font-weight:700;color:var(--accent);}
-  .er{text-align:right;}
-  .er .el{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
-  .er .ev{font-family:'Libre Baskerville',serif;font-size:26px;color:var(--danger);font-weight:700;}
-  .cfs{margin-bottom:18px;}
-  .cfl{font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;}
-  .cfr{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
-  .cfdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
-  .cfc{flex:1;}
-  .cft{font-size:11px;color:var(--text);margin-bottom:1px;}
-  .cfm{font-size:9px;color:var(--muted);}
-  .cfa{font-family:'Libre Baskerville',serif;font-size:14px;font-weight:700;text-align:right;align-self:center;flex-shrink:0;}
-  .dotsal{background:var(--salary-col);}
-  .dotdiv{background:var(--div-col);}
-  .asal{color:var(--salary-col);}
-  .adiv{color:var(--div-col);}
-  .divider{height:1px;background:var(--border);margin:14px 0;}
-  .br{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;}
-  .br:last-child{border-bottom:none;}
-  .bl{color:var(--muted);}
-  .bv{font-weight:500;}
-  .bd{color:var(--danger);}
-  .bc{color:var(--accent2);}
-  .blab{font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;}
-  .barviz{height:10px;border-radius:3px;overflow:hidden;display:flex;background:var(--surface2);margin-bottom:8px;}
-  .bseg{height:100%;transition:width .3s ease;}
-  .bsn{background:var(--salary-col);}
-  .bdn{background:var(--div-col);}
-  .btx{background:var(--danger);opacity:.8;}
-  .bleg{display:flex;gap:14px;margin-bottom:14px;}
-  .li{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--muted);}
-  .ldot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
-  .sstrip{background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:14px 16px;margin-top:10px;}
-  .srow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:10px;}
-  .srow .sl{color:var(--muted);}
-  .srow .sv{color:var(--text);}
-  .sbest{color:var(--accent2)!important;font-weight:600;}
-  .sborder{border-top:1px solid var(--border);margin-top:4px;padding-top:8px;}
-  .fcall{background:rgba(143,191,159,.07);border:1px solid rgba(143,191,159,.2);border-radius:3px;padding:10px 14px;margin-top:10px;font-size:10px;color:var(--div-col);line-height:1.6;}
-  .fcall strong{font-weight:600;}
-  .bbadge{display:inline-block;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--accent);font-size:9px;padding:2px 8px;border-radius:2px;letter-spacing:.05em;margin-top:4px;}
-  .note{text-align:center;font-size:9px;color:var(--muted);margin-top:28px;letter-spacing:.05em;line-height:1.8;}
-  /* Medical aid */
-  .med-toggle{display:flex;gap:0;margin-top:4px;border:1px solid var(--border);border-radius:3px;overflow:hidden;}
-  .med-toggle .mbtn{flex:1;background:var(--surface2);border:none;border-right:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.05em;padding:6px 4px;cursor:pointer;text-align:center;transition:all .15s;}
-  .med-toggle .mbtn:last-child{border-right:none;}
-  .med-toggle .mbtn:hover{color:var(--text);}
-  .med-toggle .mbtn.active{background:rgba(201,168,76,.1);color:var(--accent);}
-  .med-callout{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);border-radius:3px;padding:9px 13px;margin-top:10px;font-size:10px;color:var(--accent);line-height:1.6;}
-  .med-callout strong{font-weight:600;}
-  .med-warn{color:var(--danger);font-size:9px;margin-top:5px;}
+/* ─── Maru brand tokens ─────────────────────────────────────────── */
+:root {
+  /* Dark: Ink world */
+  --bg:      #111009;
+  --surface: #1a1814;
+  --surface2:#201d18;
+  --border:  #2c2820;
+  --text:    #ede8de;
+  --muted:   #78726a;
+  /* Semantic colour — remapped to Maru palette */
+  --accent:    #c4956a;   /* Clay   → salary / primary highlight  */
+  --accent2:   #7a9e80;   /* Sage   → dividend net / positive     */
+  --danger:    #a85c38;   /* Terracotta → tax / cost              */
+  --salary-col:#c4956a;
+  --div-col:   #7a9e80;
+}
+:root.light {
+  /* Light: Bone world — brand's native state */
+  --bg:      #f5f0e8;
+  --surface: #faf7f2;
+  --surface2:#ede8de;
+  --border:  #d4cdc0;
+  --text:    #1a1814;
+  --muted:   #8a7e72;
+  --accent:    #9a6840;
+  --accent2:   #3e6e48;
+  --danger:    #a85c38;
+  --salary-col:#9a6840;
+  --div-col:   #3e6e48;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{transition:background .3s;}
+body{
+  font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;padding:44px 24px 60px;
+  transition:background .3s,color .3s;
+}
+
+/* ── Theme toggle ── */
+.theme-toggle{
+  position:fixed;top:18px;right:22px;z-index:100;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:1px;padding:5px 14px 5px 10px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--muted);text-transform:uppercase;transition:all .2s;
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--text);}
+.tog-icon{font-size:13px;line-height:1;}
+
+/* ── Header ── */
+.header{text-align:center;margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--border);}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;
+}
+.header h1{
+  font-family:'DM Serif Display',serif;font-size:27px;font-weight:400;
+  color:var(--text);line-height:1.2;letter-spacing:-.01em;
+}
+.header .sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:17px;color:var(--muted);margin-top:8px;
+}
+.badge{
+  display:inline-block;border:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;
+  color:var(--muted);text-transform:uppercase;
+  padding:3px 12px;border-radius:1px;margin-top:14px;
+}
+
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:880px;margin:0 auto;}
+@media(max-width:660px){.layout{grid-template-columns:1fr;}}
+
+/* ── Panels ── */
+.panel{background:var(--surface);border:1px solid var(--border);padding:28px;}
+.panel-label{
+  font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+
+/* ── Field groups ── */
+.fg{margin-bottom:24px;}
+.fl{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.07em;margin-bottom:8px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.fl .vd{
+  font-family:'DM Serif Display',serif;font-size:16px;
+  color:var(--text);font-weight:400;letter-spacing:0;
+}
+.sub-hint{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--muted);margin-top:5px;letter-spacing:.03em;
+}
+
+/* ── Number inputs ── */
+.iw{position:relative;display:flex;align-items:center;}
+.iw .px{
+  position:absolute;left:12px;
+  font-family:'DM Sans',sans-serif;font-size:16px;
+  color:var(--muted);pointer-events:none;
+}
+input[type=number]{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Serif Display',serif;
+  font-size:22px;font-weight:400;letter-spacing:-.01em;
+  padding:10px 12px 10px 30px;outline:none;transition:border-color .2s;
+  border-radius:0;
+}
+input[type=number]:focus{border-color:var(--accent);}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+
+/* ── Slider ── */
+.mix-labels{
+  display:flex;justify-content:space-between;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px;
+}
+.track{
+  position:relative;height:3px;
+  background:var(--surface2);border:1px solid var(--border);margin-bottom:13px;
+}
+.fill-l{position:absolute;left:0;top:0;bottom:0;background:var(--salary-col);}
+.fill-r{position:absolute;right:0;top:0;bottom:0;background:var(--div-col);}
+input[type=range]{
+  -webkit-appearance:none;position:absolute;left:0;top:-8px;
+  width:100%;height:18px;background:transparent;cursor:pointer;z-index:2;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;
+  background:var(--text);border:1px solid var(--border);cursor:grab;
+}
+input[type=range]:focus{outline:none;}
+.mix-amounts{display:flex;justify-content:space-between;margin-top:6px;}
+.pill{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:3px 10px;letter-spacing:.04em;
+}
+.pill-s{background:rgba(196,149,106,.09);color:var(--salary-col);border:1px solid rgba(196,149,106,.2);}
+.pill-d{background:rgba(122,158,128,.09);color:var(--div-col);border:1px solid rgba(122,158,128,.2);}
+
+/* ── Toggle buttons ── */
+.ftog{display:flex;gap:5px;margin-top:4px;}
+.fbtn{
+  flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--muted);
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;
+  padding:8px 4px;cursor:pointer;text-align:center;transition:all .15s;text-transform:uppercase;
+}
+.fbtn:hover{border-color:var(--muted);color:var(--text);}
+.fbtn.active{background:rgba(122,158,128,.09);border-color:var(--div-col);color:var(--div-col);}
+
+/* ── Highlight card ── */
+.hcard{
+  background:var(--surface2);border:1px solid var(--accent);
+  padding:18px;margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.hl{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;
+}
+.hv{
+  font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;
+  color:var(--accent);letter-spacing:-.02em;
+}
+.er{text-align:right;}
+.el{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;
+}
+.ev{
+  font-family:'DM Serif Display',serif;font-size:32px;font-weight:400;
+  color:var(--danger);letter-spacing:-.02em;
+}
+
+/* ── Cash flow ── */
+.cfs{margin-bottom:20px;}
+.cfl{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;
+}
+.cfr{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;}
+.cfdot{width:7px;height:7px;flex-shrink:0;margin-top:5px;}
+.cfc{flex:1;}
+.cft{font-size:13px;color:var(--text);margin-bottom:2px;}
+.cfm{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.03em;}
+.cfa{
+  font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;
+  text-align:right;align-self:center;flex-shrink:0;letter-spacing:-.01em;
+}
+.dotsal{background:var(--salary-col);}
+.dotdiv{background:var(--div-col);}
+.asal{color:var(--salary-col);}
+.adiv{color:var(--div-col);}
+
+/* ── Breakdown rows ── */
+.divider{height:1px;background:var(--border);margin:15px 0;}
+.br{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:8px 0;border-bottom:1px solid var(--border);
+}
+.br:last-child{border-bottom:none;}
+.bl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.bv{font-size:12px;font-weight:500;}
+.bd{color:var(--danger);}
+.bc{color:var(--accent2);}
+.blab{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+  letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;
+}
+
+/* ── Bar viz ── */
+.barviz{height:4px;overflow:hidden;display:flex;background:var(--surface2);margin-bottom:10px;}
+.bseg{height:100%;transition:width .3s ease;}
+.bsn{background:var(--salary-col);}
+.bdn{background:var(--div-col);}
+.btx{background:var(--danger);}
+.bleg{display:flex;gap:16px;margin-bottom:16px;}
+.li{
+  display:flex;align-items:center;gap:5px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;
+}
+.ldot{width:7px;height:7px;flex-shrink:0;}
+
+/* ── Scenario strip ── */
+.sstrip{background:var(--surface2);border:1px solid var(--border);padding:14px 16px;margin-top:10px;}
+.srow{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;}
+.srow .sl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.04em;}
+.srow .sv{font-size:12px;font-weight:500;}
+.sbest{color:var(--accent2)!important;font-weight:600;}
+.sborder{border-top:1px solid var(--border);margin-top:5px;padding-top:9px;}
+
+/* ── Callouts ── */
+.fcall{
+  background:rgba(122,158,128,.06);border:1px solid rgba(122,158,128,.18);
+  padding:10px 14px;margin-top:10px;
+  font-size:11px;color:var(--div-col);line-height:1.65;
+}
+.fcall strong{font-weight:600;}
+.bbadge{
+  display:inline-block;border:1px solid rgba(196,149,106,.22);color:var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.07em;
+  padding:2px 9px;margin-top:5px;
+}
+
+/* ── Medical aid ── */
+.med-toggle{display:flex;margin-top:4px;border:1px solid var(--border);overflow:hidden;}
+.mbtn{
+  flex:1;background:var(--surface2);border:none;border-right:1px solid var(--border);
+  color:var(--muted);font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.07em;padding:8px 4px;cursor:pointer;
+  text-align:center;transition:all .15s;text-transform:uppercase;
+}
+.mbtn:last-child{border-right:none;}
+.mbtn:hover{color:var(--text);}
+.mbtn.active{background:rgba(196,149,106,.08);color:var(--accent);}
+.med-callout{
+  background:rgba(196,149,106,.05);border:1px solid rgba(196,149,106,.18);
+  padding:10px 14px;margin-top:10px;font-size:11px;color:var(--accent);line-height:1.65;
+}
+.med-callout strong{font-weight:600;}
+.med-warn{color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:5px;letter-spacing:.03em;}
+
+/* ── Footer note ── */
+.note{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;
+  color:var(--muted);margin-top:36px;line-height:2;
+}
 </style>
 </head>
 <body>
@@ -125,15 +298,17 @@
 </div>
 
 <div class="layout">
+
+  <!-- LEFT: Inputs -->
   <div class="panel">
     <div class="panel-label">Inputs</div>
 
     <div class="fg">
       <div class="fl"><span>Annual gross target</span></div>
       <div class="iw"><span class="px">R</span>
-        <input type="number" id="grossInput" value="1800000" step="10000" min="0" max="20000000">
+        <input type="number" id="grossInput" value="1850000" step="10000" min="0" max="20000000">
       </div>
-      <div style="font-size:9px;color:var(--muted);margin-top:6px;" id="grossMonthly"></div>
+      <div class="sub-hint" id="grossMonthly"></div>
     </div>
 
     <div class="fg">
@@ -142,7 +317,7 @@
       <div class="track">
         <div class="fill-l" id="fillL"></div>
         <div class="fill-r" id="fillR"></div>
-        <input type="range" id="mixSlider" min="0" max="100" value="50" step="1">
+        <input type="range" id="mixSlider" min="0" max="100" value="80" step="1">
       </div>
       <div class="mix-amounts">
         <span class="pill pill-s" id="salPill">—</span>
@@ -163,7 +338,7 @@
     <div class="fg">
       <div class="fl"><span>Monthly medical aid contribution</span></div>
       <div class="iw"><span class="px">R</span>
-        <input type="number" id="medInput" value="0" step="100" min="0" max="50000" placeholder="0">
+        <input type="number" id="medInput" value="3099" step="100" min="0" max="50000">
       </div>
       <div class="fl" style="margin-top:10px;margin-bottom:4px;"><span>Paid by</span></div>
       <div class="med-toggle">
@@ -182,7 +357,7 @@
       <div class="srow"><span class="sl">Advantage vs 100% salary</span><span class="sv sbest" id="cAdv">—</span></div>
     </div>
 
-    <div style="margin-top:18px;" class="blab">Assumptions</div>
+    <div style="margin-top:20px;" class="blab">Assumptions</div>
     <div class="br"><span class="bl">Age</span><span class="bv">Under 65</span></div>
     <div class="br"><span class="bl">Primary rebate</span><span class="bv">R17,820 p.a.</span></div>
     <div class="br"><span class="bl">Dividends tax (DWT)</span><span class="bv">20% flat — withheld</span></div>
@@ -191,6 +366,7 @@
     <div class="br"><span class="bl">Medical aid credit (MTC)</span><span class="bv">R752/mo (Mapula + 1 dep.)</span></div>
   </div>
 
+  <!-- RIGHT: Results -->
   <div class="panel">
     <div class="panel-label">Results — post-tax take-home</div>
 
@@ -234,98 +410,94 @@
     <div class="blab">Annual tax breakdown</div>
     <div class="br"><span class="bl">Annual gross</span><span class="bv" id="bGross">—</span></div>
     <div class="br"><span class="bl">Annual salary</span><span class="bv" id="bSal">—</span></div>
-    <div class="br"><span class="bl">Annual PAYE</span><span class="bv bd" id="bPAYE">—</span></div>
+    <div class="br"><span class="bl">Annual PAYE (gross)</span><span class="bv bd" id="bPAYE">—</span></div>
     <div class="br"><span class="bl">Annual UIF (employee)</span><span class="bv bd" id="bUIF">—</span></div>
     <div class="br"><span class="bl">Annual dividends declared</span><span class="bv" id="bDiv">—</span></div>
     <div class="br"><span class="bl">Annual DWT (20%)</span><span class="bv bd" id="bDWT">—</span></div>
     <div class="br"><span class="bl">MTC credit (salary only)</span><span class="bv bc" id="bMTC">—</span></div>
     <div class="br"><span class="bl">Medical contribution (annual)</span><span class="bv bd" id="bMedOut">—</span></div>
     <div class="br" style="padding-top:10px;">
-      <span class="bl" style="color:var(--text);font-weight:600">Annual net take-home</span>
-      <span class="bv bc" style="font-size:14px" id="bNetA">—</span>
+      <span class="bl" style="color:var(--text);font-weight:500;font-size:11px;">Annual net take-home</span>
+      <span class="bv bc" style="font-size:15px;" id="bNetA">—</span>
     </div>
     <div class="br"><span class="bl">Monthly salary take-home</span><span class="bv bc" id="bNetM">—</span></div>
   </div>
+
 </div>
 
 <div class="note">
-  2026/27 tax brackets sourced from SARS (25 Feb 2026 Budget). DWT is a final tax — no further personal income tax on dividends received.<br>
+  2026/27 tax brackets and MTC rates sourced from SARS (25 Feb 2026 Budget). DWT is a final withholding tax.<br>
   Maru must have distributable reserves and pass the s.46 solvency &amp; liquidity test at each declaration date.<br>
-  DWT withheld by Maru and paid to SARS within 5 business days of payment date. For advisory use only — confirm with Jacobus before executing.
+  For advisory use only — confirm with Jacobus before executing.
 </div>
 
 <script>
 const BRACKETS=[
-  {min:1,max:245100,base:0,rate:.18},
-  {min:245101,max:383100,base:44118,rate:.26},
-  {min:383101,max:530200,base:79998,rate:.31},
-  {min:530201,max:695800,base:125599,rate:.36},
-  {min:695801,max:887000,base:185215,rate:.39},
-  {min:887001,max:1878600,base:259783,rate:.41},
-  {min:1878601,max:Infinity,base:666339,rate:.45},
+  {min:1,      max:245100,  base:0,      rate:.18},
+  {min:245101, max:383100,  base:44118,  rate:.26},
+  {min:383101, max:530200,  base:79998,  rate:.31},
+  {min:530201, max:695800,  base:125599, rate:.36},
+  {min:695801, max:887000,  base:185215, rate:.39},
+  {min:887001, max:1878600, base:259783, rate:.41},
+  {min:1878601,max:Infinity,base:666339, rate:.45},
 ];
 const REBATE=17820, DWT=.20, UIF_CAP=17.71*365/12;
-// 2026/27 MTC: R376/mo for Mapula + R376/mo for first dependant = R752/mo
 const MTC_MONTHLY=752, MTC_ANNUAL=MTC_MONTHLY*12;
 
 function grossPAYE(a){
-  // Returns tax before MTC
   if(a<=0)return 0;
   let t=0;
-  for(const b of BRACKETS)if(a>=b.min){const u=b.max===Infinity?a:Math.min(a,b.max);t=b.base+(u-b.min+1)*b.rate;}
+  for(const b of BRACKETS)
+    if(a>=b.min){const u=b.max===Infinity?a:Math.min(a,b.max);t=b.base+(u-b.min+1)*b.rate;}
   return Math.max(0,t-REBATE);
 }
 function uif(m){return Math.min(m*.01,UIF_CAP);}
 function margRate(a){for(const b of BRACKETS)if(a<=(b.max===Infinity?Infinity:b.max))return b.rate;return .45;}
-function bracketLabel(a){return`Marginal rate: ${Math.round(margRate(a)*100)}%`;}
+function bracketLabel(a){return'Marginal rate: '+Math.round(margRate(a)*100)+'%';}
 function fmt(n){return'R\u00A0'+Math.round(n).toLocaleString('en-ZA');}
 function pct(n){return n.toFixed(1)+'%';}
 
 let freq=2, medPayer='personal', isLight=false;
 
 function calc(){
-  const gross   = parseFloat(document.getElementById('grossInput').value)||0;
-  const sp      = parseFloat(document.getElementById('mixSlider').value)/100;
-  const medM    = parseFloat(document.getElementById('medInput').value)||0;
-  const medA    = medM*12;
+  const gross = parseFloat(document.getElementById('grossInput').value)||0;
+  const sp    = parseFloat(document.getElementById('mixSlider').value)/100;
+  const medM  = parseFloat(document.getElementById('medInput').value)||0;
+  const medA  = medM*12;
 
-  const salA = gross*sp, divA = gross*(1-sp), salM = salA/12;
-
-  // Fringe benefit: if Maru pays, add to taxable remuneration
+  const salA=gross*sp, divA=gross*(1-sp), salM=salA/12;
   const taxSalA = medPayer==='company' ? salA+medA : salA;
 
-  const prePayeA  = grossPAYE(taxSalA);
-  // MTC: non-refundable, only usable against PAYE — and only if there's a salary component
-  const mtcA      = salA>0 ? Math.min(MTC_ANNUAL, prePayeA) : 0;
-  const payeA     = Math.max(0, prePayeA - mtcA);
-  const uifM      = uif(salM); // UIF on original salary, not fringe-benefit-grossed salary
-  const uifA      = uifM*12;
+  const prePayeA = grossPAYE(taxSalA);
+  const mtcA     = salA>0 ? Math.min(MTC_ANNUAL,prePayeA) : 0;
+  const payeA    = Math.max(0,prePayeA-mtcA);
+  const uifM     = uif(salM);
+  const uifA     = uifM*12;
 
-  // Personal med payment comes out of take-home; company-paid is already a fringe benefit
-  const medOutA   = medPayer==='personal' ? medA : 0;
-  const salNetM   = salM - payeA/12 - uifM - medOutA/12;
-  const salNetA   = salNetM*12;
+  const medOutA  = medPayer==='personal' ? medA : 0;
+  const salNetM  = salM - payeA/12 - uifM - medOutA/12;
+  const salNetA  = salNetM*12;
 
-  const dwtA      = divA*DWT, divNetA = divA-dwtA;
-  const dwtEv     = dwtA/freq, divNetEv = divNetA/freq;
-  const totNetA   = salNetA+divNetA;
-  const totTaxA   = payeA+uifA+dwtA;
-  const eff       = gross>0 ? (totTaxA/gross)*100 : 0;
+  const dwtA=divA*DWT, divNetA=divA-dwtA;
+  const dwtEv=dwtA/freq, divNetEv=divNetA/freq;
+  const totNetA=salNetA+divNetA;
+  const totTaxA=payeA+uifA+dwtA;
+  const eff=gross>0?(totTaxA/gross)*100:0;
 
-  // ── Header ──
+  // Header
   document.getElementById('netTotal').textContent     = fmt(totNetA);
   document.getElementById('effRate').textContent      = pct(eff);
   document.getElementById('bBadge').textContent       = bracketLabel(taxSalA);
-  document.getElementById('grossMonthly').textContent = gross>0 ? '= '+fmt(gross/12)+' per month' : '';
+  document.getElementById('grossMonthly').textContent = gross>0?'= '+fmt(gross/12)+' per month':'';
 
-  // ── Bars ──
+  // Bars
   if(gross>0){
-    document.getElementById('barS').style.width = (Math.max(0,salNetA)/gross*100).toFixed(1)+'%';
-    document.getElementById('barD').style.width = (divNetA/gross*100).toFixed(1)+'%';
-    document.getElementById('barT').style.width = (totTaxA/gross*100).toFixed(1)+'%';
+    document.getElementById('barS').style.width=(Math.max(0,salNetA)/gross*100).toFixed(1)+'%';
+    document.getElementById('barD').style.width=(divNetA/gross*100).toFixed(1)+'%';
+    document.getElementById('barT').style.width=(totTaxA/gross*100).toFixed(1)+'%';
   }
 
-  // ── Cash flow ──
+  // Cash flow
   const sr=document.getElementById('salRow');
   if(salA>0){sr.style.display='flex';document.getElementById('salAmt').textContent=fmt(salNetM)+'/mo';}
   else sr.style.display='none';
@@ -333,28 +505,36 @@ function calc(){
   const dr=document.getElementById('divRows');
   dr.innerHTML='';
   if(divA>0){
-    const fl=freq===1?'Once per year — single board resolution':freq===2?'Twice per year — 2 equal declarations':'Quarterly — 4 equal declarations';
+    const fl=freq===1?'Once per year — single board resolution'
+      :freq===2?'Twice per year — 2 equal declarations'
+      :'Quarterly — 4 equal declarations';
     for(let i=0;i<freq;i++){
       const r=document.createElement('div');
       r.className='cfr';r.style.marginTop='8px';
-      r.innerHTML='<div class="cfdot dotdiv"></div><div class="cfc"><div class="cft">Dividend'+(freq>1?' event '+(i+1)+' of '+freq:'')+'</div><div class="cfm">'+fl+'</div><div class="cfm" style="color:var(--danger);margin-top:2px;">DWT withheld: '+fmt(dwtEv)+' → SARS within 5 days</div></div><div class="cfa adiv">'+fmt(divNetEv)+'</div>';
+      r.innerHTML='<div class="cfdot dotdiv"></div>'
+        +'<div class="cfc">'
+          +'<div class="cft">Dividend'+(freq>1?' event '+(i+1)+' of '+freq:'')+'</div>'
+          +'<div class="cfm">'+fl+'</div>'
+          +'<div class="cfm" style="color:var(--danger);margin-top:2px;">DWT withheld: '+fmt(dwtEv)+' → SARS within 5 days</div>'
+        +'</div>'
+        +'<div class="cfa adiv">'+fmt(divNetEv)+'</div>';
       dr.appendChild(r);
     }
   }
 
-  // ── Breakdown ──
+  // Breakdown
   document.getElementById('bGross').textContent  = fmt(gross);
   document.getElementById('bSal').textContent    = fmt(salA)+(medPayer==='company'&&medA>0?' + '+fmt(medA)+' fringe benefit':'');
-  document.getElementById('bPAYE').textContent   = '−'+fmt(prePayeA)+(mtcA>0?' gross':'');
+  document.getElementById('bPAYE').textContent   = '−'+fmt(prePayeA)+(mtcA>0?' (before MTC)':'');
   document.getElementById('bUIF').textContent    = '−'+fmt(uifA);
   document.getElementById('bDiv').textContent    = fmt(divA);
   document.getElementById('bDWT').textContent    = '−'+fmt(dwtA);
-  document.getElementById('bMTC').textContent    = mtcA>0 ? '+'+fmt(mtcA)+' (R'+MTC_MONTHLY+'/mo × 12)' : salA>0 ? 'R0 — PAYE fully absorbed by rebate' : 'R0 — no salary component';
-  document.getElementById('bMedOut').textContent = medA>0 ? (medPayer==='personal' ? '−'+fmt(medA)+' (Maps pays personally)' : 'R0 — Maru pays (fringe benefit above)') : 'R0 — not entered';
+  document.getElementById('bMTC').textContent    = mtcA>0?'+'+fmt(mtcA)+' (R'+MTC_MONTHLY+'/mo × 12)':salA>0?'R0 — rebate absorbs PAYE':'R0 — no salary component';
+  document.getElementById('bMedOut').textContent = medA>0?(medPayer==='personal'?'−'+fmt(medA)+' (personal)':'R0 — Maru pays (fringe benefit above)'):'R0';
   document.getElementById('bNetA').textContent   = fmt(totNetA);
-  document.getElementById('bNetM').textContent   = divA>0 ? fmt(salNetM)+'/mo + '+freq+'× '+fmt(divNetEv)+' dividend' : fmt(salNetM)+'/mo';
+  document.getElementById('bNetM').textContent   = divA>0?fmt(salNetM)+'/mo + '+freq+'× '+fmt(divNetEv)+' dividend':fmt(salNetM)+'/mo';
 
-  // ── Mix ──
+  // Mix display
   const spPct=Math.round(sp*100);
   document.getElementById('mixDisplay').textContent = spPct+' / '+(100-spPct);
   document.getElementById('salPill').textContent    = 'Salary: '+fmt(salA)+'/yr';
@@ -362,36 +542,35 @@ function calc(){
   document.getElementById('fillL').style.width      = spPct+'%';
   document.getElementById('fillR').style.width      = (100-spPct)+'%';
 
-  // ── Freq callout ──
+  // Freq callout
   const fc={
     1:'<strong>Annual declaration:</strong> Board resolves once — typically post year-end when reserves are confirmed. Full DWT bill of '+fmt(dwtA)+' remitted to SARS in one payment.',
     2:'<strong>Bi-annual declarations:</strong> Board resolves twice (e.g. September and March). Each event nets Maps '+fmt(divNetEv)+'. DWT of '+fmt(dwtEv)+' per event.',
     4:'<strong>Quarterly declarations:</strong> Board resolves four times. Each event nets Maps '+fmt(divNetEv)+'. S.46 solvency &amp; liquidity test must be passed at each declaration date.',
   };
-  document.getElementById('fcall').innerHTML = fc[freq]||'';
+  document.getElementById('fcall').innerHTML=fc[freq]||'';
 
-  // ── Medical callout ──
-  const mc = document.getElementById('medCallout');
+  // Medical callout
+  const mc=document.getElementById('medCallout');
   if(medA<=0){
-    mc.innerHTML='Enter a monthly contribution to model the MTC benefit (R752/mo credit for Mapula + 1 dependant).';
+    mc.innerHTML='Enter a monthly contribution to model the MTC benefit (R'+MTC_MONTHLY+'/mo credit for Mapula + 1 dependant).';
   } else if(salA<=0){
     mc.innerHTML='<strong>MTC cannot be used:</strong> The R'+MTC_MONTHLY+'/mo credit only offsets PAYE. With 100% dividend there is no PAYE — the full credit is wasted.';
   } else if(medPayer==='personal'){
-    const netCost = medA - mtcA;
+    const netCost=medA-mtcA;
     mc.innerHTML='<strong>MTC saves '+fmt(mtcA)+'/yr</strong> ('+fmt(mtcA/12)+'/mo off PAYE).<br>'
       +'Gross contribution: '+fmt(medA)+'/yr &nbsp;·&nbsp; After-tax cost: <strong>'+fmt(netCost)+'/yr</strong> ('+fmt(netCost/12)+'/mo).';
   } else {
-    // Fringe benefit route
-    const mr = margRate(taxSalA);
-    const fbTax = medA * mr;
-    const net = fbTax - mtcA;
+    const mr=margRate(taxSalA);
+    const fbTax=medA*mr;
+    const net=fbTax-mtcA;
     mc.innerHTML='<strong>Fringe benefit:</strong> '+fmt(medA)+'/yr added to taxable remuneration.<br>'
       +'Extra PAYE at '+Math.round(mr*100)+'% marginal: '+fmt(fbTax)+'/yr &nbsp;·&nbsp; MTC offset: '+fmt(mtcA)+'/yr.<br>'
       +'Net additional tax cost to Maps: <strong>'+fmt(Math.max(0,net))+'/yr</strong>.'
-      +(net<0 ? '<div class="med-warn">MTC exceeds fringe benefit tax at this income — net positive outcome.</div>' : '');
+      +(net<0?'<div class="med-warn">MTC exceeds fringe benefit tax at this income — net positive outcome.</div>':'');
   }
 
-  // ── Quick compare ──
+  // Quick compare
   const n100s=calcNet(gross,1,medA), n100d=calcNet(gross,0,medA), adv=totNetA-n100s;
   document.getElementById('c100s').textContent = fmt(n100s);
   document.getElementById('c100d').textContent = fmt(n100d);
@@ -399,15 +578,15 @@ function calc(){
   document.getElementById('cAdv').textContent  = (adv>=0?'+':'')+fmt(adv)+' p.a.';
 }
 
-function calcNet(gross, sp, medA){
-  const sA = gross*sp, dA = gross*(1-sp);
-  const taxSA = medPayer==='company' ? sA+medA : sA;
-  const preP  = grossPAYE(taxSA);
-  const mtc   = sA>0 ? Math.min(MTC_ANNUAL, preP) : 0;
-  const p     = Math.max(0, preP-mtc);
-  const u     = uif(sA/12)*12;
-  const medOut= medPayer==='personal' ? medA : 0;
-  return (sA - p - u - medOut) + dA*(1-DWT);
+function calcNet(gross,sp,medA){
+  const sA=gross*sp, dA=gross*(1-sp);
+  const txSA=medPayer==='company'?sA+medA:sA;
+  const preP=grossPAYE(txSA);
+  const mtc=sA>0?Math.min(MTC_ANNUAL,preP):0;
+  const p=Math.max(0,preP-mtc);
+  const u=uif(sA/12)*12;
+  const mo=medPayer==='personal'?medA:0;
+  return(sA-p-u-mo)+dA*(1-DWT);
 }
 
 function toggleTheme(){
@@ -427,7 +606,6 @@ document.querySelectorAll('.fbtn').forEach(b=>{
     b.classList.add('active'); freq=parseInt(b.dataset.freq); calc();
   });
 });
-
 document.querySelectorAll('.mbtn').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('.mbtn').forEach(x=>x.classList.remove('active'));
