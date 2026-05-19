@@ -1,1 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FNB Savings Model — Maru Spaces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bone:        #f5f0e8;
+  --bone-mid:    #ede8df;
+  --bone-deep:   #e0d9ce;
+  --clay:        #c4956a;
+  --clay-light:  #d4aa87;
+  --clay-muted:  #b8896058;
+  --terra:       #a85c38;
+  --terra-light: #c07050;
+  --ink:         #1a1814;
+  --ink-mid:     #2e2b27;
+  --ink-soft:    #4a4640;
+  --ink-muted:   #7a756e;
+  --ink-faint:   #aba49b;
 
+  --bg:          var(--bone);
+  --bg-raised:   #ffffff;
+  --bg-subtle:   var(--bone-mid);
+  --bg-card:     #ffffff;
+  --surface:     var(--bone-deep);
+  --rule:        rgba(26,24,20,0.12);
+  --rule-strong: rgba(26,24,20,0.22);
+
+  --text-primary:   var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted:     var(--ink-muted);
+  --text-faint:     var(--ink-faint);
+
+  --accent:      var(--clay);
+  --accent-hi:   var(--terra);
+  --recommended: #2d6a4f;
+  --rec-bg:      #d8f3dc;
+  --rec-border:  #95d5b2;
+  --best-bg:     #fff3cd;
+  --best-border: #d4a017;
+  --best-text:   #7a5c00;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+
+  --shadow-card: 0 1px 4px rgba(26,24,20,0.07), 0 0 0 0.5px rgba(26,24,20,0.10);
+  --shadow-pill: 0 1px 3px rgba(26,24,20,0.10);
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-editorial: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+
+  --transition: 0.18s ease;
+}
+
+[data-theme="dark"] {
+  --bg:          #16140f;
+  --bg-raised:   #1e1c17;
+  --bg-subtle:   #232017;
+  --bg-card:     #1e1c17;
+  --surface:     #2a271f;
+  --rule:        rgba(245,240,232,0.10);
+  --rule-strong: rgba(245,240,232,0.18);
+
+  --text-primary:   #f0ebe1;
+  --text-secondary: #c9c2b5;
+  --text-muted:     #8c8479;
+  --text-faint:     #5c5750;
+
+  --accent:      var(--clay-light);
+  --accent-hi:   var(--terra-light);
+  --recommended: #74c69d;
+  --rec-bg:      #1b3a2a;
+  --rec-border:  #2d6a4f;
+  --best-bg:     #2e2410;
+  --best-border: #7a5c00;
+  --best-text:   #d4a017;
+
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(245,240,232,0.08);
+}
+
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.page { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.site-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 40px 0 28px;
+  border-bottom: 0.5px solid var(--rule);
+  margin-bottom: 48px;
+}
+.brand { display: flex; align-items: center; }
+.maru-logo {
+  width: 140px;
+  height: auto;
+  fill: var(--text-primary);
+  transition: fill var(--transition);
+  display: block;
+}
+@media (max-width: 600px) { .maru-logo { width: 110px; } }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+}
+.doc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding-top: 4px;
+}
+
+/* ── THEME TOGGLE ───────────────────────────────────────── */
+.theme-toggle {
+  background: none;
+  border: 0.5px solid var(--rule-strong);
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.theme-icon { font-size: 14px; line-height: 1; }
+
+/* ── TITLE BLOCK ────────────────────────────────────────── */
+.title-block { margin-bottom: 40px; }
+.title-block h1 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.title-block .subtitle {
+  font-family: var(--font-editorial);
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text-secondary);
+  max-width: 560px;
+  line-height: 1.55;
+}
+.title-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.meta-item {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.meta-item span {
+  color: var(--text-muted);
+  display: block;
+  font-size: 11px;
+  margin-top: 2px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── RULE ───────────────────────────────────────────────── */
+.rule { border: none; border-top: 0.5px solid var(--rule); margin: 36px 0; }
+.rule-clay { border-top-color: var(--clay-muted); }
+
+/* ── SECTION LABEL ──────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 16px;
+}
+
+/* ── SUMMARY CARDS ──────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow var(--transition);
+}
+.card-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.card-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.card.accent { border-left: 2.5px solid var(--clay); }
+.card.accent .card-value { color: var(--clay); }
+
+/* ── SLIDER ─────────────────────────────────────────────── */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.slider-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 100px;
+}
+.slider-wrap { flex: 1; min-width: 160px; position: relative; }
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--rule-strong);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--clay);
+  cursor: pointer;
+  border: 2px solid var(--bg);
+  box-shadow: var(--shadow-pill);
+  transition: background var(--transition);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--clay);
+  border: 2px solid var(--bg);
+  cursor: pointer;
+}
+.slider-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--clay);
+  min-width: 38px;
+  text-align: right;
+}
+.slider-note {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* ── CHARTS ─────────────────────────────────────────────── */
+.chart-container {
+  position: relative;
+  width: 100%;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px 20px 16px;
+  margin-bottom: 24px;
+}
+.chart-title {
+  font-family: var(--font-editorial);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.chart-inner { position: relative; width: 100%; height: 280px; }
+
+/* ── LEGEND ─────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.legend-item .rec-pill-sm {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--rec-bg);
+  color: var(--recommended);
+  border: 0.5px solid var(--rec-border);
+  font-weight: 500;
+}
+
+/* ── TABLE ──────────────────────────────────────────────── */
+.table-wrap {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 0.5px solid var(--rule);
+  font-weight: 400;
+}
+thead th.r { text-align: right; }
+tbody tr { border-bottom: 0.5px solid var(--rule); transition: background var(--transition); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg-subtle); }
+tbody tr.row-rec { background: var(--rec-bg); }
+tbody tr.row-rec:hover { background: var(--rec-bg); filter: brightness(0.97); }
+td {
+  padding: 14px 16px;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+td.r { text-align: right; }
+td.muted { color: var(--text-muted); font-size: 12px; }
+.product-cell { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.product-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.product-name { font-weight: 500; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  line-height: 1.5;
+}
+.pill-rec {
+  background: var(--rec-bg);
+  color: var(--recommended);
+  border: 0.5px solid var(--rec-border);
+}
+.pill-best {
+  background: var(--best-bg);
+  color: var(--best-text);
+  border: 0.5px solid var(--best-border);
+}
+.rate-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--clay);
+}
+.total-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+.avg-val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ── MONTHLY TABLE ──────────────────────────────────────── */
+.monthly-scroll { overflow-x: auto; }
+.monthly-scroll table { min-width: 680px; }
+.month-header { white-space: nowrap; }
+.monthly-scroll td { white-space: nowrap; }
+
+/* ── PRODUCT CALLOUT ────────────────────────────────────── */
+.callout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+@media (max-width: 680px) { .callout-grid { grid-template-columns: 1fr; } }
+
+.callout-card, .features-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.callout-header {
+  padding: 16px 18px 14px;
+  border-bottom: 0.5px solid var(--rule);
+}
+.callout-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--rec-bg);
+  color: var(--recommended);
+  border: 0.5px solid var(--rec-border);
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+.callout-title {
+  font-family: var(--font-editorial);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+.callout-sub {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 4px;
+}
+.callout-body { padding: 0; }
+
+.tier-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.tier-table thead th {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 10px 14px;
+  border-bottom: 0.5px solid var(--rule);
+  font-weight: 400;
+  text-align: left;
+}
+.tier-table thead th.r { text-align: right; }
+.tier-table tbody tr { border-bottom: 0.5px solid var(--rule); }
+.tier-table tbody tr:last-child { border-bottom: none; }
+.tier-table td { padding: 9px 14px; color: var(--text-muted); vertical-align: middle; }
+.tier-table td.r { text-align: right; }
+.tier-active { background: var(--rec-bg) !important; }
+.tier-active td { color: var(--text-primary) !important; }
+.tier-badge {
+  display: inline-block;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--clay-muted);
+  color: var(--clay);
+  border: 0.5px solid var(--clay);
+  margin-left: 6px;
+  vertical-align: middle;
+  font-weight: 500;
+}
+
+.features-list {
+  list-style: none;
+  padding: 14px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.features-list li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+.feat-icon {
+  color: var(--clay);
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.feat-note {
+  color: var(--text-faint);
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.features-list li:last-child {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--rule);
+  color: var(--text-primary);
+  font-size: 11px;
+}
+
+/* ── FOOTNOTE ───────────────────────────────────────────── */
+.footnote {
+  font-size: 11px;
+  color: var(--text-faint);
+  line-height: 1.7;
+  font-style: italic;
+  padding: 20px 0 0;
+  border-top: 0.5px solid var(--rule);
+  margin-top: 36px;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+.site-footer {
+  margin-top: 60px;
+  padding: 24px 0;
+  border-top: 0.5px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.footer-note {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page { padding: 0 16px 60px; }
+  .site-header { flex-direction: column; gap: 16px; padding-top: 28px; }
+  .header-right { padding-bottom: 12px; }
+  .title-block h1 { font-size: 26px; }
+  .slider-row { gap: 10px; }
+  .slider-label { min-width: unset; width: 100%; }
+  .chart-inner { height: 220px; }
+  thead th, td { padding: 10px 10px; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── ANIMATION ──────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s ease both; }
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.12s; }
+.fade-up-3 { animation-delay: 0.20s; }
+.fade-up-4 { animation-delay: 0.28s; }
+.fade-up-5 { animation-delay: 0.36s; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <svg class="maru-logo" viewBox="0 0 354.2 119.13" xmlns="http://www.w3.org/2000/svg" aria-label="Maru Spaces" role="img">
+        <g>
+          <path d="M95.83,76.46c-1.27-.94-2.06-2.37-2.37-4.31-.31-1.93-.47-6.02-.47-12.28V13.96c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h2.93V1.11h-24.38l-28.95,65.74L24.2,1.11H0v2.7h2.17c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v34.57c0,6.56-.23,11.06-.7,13.48-.47,2.42-1.77,4.46-3.9,6.12-2.13,1.66-4.89,2.59-8.29,2.78v2.7h28.42v-2.7c-3.67-.23-6.52-1.22-8.55-2.96-2.03-1.74-3.24-3.76-3.63-6.06-.39-2.3-.59-6.64-.59-13.01V9.32l31.7,71.25h2.75L81.56,9.32v50.57c0,6.64-.19,10.87-.56,12.69-.37,1.82-1.21,3.15-2.52,4.01-1.31.86-3.64,1.29-7,1.29h-2.81v2.7h37.97v-2.7h-3.52c-3.59,0-6.03-.47-7.29-1.41Z"/>
+          <path d="M327.66,1.11v2.7c3.63.23,6.29.88,7.97,1.93,1.68,1.05,2.77,2.48,3.28,4.28.51,1.8.76,4.94.76,9.43v27.07c0,6.17-.21,10.69-.64,13.56-.43,2.87-1.61,5.66-3.54,8.38-1.93,2.72-4.88,4.98-8.85,6.8-3.96,1.82-8.37,2.72-13.21,2.72-6.17,0-11.11-1.36-14.82-4.07-3.71-2.71-5.97-5.89-6.77-9.52-.8-3.63-1.2-9.79-1.2-18.46v-25.02c0-.36,0-.71,0-1.05v-5.91c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h1.58V1.11h-36.27v2.7h1.82c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v24.73l-.06,8.14c0,6.41,1.04,11.51,3.13,15.32,2.09,3.81,5.59,6.91,10.49,9.32,4.9,2.4,10.89,3.6,17.96,3.6,5.98,0,11.25-.94,15.82-2.81s8.12-4.39,10.63-7.56,4.04-6.39,4.57-9.67.79-8.3.79-15.06v-26.43c0-4.84.2-8.1.59-9.79.39-1.68,1.46-3.19,3.19-4.54,1.74-1.35,4.37-2.14,7.88-2.37V1.11h-26.54Z"/>
+          <path d="M265.25,73.89c-3.44-2.5-8.17-7.79-14.18-15.88-7.38-9.96-12.74-15.74-16.05-17.34,7.42-.9,13.05-3.18,16.88-6.86,3.83-3.67,5.74-8.1,5.74-13.3,0-4.45-1.46-8.28-4.39-11.48-2.93-3.2-6.77-5.51-11.51-6.91s-10.95-1-18.53-1h-29.37v2.7h1.35c4.02,0,6.64.35,7.85,1.05s1.99,1.97,2.34,3.81c.35,1.84.53,5.92.53,12.25v38.96c0,6.64-.18,10.87-.53,12.69s-1.18,3.15-2.49,4.01c-1.31.86-3.66,1.29-7.06,1.29h-2.58v2.7h38.03v-2.7h-3.81c-3.59,0-6.03-.47-7.29-1.41s-2.05-2.37-2.34-4.31-.44-6.02-.44-12.28v-17.64h3.16c2.15,0,3.73.36,4.75,1.08,1.02.72,2.87,2.73,5.57,6.04,2.7,3.3,5.29,6.75,7.79,10.34,7.81,11.25,13.61,18.2,17.4,20.86h21.39v-2.7c-4.69-.16-8.75-1.48-12.19-3.98ZM226.46,39.2c-3.12.16-6.15.27-9.08.35V12.99c-.38-4.28-3.2-9.16-8.12-9.16h8.12c1.88-.16,3.62,0,4.99,0,12.2,0,15.45.84,18.24,4.2,2.79,3.36,4.19,7.83,4.19,13.42,0,3.2-.41,5.9-1.23,8.09-.82,2.19-1.94,3.96-3.37,5.3-1.43,1.35-3.29,2.37-5.6,3.08s-5.02,1.13-8.14,1.29Z"/>
+          <path d="M184.72,75.85c-1.39-1.07-2.49-2.55-3.31-4.42l-3.63-8.32L151.23,0h-2.29l-23.09,55.14c-1.68,3.95-2.62,6.21-2.81,6.8-2.42,6.21-4.49,10.28-6.21,12.22-1.72,1.93-4.34,3.17-7.85,3.72v2.7h23.61v-2.7c-2.54,0-4.62-.62-6.24-1.85-1.62-1.23-2.43-3.04-2.43-5.42,0-2.23,1.52-6.99,4.57-14.3l.97-2.39h0,0s1.08-2.65,1.08-2.65h.02l2.78-6.7,12.32-29.8,14.06,33.87h-.04l.41,1.03,1.72,4.26h0l5,12.06c1.8,4.26,2.7,6.82,2.7,7.68,0,1.68-.67,2.8-2.02,3.37-1.35.57-3.94.85-7.76.85v2.7h31.23v-2.7c-2.77-.27-4.85-.95-6.24-2.02Z"/>
+          <path d="M15.03,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14s2.11.81,3.53.81c1.25,0,2.3-.21,3.15-.63.85-.42,1.51-.98,1.96-1.67.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.18-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37.7.36,1.51.69,2.45.99.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+          <path d="M71.12,118.7v-25.2h7.92c1.94,0,3.55.32,4.82.95,1.27.64,2.21,1.5,2.81,2.59.6,1.09.9,2.33.9,3.73s-.3,2.6-.9,3.71c-.6,1.1-1.53,1.98-2.79,2.63-1.26.65-2.87.97-4.84.97h-5.4v10.62h-2.52ZM73.64,105.92h5.4c2.14,0,3.66-.46,4.57-1.39.91-.92,1.37-2.18,1.37-3.76s-.46-2.9-1.37-3.8-2.44-1.35-4.57-1.35h-5.4v10.3Z"/>
+          <path d="M130.05,118.7l9.29-25.2h2.59l9.29,25.2h-2.66l-7.92-21.89-7.92,21.89h-2.66ZM134.3,111.89l.76-2.09h11.12l.76,2.09h-12.64Z"/>
+          <path d="M207.78,119.13c-2.42,0-4.52-.55-6.3-1.64-1.78-1.09-3.14-2.62-4.1-4.57s-1.44-4.23-1.44-6.82.48-4.87,1.44-6.82,2.33-3.48,4.12-4.57c1.79-1.09,3.88-1.64,6.28-1.64,2.83,0,5.13.67,6.89,2,1.76,1.33,2.9,3.21,3.4,5.63h-2.77c-.38-1.63-1.2-2.95-2.45-3.94-1.25-1-2.94-1.49-5.08-1.49-1.85,0-3.47.43-4.86,1.3-1.39.86-2.47,2.11-3.24,3.73-.77,1.62-1.15,3.56-1.15,5.81s.38,4.19,1.15,5.81c.77,1.62,1.85,2.86,3.24,3.73,1.39.86,3.01,1.3,4.86,1.3,2.14,0,3.82-.49,5.06-1.48,1.24-.98,2.06-2.28,2.47-3.89h2.77c-.53,2.38-1.66,4.23-3.4,5.56s-4.04,2-6.89,2Z"/>
+          <path d="M265.84,118.7v-25.2h15.3v2.09h-12.78v9.4h11.7v2.09h-11.7v9.54h12.78v2.09h-15.3Z"/>
+          <path d="M337.12,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14.94.54,2.11.81,3.53.81,1.25,0,2.3-.21,3.15-.63s1.51-.98,1.96-1.67c.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.17-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37s1.51.69,2.45.99c.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="header-right">
+      <span class="doc-label">Financial modelling</span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark/light mode">
+        <span class="theme-icon" id="theme-icon">☽</span>
+        <span id="theme-label">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TITLE -->
+  <div class="title-block fade-up">
+    <h1>FNB Business Market-Linked<br/><em><span style="color: var(--terra);">Interest Model</span></em></h1>
+    <p class="subtitle">A comparison of market-linked deposit products against Maru's projected cashflow balances, modelled over the ten-month forecast period.</p>
+    <div class="title-meta">
+      <div class="meta-item">Period<span>May 2025 – Feb 2026</span></div>
+      <div class="meta-item">Bank<span>First National Bank</span></div>
+      <div class="meta-item">Prepared<span>May 2026</span></div>
+      <div class="meta-item">Status<span>Internal draft</span></div>
+    </div>
+  </div>
+
+  <hr class="rule rule-clay" />
+
+  <!-- SLIDER -->
+  <div class="section-label fade-up fade-up-1">Assumption</div>
+  <div class="slider-row fade-up fade-up-1">
+    <span class="slider-label">Investable % of closing balance</span>
+    <div class="slider-wrap">
+      <input type="range" id="pct-slider" min="50" max="100" value="90" step="5" aria-label="Investable percentage of closing balance" />
+    </div>
+    <span class="slider-value" id="pct-out">90%</span>
+    <span class="slider-note">Remainder retained in transactional account</span>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="section-label fade-up fade-up-2">Overview</div>
+  <div class="cards-grid fade-up fade-up-2" id="summary-cards"></div>
+
+  <hr class="rule" />
+
+  <!-- BAR CHART -->
+  <div class="section-label fade-up fade-up-3">Total interest earned — 10 months</div>
+  <div class="chart-container fade-up fade-up-3">
+    <div class="chart-title">Cumulative interest by product, at investable %</div>
+    <div class="chart-inner">
+      <canvas id="barChart" role="img" aria-label="Bar chart comparing total interest earned across six FNB savings products">Total interest comparison across FNB products.</canvas>
+    </div>
+    <div class="legend" id="bar-legend"></div>
+  </div>
+
+  <!-- LINE CHART -->
+  <div class="section-label fade-up fade-up-4">Monthly interest accrual</div>
+  <div class="chart-container fade-up fade-up-4">
+    <div class="chart-title">Interest earned each month, by product</div>
+    <div class="chart-inner">
+      <canvas id="lineChart" role="img" aria-label="Line chart showing monthly interest accrual for each product">Monthly interest accrual by product.</canvas>
+    </div>
+    <div class="legend" id="line-legend"></div>
+  </div>
+
+  <hr class="rule" />
+
+  <!-- PRODUCT TABLE -->
+  <div class="section-label fade-up fade-up-5">Product comparison</div>
+  <div class="table-wrap fade-up fade-up-5">
+    <table id="product-table" aria-label="FNB savings product comparison table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="r">Rate p.a.</th>
+          <th>Access</th>
+          <th class="r">Min. deposit</th>
+          <th class="r">Total interest</th>
+          <th class="r">Avg / month</th>
+        </tr>
+      </thead>
+      <tbody id="product-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- MONTHLY TABLE -->
+  <div class="section-label">Monthly breakdown</div>
+  <div class="table-wrap monthly-scroll">
+    <table id="monthly-table" aria-label="Monthly interest accrual by product">
+      <thead id="monthly-thead"></thead>
+      <tbody id="monthly-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- PRODUCT CALLOUT -->
+  <hr class="rule rule-clay" />
+  <div class="section-label">Recommended product detail</div>
+  <div class="callout-grid">
+
+    <div class="callout-card">
+      <div class="callout-header">
+        <span class="callout-pill">recommended</span>
+        <div class="callout-title">48 Hour Cash Accelerator</div>
+        <div class="callout-sub">FNB Business Banking · Tiered nominal rate (NACM) · Published 19 May 2026</div>
+      </div>
+      <div class="callout-body">
+        <table class="tier-table" aria-label="48hr Cash Accelerator tiered rates">
+          <thead>
+            <tr>
+              <th>Balance tier</th>
+              <th class="r">Nominal (NACM)</th>
+              <th class="r">Annual effective</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>R 100,000 – R 249,999</td><td class="r muted">5.90%</td><td class="r muted">6.06%</td></tr>
+            <tr><td>R 250,000 – R 499,999</td><td class="r muted">6.25%</td><td class="r muted">6.43%</td></tr>
+            <tr><td>R 500,000 – R 999,999</td><td class="r muted">6.25%</td><td class="r muted">6.43%</td></tr>
+            <tr class="tier-active"><td><strong>R 1,000,000 – R 4,999,999</strong> <span class="tier-badge">Maru's tier</span></td><td class="r"><strong>6.55%</strong></td><td class="r"><strong>6.75%</strong></td></tr>
+            <tr><td>R 5,000,000 – R 9,999,999</td><td class="r muted">6.80%</td><td class="r muted">7.02%</td></tr>
+            <tr><td>R 10,000,000 – R 49,999,999</td><td class="r muted">6.85%</td><td class="r muted">7.07%</td></tr>
+            <tr><td>R 50,000,000+</td><td class="r muted">6.90%</td><td class="r muted">7.12%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="features-card">
+      <div class="callout-header">
+        <div class="callout-title">Key features</div>
+      </div>
+      <ul class="features-list">
+        <li><span class="feat-icon">◎</span>2-day notice to access funds (excl. Sundays &amp; public holidays)</li>
+        <li><span class="feat-icon">◎</span>Only one withdrawal instruction permitted at a time</li>
+        <li><span class="feat-icon">◎</span>Deposit any amount electronically at any time — no cash or cheque deposits</li>
+        <li><span class="feat-icon">◎</span>Interest capitalised monthly; redirectable to any FNB or other bank account monthly or quarterly</li>
+        <li><span class="feat-icon">◎</span>Manageable via FNB App or Online Banking for Business</li>
+        <li><span class="feat-icon">◎</span>No monthly fees</li>
+        <li><span class="feat-icon">◎</span>Only bank in South Africa offering a 48-hour notice investment account for SMEs</li>
+        <li><span class="feat-note">↳</span>At 90% investable, Maru's balance (~R4.5M–R5.1M) sits in the <strong>R1M–R4.99M tier at 6.55% nominal</strong>. The 6.90% rate requires R50M+.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- FOOTNOTE -->
+  <p class="footnote">
+    Rates sourced from FNB published rate sheet dated 19 May 2026. The 48hr Cash Accelerator rate applied in this model is 6.55% nominal (NACM) — the rate applicable to the R1M–R4.99M balance tier, which corresponds to Maru's projected investable balances at 90%. The advertised maximum of 6.90% applies only to balances of R50M+. All other product rates are maximum advertised rates and may be subject to tiering. Interest is calculated monthly using ((1 + r)<sup>1/12</sup> − 1) applied to the investable portion of each month's closing balance, sourced from Maru's internal cashflow forecast. Actual interest will depend on timing of deposits, applicable tier, and product terms. This document is prepared for internal decision-making purposes and does not constitute financial advice.
+  </p>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <svg class="maru-logo" style="width:80px;opacity:0.45;" viewBox="0 0 354.2 119.13" xmlns="http://www.w3.org/2000/svg" aria-label="Maru Spaces" role="img"><g><path d="M95.83,76.46c-1.27-.94-2.06-2.37-2.37-4.31-.31-1.93-.47-6.02-.47-12.28V13.96c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h2.93V1.11h-24.38l-28.95,65.74L24.2,1.11H0v2.7h2.17c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v34.57c0,6.56-.23,11.06-.7,13.48-.47,2.42-1.77,4.46-3.9,6.12-2.13,1.66-4.89,2.59-8.29,2.78v2.7h28.42v-2.7c-3.67-.23-6.52-1.22-8.55-2.96-2.03-1.74-3.24-3.76-3.63-6.06-.39-2.3-.59-6.64-.59-13.01V9.32l31.7,71.25h2.75L81.56,9.32v50.57c0,6.64-.19,10.87-.56,12.69-.37,1.82-1.21,3.15-2.52,4.01-1.31.86-3.64,1.29-7,1.29h-2.81v2.7h37.97v-2.7h-3.52c-3.59,0-6.03-.47-7.29-1.41Z"/><path d="M327.66,1.11v2.7c3.63.23,6.29.88,7.97,1.93,1.68,1.05,2.77,2.48,3.28,4.28.51,1.8.76,4.94.76,9.43v27.07c0,6.17-.21,10.69-.64,13.56-.43,2.87-1.61,5.66-3.54,8.38-1.93,2.72-4.88,4.98-8.85,6.8-3.96,1.82-8.37,2.72-13.21,2.72-6.17,0-11.11-1.36-14.82-4.07-3.71-2.71-5.97-5.89-6.77-9.52-.8-3.63-1.2-9.79-1.2-18.46v-25.02c0-.36,0-.71,0-1.05v-5.91c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h1.58V1.11h-36.27v2.7h1.82c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v24.73l-.06,8.14c0,6.41,1.04,11.51,3.13,15.32,2.09,3.81,5.59,6.91,10.49,9.32,4.9,2.4,10.89,3.6,17.96,3.6,5.98,0,11.25-.94,15.82-2.81s8.12-4.39,10.63-7.56,4.04-6.39,4.57-9.67.79-8.3.79-15.06v-26.43c0-4.84.2-8.1.59-9.79.39-1.68,1.46-3.19,3.19-4.54,1.74-1.35,4.37-2.14,7.88-2.37V1.11h-26.54Z"/><path d="M265.25,73.89c-3.44-2.5-8.17-7.79-14.18-15.88-7.38-9.96-12.74-15.74-16.05-17.34,7.42-.9,13.05-3.18,16.88-6.86,3.83-3.67,5.74-8.1,5.74-13.3,0-4.45-1.46-8.28-4.39-11.48-2.93-3.2-6.77-5.51-11.51-6.91s-10.95-1-18.53-1h-29.37v2.7h1.35c4.02,0,6.64.35,7.85,1.05s1.99,1.97,2.34,3.81c.35,1.84.53,5.92.53,12.25v38.96c0,6.64-.18,10.87-.53,12.69s-1.18,3.15-2.49,4.01c-1.31.86-3.66,1.29-7.06,1.29h-2.58v2.7h38.03v-2.7h-3.81c-3.59,0-6.03-.47-7.29-1.41s-2.05-2.37-2.34-4.31-.44-6.02-.44-12.28v-17.64h3.16c2.15,0,3.73.36,4.75,1.08,1.02.72,2.87,2.73,5.57,6.04,2.7,3.3,5.29,6.75,7.79,10.34,7.81,11.25,13.61,18.2,17.4,20.86h21.39v-2.7c-4.69-.16-8.75-1.48-12.19-3.98ZM226.46,39.2c-3.12.16-6.15.27-9.08.35V12.99c-.38-4.28-3.2-9.16-8.12-9.16h8.12c1.88-.16,3.62,0,4.99,0,12.2,0,15.45.84,18.24,4.2,2.79,3.36,4.19,7.83,4.19,13.42,0,3.2-.41,5.9-1.23,8.09-.82,2.19-1.94,3.96-3.37,5.3-1.43,1.35-3.29,2.37-5.6,3.08s-5.02,1.13-8.14,1.29Z"/><path d="M184.72,75.85c-1.39-1.07-2.49-2.55-3.31-4.42l-3.63-8.32L151.23,0h-2.29l-23.09,55.14c-1.68,3.95-2.62,6.21-2.81,6.8-2.42,6.21-4.49,10.28-6.21,12.22-1.72,1.93-4.34,3.17-7.85,3.72v2.7h23.61v-2.7c-2.54,0-4.62-.62-6.24-1.85-1.62-1.23-2.43-3.04-2.43-5.42,0-2.23,1.52-6.99,4.57-14.3l.97-2.39h0,0s1.08-2.65,1.08-2.65h.02l2.78-6.7,12.32-29.8,14.06,33.87h-.04l.41,1.03,1.72,4.26h0l5,12.06c1.8,4.26,2.7,6.82,2.7,7.68,0,1.68-.67,2.8-2.02,3.37-1.35.57-3.94.85-7.76.85v2.7h31.23v-2.7c-2.77-.27-4.85-.95-6.24-2.02Z"/><path d="M15.03,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14s2.11.81,3.53.81c1.25,0,2.3-.21,3.15-.63.85-.42,1.51-.98,1.96-1.67.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.18-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37.7.36,1.51.69,2.45.99.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/><path d="M71.12,118.7v-25.2h7.92c1.94,0,3.55.32,4.82.95,1.27.64,2.21,1.5,2.81,2.59.6,1.09.9,2.33.9,3.73s-.3,2.6-.9,3.71c-.6,1.1-1.53,1.98-2.79,2.63-1.26.65-2.87.97-4.84.97h-5.4v10.62h-2.52ZM73.64,105.92h5.4c2.14,0,3.66-.46,4.57-1.39.91-.92,1.37-2.18,1.37-3.76s-.46-2.9-1.37-3.8-2.44-1.35-4.57-1.35h-5.4v10.3Z"/><path d="M130.05,118.7l9.29-25.2h2.59l9.29,25.2h-2.66l-7.92-21.89-7.92,21.89h-2.66ZM134.3,111.89l.76-2.09h11.12l.76,2.09h-12.64Z"/><path d="M207.78,119.13c-2.42,0-4.52-.55-6.3-1.64-1.78-1.09-3.14-2.62-4.1-4.57s-1.44-4.23-1.44-6.82.48-4.87,1.44-6.82,2.33-3.48,4.12-4.57c1.79-1.09,3.88-1.64,6.28-1.64,2.83,0,5.13.67,6.89,2,1.76,1.33,2.9,3.21,3.4,5.63h-2.77c-.38-1.63-1.2-2.95-2.45-3.94-1.25-1-2.94-1.49-5.08-1.49-1.85,0-3.47.43-4.86,1.3-1.39.86-2.47,2.11-3.24,3.73-.77,1.62-1.15,3.56-1.15,5.81s.38,4.19,1.15,5.81c.77,1.62,1.85,2.86,3.24,3.73,1.39.86,3.01,1.3,4.86,1.3,2.14,0,3.82-.49,5.06-1.48,1.24-.98,2.06-2.28,2.47-3.89h2.77c-.53,2.38-1.66,4.23-3.4,5.56s-4.04,2-6.89,2Z"/><path d="M265.84,118.7v-25.2h15.3v2.09h-12.78v9.4h11.7v2.09h-11.7v9.54h12.78v2.09h-15.3Z"/><path d="M337.12,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14.94.54,2.11.81,3.53.81,1.25,0,2.3-.21,3.15-.63s1.51-.98,1.96-1.67c.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.17-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37s1.51.69,2.45.99c.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/></g></svg>
+    <div class="footer-note">Confidential — internal use only</div>
+  </footer>
+
+</div>
+
+<script>
+/* ── DATA ───────────────────────────────────────────────── */
+const MONTHS = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'];
+
+const BALANCES = [
+  5339644.80, 5686670.33, 5440647.79, 5408219.13,
+  4944335.99, 5486664.41, 5536387.24, 5257504.10,
+  4978620.96, 4514737.82
+];
+
+const PRODUCTS = [
+  { name: '48hr Cash Accelerator', short: '48hr 6.55%', rate: 0.0655, color: '#c4956a', minDep: 100000, notice: '2-day notice',  fixed: false, recommended: true  },
+  { name: 'Cash Intelligence',     short: 'CII 7.31%',  rate: 0.0731, color: '#a85c38', minDep: 20000,  notice: '7–90 days',    fixed: false, recommended: false },
+  { name: 'Flexi Fixed Deposit',   short: 'Flexi 7.00%',rate: 0.070,  color: '#8b7355', minDep: 0,      notice: '24hr notice',  fixed: false, recommended: false },
+  { name: 'Business Call',         short: 'Call 5.50%', rate: 0.055,  color: '#5a8a72', minDep: 1,      notice: 'Instant',      fixed: false, recommended: false },
+  { name: 'Money on Call',         short: 'MoC 5.00%',  rate: 0.050,  color: '#7a9e8e', minDep: 5000,   notice: 'Instant',      fixed: false, recommended: false },
+  { name: 'Fixed Deposit',         short: 'Fixed 7.60%',rate: 0.076,  color: '#6b4226', minDep: 10000,  notice: 'Term lock',    fixed: true,  recommended: false },
+];
+
+/* ── CALCULATIONS ───────────────────────────────────────── */
+function mRate(r) { return Math.pow(1 + r, 1/12) - 1; }
+
+function calcAll(pct) {
+  return PRODUCTS.map(p =>
+    BALANCES.map(b => {
+      const inv = b * (pct / 100);
+      return inv < p.minDep ? 0 : inv * mRate(p.rate);
+    })
+  );
+}
+
+function totals(data) { return data.map(arr => arr.reduce((a,b)=>a+b,0)); }
+
+function fmtR(n) {
+  return 'R\u202f' + Math.round(n).toLocaleString('en-ZA');
+}
+function fmtMin(n) {
+  if (n < 1000) return n === 0 ? '—' : 'R\u202f' + n;
+  return 'R\u202f' + (n/1000).toFixed(0) + 'k';
+}
+
+/* ── THEME ──────────────────────────────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '☽' : '☀';
+  document.getElementById('theme-label').textContent = isDark ? 'Dark' : 'Light';
+  render();
+}
+
+/* ── CHARTS ─────────────────────────────────────────────── */
+let barChart, lineChart;
+
+function getColors() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    grid:  dark ? 'rgba(245,240,232,0.07)' : 'rgba(26,24,20,0.07)',
+    tick:  dark ? '#5c5750' : '#aba49b',
+    text:  dark ? '#c9c2b5' : '#4a4640',
+  };
+}
+
+function buildCharts(pct) {
+  const data = calcAll(pct);
+  const tot  = totals(data);
+  const C    = getColors();
+
+  const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { bodyFont: { family: 'DM Mono' }, titleFont: { family: 'DM Sans' } } },
+    scales: {
+      x: { grid: { color: C.grid }, ticks: { color: C.tick, font: { family: 'DM Mono', size: 10 }, autoSkip: false, maxRotation: 30 } },
+      y: { grid: { color: C.grid }, ticks: { color: C.tick, font: { family: 'DM Mono', size: 10 }, callback: v => 'R' + (v/1000).toFixed(0) + 'k' } }
+    }
+  };
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: PRODUCTS.map(p => p.short),
+      datasets: [{
+        label: 'Total interest',
+        data: tot.map(v => Math.round(v)),
+        backgroundColor: PRODUCTS.map(p => p.color + 'bb'),
+        borderColor: PRODUCTS.map(p => p.color),
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      ...chartDefaults,
+      plugins: {
+        ...chartDefaults.plugins,
+        tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => '  ' + fmtR(ctx.parsed.y) } }
+      }
+    }
+  });
+
+  if (lineChart) lineChart.destroy();
+  lineChart = new Chart(document.getElementById('lineChart'), {
+    type: 'line',
+    data: {
+      labels: MONTHS,
+      datasets: PRODUCTS.map((p, i) => ({
+        label: p.short,
+        data: data[i].map(v => Math.round(v)),
+        borderColor: p.color,
+        backgroundColor: p.color + '18',
+        borderWidth: p.recommended ? 2.5 : 1.5,
+        pointRadius: p.recommended ? 4 : 2.5,
+        pointBackgroundColor: p.color,
+        tension: 0.35,
+        fill: false,
+        borderDash: p.fixed ? [5,4] : [],
+      }))
+    },
+    options: {
+      ...chartDefaults,
+      scales: {
+        ...chartDefaults.scales,
+        y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => 'R' + (v/1000).toFixed(1) + 'k' } }
+      },
+      plugins: {
+        ...chartDefaults.plugins,
+        tooltip: { ...chartDefaults.plugins.tooltip, callbacks: { label: ctx => '  ' + ctx.dataset.label + ': ' + fmtR(ctx.parsed.y) } }
+      }
+    }
+  });
+
+  buildLegend('bar-legend', false);
+  buildLegend('line-legend', true);
+}
+
+function buildLegend(id, showAccess) {
+  const el = document.getElementById(id);
+  el.innerHTML = PRODUCTS.map(p => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${p.color}"></span>
+      ${p.short}${p.recommended ? '<span class="rec-pill-sm">recommended</span>' : ''}
+      ${showAccess ? '<span style="color:var(--text-faint);font-size:10px;">— ' + p.notice + '</span>' : ''}
+    </div>
+  `).join('');
+}
+
+/* ── SUMMARY CARDS ──────────────────────────────────────── */
+function buildCards(pct) {
+  const data = calcAll(pct);
+  const tot  = totals(data);
+  const best = Math.max(...tot);
+  const avg  = BALANCES.reduce((a,b)=>a+b,0) / BALANCES.length;
+  const recTotal = tot[PRODUCTS.findIndex(p => p.recommended)];
+
+  const cards = [
+    { label: 'Avg monthly balance',        value: fmtR(avg),          accent: false },
+    { label: `Avg investable (${pct}%)`,   value: fmtR(avg * pct/100),accent: false },
+    { label: 'Recommended product total',  value: fmtR(recTotal),     accent: true  },
+    { label: 'Recommended avg / month',    value: fmtR(recTotal / 10),accent: true  },
+  ];
+
+  document.getElementById('summary-cards').innerHTML = cards.map(c => `
+    <div class="card${c.accent ? ' accent' : ''}">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value">${c.value}</div>
+    </div>
+  `).join('');
+}
+
+/* ── PRODUCT TABLE ──────────────────────────────────────── */
+function buildProductTable(pct) {
+  const data = calcAll(pct);
+  const tot  = totals(data);
+  const maxT = Math.max(...tot);
+
+  const rows = PRODUCTS.map((p,i) => ({ p, i, total: tot[i] }));
+  const rec  = rows.find(r => r.p.recommended);
+  const rest = rows.filter(r => !r.p.recommended).sort((a,b) => b.total - a.total);
+  const sorted = [rec, ...rest];
+
+  document.getElementById('product-tbody').innerHTML = sorted.map(({ p, total }) => {
+    const isBest = Math.round(total) === Math.round(maxT);
+    const pills = [
+      p.recommended ? '<span class="pill pill-rec">recommended</span>' : '',
+      isBest        ? '<span class="pill pill-best">best yield</span>'  : '',
+    ].join(' ');
+
+    return `<tr class="${p.recommended ? 'row-rec' : ''}">
+      <td>
+        <div class="product-cell">
+          <span class="product-dot" style="background:${p.color}"></span>
+          <span class="product-name">${p.name}</span>
+          ${pills}
+        </div>
+      </td>
+      <td class="r"><span class="rate-val">${(p.rate*100).toFixed(2)}%</span></td>
+      <td class="muted">${p.notice}</td>
+      <td class="r muted">${fmtMin(p.minDep)}</td>
+      <td class="r"><span class="total-val">${fmtR(total)}</span></td>
+      <td class="r"><span class="avg-val">${fmtR(total/10)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── MONTHLY TABLE ──────────────────────────────────────── */
+function buildMonthlyTable(pct) {
+  const data = calcAll(pct);
+
+  document.getElementById('monthly-thead').innerHTML = `<tr>
+    <th>Product</th>
+    ${MONTHS.map(m => `<th class="r month-header">${m}</th>`).join('')}
+    <th class="r">Total</th>
+  </tr>`;
+
+  const rows = PRODUCTS.map((p,i) => {
+    const months = data[i];
+    const total  = months.reduce((a,b)=>a+b,0);
+    return `<tr class="${p.recommended ? 'row-rec' : ''}">
+      <td>
+        <div class="product-cell">
+          <span class="product-dot" style="background:${p.color}"></span>
+          <span style="font-size:11px;">${p.name}${p.recommended ? '&nbsp;<span class="pill pill-rec" style="font-size:8px;">rec.</span>' : ''}</span>
+        </div>
+      </td>
+      ${months.map(v => `<td class="r" style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">${v < 1 ? '—' : 'R\u202f' + Math.round(v).toLocaleString('en-ZA')}</td>`).join('')}
+      <td class="r" style="font-family:var(--font-mono);font-size:12px;font-weight:500;">${fmtR(total)}</td>
+    </tr>`;
+  });
+
+  const totRow = MONTHS.map((_,mi) =>
+    PRODUCTS.reduce((sum, _, pi) => sum + data[pi][mi], 0)
+  );
+  const grandTotal = totRow.reduce((a,b)=>a+b,0);
+
+  rows.push(`<tr style="border-top:1px solid var(--rule-strong);background:var(--bg-subtle);">
+    <td style="font-weight:500;font-size:12px;color:var(--text-secondary);">All products</td>
+    ${totRow.map(v => `<td class="r" style="font-family:var(--font-mono);font-size:11px;font-weight:500;">${fmtR(v)}</td>`).join('')}
+    <td class="r" style="font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--clay);">${fmtR(grandTotal)}</td>
+  </tr>`);
+
+  document.getElementById('monthly-tbody').innerHTML = rows.join('');
+}
+
+/* ── RENDER ─────────────────────────────────────────────── */
+function render() {
+  const pct = parseInt(document.getElementById('pct-slider').value);
+  document.getElementById('pct-out').textContent = pct + '%';
+  buildCards(pct);
+  buildCharts(pct);
+  buildProductTable(pct);
+  buildMonthlyTable(pct);
+}
+
+document.getElementById('pct-slider').addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
