@@ -80,6 +80,7 @@
   --border-strong: rgba(62,42,32,0.28);
   --rule: rgba(62,42,32,0.10);
   --shadow: 0 1px 2px rgba(62,42,32,0.06), 0 8px 24px rgba(62,42,32,0.06);
+  --highlight-bg: rgba(168,90,61,0.18);
 
   --font-display: 'DM Serif Display', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-accent: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
@@ -100,6 +101,7 @@
     --border-strong: rgba(241,231,216,0.24);
     --rule: rgba(241,231,216,0.10);
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    --highlight-bg: rgba(214,135,99,0.28);
   }
 }
 :root[data-theme="dark"] {
@@ -114,6 +116,7 @@
   --border-strong: rgba(241,231,216,0.24);
   --rule: rgba(241,231,216,0.10);
   --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  --highlight-bg: rgba(214,135,99,0.28);
 }
 :root[data-theme="light"] {
   --bg: #FFFFFF;
@@ -127,11 +130,12 @@
   --border-strong: rgba(62,42,32,0.28);
   --rule: rgba(62,42,32,0.10);
   --shadow: 0 1px 2px rgba(62,42,32,0.06), 0 8px 24px rgba(62,42,32,0.06);
+  --highlight-bg: rgba(168,90,61,0.18);
 }
 
 mark.excerpt {
-  background: var(--accent);
-  color: var(--accent-text);
+  background: var(--highlight-bg);
+  color: inherit;
   padding: 0.22em 0.35em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
