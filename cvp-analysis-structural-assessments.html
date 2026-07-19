@@ -80,6 +80,8 @@
   --border-strong: rgba(62,42,32,0.28);
   --rule: rgba(62,42,32,0.10);
   --shadow: 0 1px 2px rgba(62,42,32,0.06), 0 8px 24px rgba(62,42,32,0.06);
+  --highlight-bg: rgba(168,90,61,0.18);
+  --highlight-border: rgba(168,90,61,0.45);
 
   --font-display: 'DM Serif Display', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-accent: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
@@ -100,6 +102,8 @@
     --border-strong: rgba(241,231,216,0.24);
     --rule: rgba(241,231,216,0.10);
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    --highlight-bg: rgba(214,135,99,0.28);
+    --highlight-border: rgba(214,135,99,0.55);
   }
 }
 :root[data-theme="dark"] {
@@ -114,6 +118,8 @@
   --border-strong: rgba(241,231,216,0.24);
   --rule: rgba(241,231,216,0.10);
   --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  --highlight-bg: rgba(214,135,99,0.28);
+  --highlight-border: rgba(214,135,99,0.55);
 }
 :root[data-theme="light"] {
   --bg: #FFFFFF;
@@ -127,6 +133,18 @@
   --border-strong: rgba(62,42,32,0.28);
   --rule: rgba(62,42,32,0.10);
   --shadow: 0 1px 2px rgba(62,42,32,0.06), 0 8px 24px rgba(62,42,32,0.06);
+  --highlight-bg: rgba(168,90,61,0.18);
+  --highlight-border: rgba(168,90,61,0.45);
+}
+
+mark.excerpt {
+  background: var(--highlight-bg);
+  color: inherit;
+  padding: 0.02em 0.3em;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--highlight-border);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 * { box-sizing: border-box; }
@@ -870,7 +888,7 @@ footer { padding: 56px 0 80px; }
       <p class="persona-stance">Build it, but the real prize isn't the inspection fee, it's becoming the default gatekeeper of a building-safety crisis South Africa has no capacity to handle.</p>
       <div class="persona-body">
         <ol>
-          <li><strong>This isn't a mature market, it's a vacuum with a body count.</strong> South Africa has had repeated building collapses (George, 2024, 34+ dead) and a documented municipal engineering-capacity crisis, most local authorities have single-digit or zero qualified structural engineers on staff. Whoever shows up with process, ECSA-accredited capacity, and the ability to mobilize fast wins by default, not by being cheapest.</li>
+          <li><strong>This isn't a mature market, it's a vacuum with a body count.</strong> South Africa has had repeated building collapses (George, 2024, 34+ dead) and a documented municipal engineering-capacity crisis, most local authorities have single-digit or zero qualified structural engineers on staff. <mark class="excerpt">Whoever shows up with process, ECSA-accredited capacity, and the ability to mobilize fast wins by default, not by being cheapest.</mark></li>
           <li><strong>The multi-engineer model is the actual moat, not a delivery detail.</strong> Not being tied to one engineer means scaling horizontally across provinces and disciplines faster than any boutique firm capacity-constrained by its own partners' hours. That's the TÜV playbook: TÜV doesn't do the inspections itself either, it's a quality and brand layer over a network of accredited assessors. Maru Spaces can replicate that model at a fraction of TÜV's cost structure, with actual local relationships and responsiveness TÜV's regional office can't match.</li>
           <li><strong>The 10x version isn't "assessment reports," it's becoming the compliance operating system for aging building stock.</strong> Every building assessed needs re-assessment on a cycle, generates a repair or retrofit scope to refer or JV into, triggers insurance and legal exposure conversations (expert witness work, litigation support), and feeds portfolio-level risk dashboards for landlords or municipalities with hundreds of ageing structures. The first report is the foot in the door; the annuity is monitoring, re-certification, and risk management layered on top.</li>
           <li><strong>Private landlords are the fast, unglamorous cash engine that funds the municipal play.</strong> Municipal tenders are slow, political, and require a track record Maru doesn't have yet. But sectional title bodies corporate, commercial landlords, and property funds carry personal and directorial liability under the NBR Act right now, and many are quietly anxious post-George. Every private client is simultaneously revenue and a reference asset for the next, bigger deal.</li>
