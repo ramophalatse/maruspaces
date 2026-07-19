@@ -69,7 +69,7 @@
   --terracotta: #A85A3D;
   --ink: #3E2A20;
 
-  --bg: var(--bone);
+  --bg: #FFFFFF;
   --bg-card: var(--sand);
   --bg-card-strong: #DED2BC;
   --text: var(--ink);
@@ -116,7 +116,7 @@
   --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
 }
 :root[data-theme="light"] {
-  --bg: var(--bone);
+  --bg: #FFFFFF;
   --bg-card: var(--sand);
   --bg-card-strong: #DED2BC;
   --text: var(--ink);
@@ -491,9 +491,53 @@ footer { padding: 56px 0 80px; }
   section { padding: 44px 0; }
   .persona-head, .persona-body, .persona-stance { padding-left: 22px; padding-right: 22px; }
 }
+
+/* ============ Theme toggle ============ */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 20;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  cursor: pointer;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  transition: background .15s ease, border-color .15s ease;
+}
+.theme-toggle:hover { border-color: var(--border-strong); }
+.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+}
+@media (max-width: 760px) {
+  .theme-toggle { top: 14px; right: 14px; width: 36px; height: 36px; }
+}
 </style>
 </head>
 <body>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+  </svg>
+</button>
+
 
 <header class="cover">
   <div class="wrap">
@@ -890,5 +934,27 @@ footer { padding: 56px 0 80px; }
   </div>
 </footer>
 
+<script>
+(function() {
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var stored = null;
+  try { stored = localStorage.getItem('maru-theme'); } catch (e) {}
+  if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);
+
+  function currentIsDark() {
+    var explicit = root.getAttribute('data-theme');
+    if (explicit === 'dark') return true;
+    if (explicit === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  btn.addEventListener('click', function() {
+    var next = currentIsDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('maru-theme', next); } catch (e) {}
+  });
+})();
+</script>
 </body>
 </html>
