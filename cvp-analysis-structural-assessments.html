@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Fit Finding — Conditional Structural Assessment Offering</title>
+<title>Fit Finding: Conditional Structural Assessment Offering</title>
 <style>
 
 /* ============ Fonts (self-hosted, brand system) ============
-   Display: DM Serif Display — the headline serif in the Maru brand guide.
-   Accent: Cormorant Garamond italic — the brand guide's italic register.
+   Display: DM Serif Display, the headline serif in the Maru brand guide.
+   Accent: Cormorant Garamond italic, the brand guide's italic register.
    Body/UI: DM Sans (DM Serif Display's own matched companion, by Colophon
-   Foundry — same superfamily as the display face). Data/labels: JetBrains Mono. */
+   Foundry, same superfamily as the display face). Data/labels: JetBrains Mono. */
 
 @font-face {
   font-family: 'DM Serif Display';
@@ -243,7 +243,7 @@ a { color: inherit; }
   color: var(--text-muted);
   letter-spacing: 0.02em;
   white-space: nowrap;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid var(--border-strong);
   padding-bottom: 2px;
   transition: color .15s ease, border-color .15s ease;
 }
@@ -377,7 +377,7 @@ h2.h em { font-family: var(--font-accent); font-style: italic; font-weight: 600;
 
 .source-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .source-list li { font-size: 14px; padding-left: 18px; position: relative; }
-.source-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); }
+.source-list li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
 .source-list a { text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
 .source-list a:hover { text-decoration-color: var(--accent); }
 
@@ -391,6 +391,26 @@ h2.h em { font-family: var(--font-accent); font-style: italic; font-weight: 600;
   line-height: 1.7;
 }
 .brief-block strong { color: var(--text); }
+
+.overview-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px 32px 30px;
+}
+.overview-card .eyebrow { display: block; margin-bottom: 10px; }
+.overview-card h2 { font-family: var(--font-display); font-weight: 400; font-size: 22px; margin: 0 0 12px; }
+.overview-card p { font-size: 14.5px; line-height: 1.7; color: var(--text-muted); margin: 0 0 16px; }
+.overview-card p:last-child { margin-bottom: 0; }
+.overview-card strong { color: var(--text); }
+.role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 4px 0 18px; }
+.role-chip { background: var(--bg-card-strong); border-radius: 6px; padding: 10px 14px; }
+.role-chip .rn { font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; color: var(--accent); font-weight: 700; }
+.role-chip .rd { font-size: 13px; color: var(--text-muted); line-height: 1.5; display: block; margin-top: 2px; }
+
+.attr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px 28px; margin-top: 28px; }
+.attr-item .al { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 700; display: block; margin-bottom: 6px; }
+.attr-item .av { font-size: 14.5px; line-height: 1.6; color: var(--text); }
 
 /* ============ Council cards ============ */
 .council-list { display: flex; flex-direction: column; gap: 28px; }
@@ -525,6 +545,36 @@ footer { padding: 56px 0 80px; }
 @media (max-width: 760px) {
   .theme-toggle { top: 14px; right: 14px; width: 36px; height: 36px; }
 }
+
+/* ============ Back to top ============ */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  cursor: pointer;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  transition: background .15s ease, border-color .15s ease, opacity .2s ease, transform .2s ease;
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
+.back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.back-to-top:hover { border-color: var(--border-strong); }
+.back-to-top:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.back-to-top svg { width: 18px; height: 18px; }
+@media (max-width: 760px) {
+  .back-to-top { bottom: 14px; right: 14px; width: 36px; height: 36px; }
+}
 </style>
 </head>
 <body>
@@ -535,6 +585,12 @@ footer { padding: 56px 0 80px; }
   </svg>
   <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+  </svg>
+</button>
+
+<button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
   </svg>
 </button>
 
@@ -566,7 +622,7 @@ footer { padding: 56px 0 80px; }
     </div>
 
     <h1>CVP Analysis: Structural Conditional Assessment Offering</h1>
-    <p class="dek">Problem–solution, product–market, and business-model fit for the conditional structural assessment offering — pressure-tested by a six-member council before a rand is spent on sales.</p>
+    <p class="dek">Problem–solution, product–market, and business-model fit for the conditional structural assessment offering, pressure-tested by a six-member council before a rand is spent on sales.</p>
 
     <div class="metarow">
       <div class="metaitem"><span class="k">Subject</span><span class="v">Structural condition assessment offering</span></div>
@@ -580,6 +636,7 @@ footer { padding: 56px 0 80px; }
 
 <nav class="toc">
   <div class="wrap toc-inner">
+    <a href="#idea">The idea</a>
     <a href="#verdict">Verdict</a>
     <a href="#scores">Council scores</a>
     <a href="#market">Market context</a>
@@ -593,13 +650,49 @@ footer { padding: 56px 0 80px; }
   </div>
 </nav>
 
+<div class="wrap" style="padding-top: 36px;">
+  <div class="overview-card">
+    <span class="eyebrow">Before you read on</span>
+    <h2>How this report works</h2>
+    <p>This is Maru Spaces' internal method for pressure-testing a new idea before money is spent on it. Instead of one opinion, a "council" of six independent personas each argue a specific angle on the idea below, score it out of 10, and state a stance. A Judge then reads all six and issues a single call: <strong>GO</strong>, <strong>RESHAPE</strong>, or <strong>KILL</strong>, with a confidence level and the cheapest next test to run.</p>
+    <div class="role-grid">
+      <div class="role-chip"><span class="rn">Contrarian</span><span class="rd">Assumes the idea fails; hunts for the fatal flaw</span></div>
+      <div class="role-chip"><span class="rn">Expansionist</span><span class="rd">Argues the biggest version of the opportunity</span></div>
+      <div class="role-chip"><span class="rn">Logician</span><span class="rd">Tests whether the reasoning holds up on its own terms</span></div>
+      <div class="role-chip"><span class="rn">Researcher</span><span class="rd">Checks the idea against real market data and precedent</span></div>
+      <div class="role-chip"><span class="rn">Buyer</span><span class="rd">Reacts as the person who'd actually have to pay for this</span></div>
+      <div class="role-chip"><span class="rn">Fit Finder</span><span class="rd">Scores problem-solution, product-market, and business-model fit</span></div>
+    </div>
+    <p>Fastest path through this document: start with <strong>Verdict</strong> for the bottom line, skim <strong>Council scores</strong> for the at-a-glance comparison, then open any persona's card below for the full reasoning behind their number.</p>
+  </div>
+</div>
+
 <main>
+
+<section id="idea">
+  <div class="wrap">
+    <span class="eyebrow">01 · The idea</span>
+    <h2 class="h">The <em>idea</em></h2>
+    <p class="lede">What Maru Spaces is proposing to build, in plain terms, before the council's reads.</p>
+    <div class="brief-block">
+      A third-party structural and building condition assessment service for South Africa, modeled on TÜV Rheinland's local structural condition assessment offering: independent inspection and reporting on a building's structural integrity, safety, and regulatory compliance. Reports are designed to support regulatory submissions, occupancy and renovation decisions, risk identification, and repair-versus-demolition calls.
+    </div>
+    <div class="attr-grid">
+      <div class="attr-item"><span class="al">Target buyers</span><span class="av">Private property owners and landlords (who carry legal compliance responsibility under the National Building Regulations Act), plus municipalities and state entities under acute budget and infrastructure-collapse pressure.</span></div>
+      <div class="attr-item"><span class="al">Pricing model</span><span class="av">Fit-for-purpose for the local market: a flat preliminary fee followed by a detailed assessment fee, structured to match how the work is actually costed rather than a blunt percentage-of-value formula.</span></div>
+      <div class="attr-item"><span class="al">Competitors</span><span class="av">TÜV Rheinland (global brand, quote-only pricing) and local structural engineering firms (SRSQS, SiVEST, VIP Consulting), competing largely on price since ECSA's fee guideline is unenforceable.</span></div>
+      <div class="attr-item"><span class="al">Maru's starting position</span><span class="av">Extensive professional relationships across the built-environment space, plus an ECSA-accredited structural engineer now on record as engineer of record for the offering. No completed assessments or reference clients for this specific offering yet.</span></div>
+      <div class="attr-item"><span class="al">Route to market</span><span class="av">Municipal and government work runs through formal tender processes; private owners can be sold to directly.</span></div>
+      <div class="attr-item"><span class="al">Goal</span><span class="av">Land the first paying client within 30 days.</span></div>
+    </div>
+  </div>
+</section>
 
 <section id="verdict">
   <div class="wrap">
-    <span class="eyebrow">01 — The judgment</span>
+    <span class="eyebrow">02 · The judgment</span>
     <h2 class="h">The <em>verdict</em></h2>
-    <p class="lede">Six independent reads, synthesized. Not an average of the scores — a resolved call.</p>
+    <p class="lede">Six independent reads, synthesized, against an updated brief. Not an average of the scores: a resolved call.</p>
 
     <div class="verdict">
       <div class="verdict-top">
@@ -607,41 +700,41 @@ footer { padding: 56px 0 80px; }
       </div>
       <h3>RESHAPE</h3>
       <span class="confidence">Confidence: High</span>
-      <p class="oneliner">"The market pain is real and current, but you're pitching a product you can't yet legally deliver, priced with a formula that doesn't match how the work is actually costed — fix sequencing and pricing before you touch sales."</p>
+      <p class="oneliner">"The two gaps that forced a reshape last time, no engineer of record and mispriced fees, are solved. What's left is a trust gap: nothing yet proves the market would choose Maru Spaces over an incumbent it's never heard of."</p>
 
       <div class="vgrid">
         <div class="vblock full">
           <div class="lbl">Why</div>
-          <p>Every persona converges on the same fault line — even the Expansionist, who loves the upside, says sequence delivery before sales. This isn't an engineering-inspection business, it's a liability-transfer business, and the report is only worth anything with a registered ECSA engineer's signature on it. Maru has none yet. The Logician and Buyer independently flag the same pricing flaw: cost-to-inspect scales with floor area and structural complexity, not market value, so a value-based fee will misprice jobs and read as self-serving. The two buyer segments also pull in opposite directions on timeline: municipalities have the sharpest pain but a 3–9 month tender clock; private owners can close in 30 days but have the weakest legal-urgency hook.</p>
+          <p>With an ECSA-accredited engineer of record and a fit-for-purpose pricing model now in place, the operating and pricing objections that drove the original RESHAPE are resolved, and the underlying mechanism holds together cleanly (Logician 7/10, Researcher 7/10). But re-running the council surfaced a sharper, different gap: the Contrarian, the Buyer, and the Fit Finder independently converged on the same finding, Maru Spaces now has credentials every competitor also has, and zero track record to earn trust in a category where trust is the entire product. The 30-day clock also still only works pointed at private owners; municipal tender cycles structurally exclude that channel from the timeline no matter how acute the pain is (Logician, Researcher, and Contrarian all flag this independently).</p>
         </div>
         <div class="vblock risk">
           <div class="lbl">Biggest risk</div>
-          <p>Selling before you can deliver. Landing a client without a named, credentialed engineer of record exposes both parties to real liability if the report is ever contested — and it fails the trust test on contact one, since the Buyer's first question was literally "who's signing this, and are they registered?"</p>
+          <p>A single engineer of record means the whole offering's capacity, credibility, and liability exposure rides on one person. Paired with a rushed, cold-pitched first client instead of a warm referral, a fast wrong engagement in a liability-heavy category isn't a lost sale, it's a professional-negligence and reputational event that can end the offering before it has a second customer.</p>
         </div>
         <div class="vblock">
           <div class="lbl">Biggest upside</div>
-          <p>The Expansionist's reframe is the right one: this isn't an inspection product, it's a risk-shield product, and Maru's existing property network is a real distribution advantage nobody else in the competitive set has. The assessment can be a loss-leader into higher-margin remediation referrals.</p>
+          <p>TÜV's slow, quote-only sales process and local firms' race-to-the-bottom pricing leave real room for a responsive, credentialed, fixed-scope offering. The George building collapse, still generating headlines and a July 2025 ECSA disciplinary finding against the signing engineer, gives Maru Spaces a live, citable reason to pitch urgency right now.</p>
         </div>
 
         <hr class="divider-rule full">
 
         <div class="vblock full">
           <div class="lbl">Fit read</div>
-          <p><strong>Problem–Solution 5/10 · Product–Market 3/10 · Business Model 4/10.</strong> Product-Market Fit is the real gap — there's no differentiated promise beyond "we also do inspections," and zero delivery capability or reference client to make that promise credible.</p>
+          <p><strong>Problem-Solution 7/10 · Product-Market 3/10 · Business Model 4/10.</strong> Product-Market Fit is the real gap: the category is validated (competitors already get paid for exactly this), but nothing shows the market pulling toward Maru Spaces specifically over SRSQS, SiVEST, or TÜV.</p>
         </div>
         <div class="vblock full">
           <div class="lbl">Money read</div>
-          <p>Don't lead with a value-based percentage fee — it reads as self-serving and isn't how competitors price. Lead with a cheap, fixed-fee preliminary assessment (roughly R1,500–R3,000, per the Buyer's own number, or free as a loss-leader) to get a foot in the door fast, and hold the floor-area/complexity-based detailed fee for the second, qualified stage. Time-to-first-dollar inside 30 days is achievable only through one private owner in active distress — not through general compliance messaging, and not through any municipal channel.</p>
+          <p>Pricing is out of scope for this run and taken as solved. Time-to-first-dollar inside 30 days is realistic only through the private-owner segment sourced via existing relationships; municipal revenue is real but runs on a 3-9 month tender cycle, not a 30-day one.</p>
         </div>
 
         <div class="vblock full" style="background:var(--bg-card-strong); padding:22px 24px; border-radius:6px;">
           <div class="lbl">The cheapest 48-hour test</div>
-          <p>Before writing a single word of marketing: get one ECSA-registered structural engineer to informally agree to be your engineer of record and quote their day-rate for a preliminary site visit. Then call three people in the existing property network dealing with a distressed building right now (post-notice, pre-sale, insurance renewal) and offer that engineer's preliminary assessment at cost or free — framed explicitly around "who's signing this" and "here's exactly what it costs." If none of the three bite in 48 hours, the private-owner urgency assumption is wrong.</p>
+          <p>Call the three to five warmest built-environment relationships and ask exactly this: "who do you know with a live structural concern right now." Landing one qualifying conversation with an actual dated trigger, a sale, a renovation permit, an insurance renewal, a post-damage claim, proves the channel exists and tests whether a real prospect responds to Maru's specific offer, not just the category.</p>
         </div>
 
         <div class="vblock full">
-          <div class="lbl">If reshape — the pivot</div>
-          <p>Reframe from "structural assessment service" to <strong>"building risk-shield for distressed properties"</strong>: (1) lock in an engineer-of-record partner before any sales conversation, (2) replace value-based pricing with a fixed or floor-area-based fee for both stages, (3) target only property owners with a named, active distress trigger sourced through the existing network, and (4) treat municipal work as a separate, longer-cycle track entered via emergency/deviation procurement on one condemned-building case study — not part of the 30-day plan.</p>
+          <div class="lbl">If reshape: the pivot</div>
+          <p>Narrow the 30-day goal explicitly to the private-owner segment sourced through existing relationships; keep municipal work as a separate, longer-cycle track pursued via emergency or deviation procurement rather than folding it into the 30-day plan. And build one concrete differentiator beyond "we have an ECSA engineer": a fixed turnaround guarantee, a plain-English report template, or one bank or insurer that pre-accepts the report format, before broad outreach begins.</p>
         </div>
       </div>
     </div>
@@ -650,9 +743,9 @@ footer { padding: 56px 0 80px; }
 
 <section id="scores">
   <div class="wrap">
-    <span class="eyebrow">02 — The scorecard</span>
+    <span class="eyebrow">03 · The scorecard</span>
     <h2 class="h">Six reads, <em>six numbers</em></h2>
-    <p class="lede">Each council member scores only their own lens, 1 (walk away) to 10 (no-brainer). The spread is the point — where they disagree is where the real risk lives.</p>
+    <p class="lede">Each council member scores only their own lens, 1 (walk away) to 10 (no-brainer). The spread is the point: where they disagree is where the real risk lives.</p>
 
     <div class="scorecard">
       <div class="score-row">
@@ -667,18 +760,18 @@ footer { padding: 56px 0 80px; }
       </div>
       <div class="score-row">
         <div class="score-name">Logician<span class="score-role">First principles</span></div>
-        <div class="score-track"><div class="score-fill" style="width:40%"></div></div>
-        <div class="score-num">4/10</div>
+        <div class="score-track"><div class="score-fill" style="width:70%"></div></div>
+        <div class="score-num">7/10</div>
       </div>
       <div class="score-row">
         <div class="score-name">Researcher<span class="score-role">Evidence</span></div>
-        <div class="score-track"><div class="score-fill" style="width:50%"></div></div>
-        <div class="score-num">5/10</div>
+        <div class="score-track"><div class="score-fill" style="width:70%"></div></div>
+        <div class="score-num">7/10</div>
       </div>
       <div class="score-row">
         <div class="score-name">Buyer<span class="score-role">Voice of customer</span></div>
-        <div class="score-track"><div class="score-fill" style="width:30%"></div></div>
-        <div class="score-num">3/10</div>
+        <div class="score-track"><div class="score-fill" style="width:40%"></div></div>
+        <div class="score-num">4/10</div>
       </div>
       <div class="score-row">
         <div class="score-name">Fit Finder<span class="score-role">Diagnostic</span></div>
@@ -688,7 +781,7 @@ footer { padding: 56px 0 80px; }
     </div>
 
     <div class="overall-band">
-      <span class="lbl">Judge's call — not an average</span>
+      <span class="lbl">Judge's call (not an average)</span>
       <span class="val">RESHAPE</span>
     </div>
   </div>
@@ -696,7 +789,7 @@ footer { padding: 56px 0 80px; }
 
 <section id="market">
   <div class="wrap">
-    <span class="eyebrow">03 — Grounding</span>
+    <span class="eyebrow">04 · Grounding</span>
     <h2 class="h">The <em>market</em> context</h2>
     <p class="lede">Desk research completed before the council convened, used to write a data-grounded brief rather than a hypothetical one.</p>
 
@@ -709,34 +802,34 @@ footer { padding: 56px 0 80px; }
 
     <p style="margin-bottom:14px; color:var(--text-muted); font-size:15px;">Sources consulted:</p>
     <ul class="source-list">
-      <li><a href="https://www.dailymaverick.co.za/article/2026-06-30-r40m-budget-required-to-fix-crumbling-municipal-facilities-in-nelson-mandela-bay/" target="_blank" rel="noopener">Daily Maverick — R40m budget required for Nelson Mandela Bay municipal facilities</a></li>
-      <li><a href="https://businesstech.co.za/news/government/791575/problem-building-crisis-in-south-africa/" target="_blank" rel="noopener">BusinessTech — "Problem buildings" crisis in South Africa</a></li>
-      <li><a href="https://iol.co.za/business-report/economy/2026-07-10-impact-of-municipal-collapse-on-south-africas-economy/" target="_blank" rel="noopener">IOL — Impact of municipal collapse on South Africa's economy</a></li>
-      <li><a href="https://www.timeslive.co.za/news/south-africa/2024-09-08-city-probing-291-problem-building-cases-in-cape-town/" target="_blank" rel="noopener">TimesLIVE — City probing 291 problem building cases in Cape Town</a></li>
-      <li><a href="https://www.dailymaverick.co.za/article/2025-04-04-george-building-collapse-linked-to-regulatory-lapses/" target="_blank" rel="noopener">Daily Maverick — George building collapse linked to regulatory lapses</a></li>
-      <li><a href="https://www.tuv.com/south-africa/en/lp/structural-condition-assessment-services/" target="_blank" rel="noopener">TÜV Rheinland — Structural Condition Assessment Services (SA)</a></li>
-      <li><a href="https://scielo.org.za/scielo.php?script=sci_arttext&pid=S1021-20192018000100002" target="_blank" rel="noopener">SciELO — Impact of discounted professional fees on SA structural engineering consultants</a></li>
-      <li><a href="https://www.saflii.org/za/legis/consol_act/nbrabsa1977476/" target="_blank" rel="noopener">SAFLII — National Building Regulations and Building Standards Act, 1977</a></li>
-      <li><a href="https://www.ecsa.co.za/news-archives/news-archives-2025/guideline-scope-of-services-and-professional-fees-gazetted/" target="_blank" rel="noopener">ECSA — 2025 Guideline Scope of Services and Professional Fees</a></li>
-      <li><a href="https://www.tenderflow.co.za/blog/resources-guides/explainers/how-long-tender-process-takes-advert-to-award/" target="_blank" rel="noopener">TenderFlow — How long the SA tender process takes, advert to award</a></li>
+      <li><a href="https://www.dailymaverick.co.za/article/2026-06-30-r40m-budget-required-to-fix-crumbling-municipal-facilities-in-nelson-mandela-bay/" target="_blank" rel="noopener">Daily Maverick: R40m budget required for Nelson Mandela Bay municipal facilities</a></li>
+      <li><a href="https://businesstech.co.za/news/government/791575/problem-building-crisis-in-south-africa/" target="_blank" rel="noopener">BusinessTech: "Problem buildings" crisis in South Africa</a></li>
+      <li><a href="https://iol.co.za/business-report/economy/2026-07-10-impact-of-municipal-collapse-on-south-africas-economy/" target="_blank" rel="noopener">IOL: Impact of municipal collapse on South Africa's economy</a></li>
+      <li><a href="https://www.timeslive.co.za/news/south-africa/2024-09-08-city-probing-291-problem-building-cases-in-cape-town/" target="_blank" rel="noopener">TimesLIVE: City probing 291 problem building cases in Cape Town</a></li>
+      <li><a href="https://www.dailymaverick.co.za/article/2025-04-04-george-building-collapse-linked-to-regulatory-lapses/" target="_blank" rel="noopener">Daily Maverick: George building collapse linked to regulatory lapses</a></li>
+      <li><a href="https://www.tuv.com/south-africa/en/lp/structural-condition-assessment-services/" target="_blank" rel="noopener">TÜV Rheinland: Structural Condition Assessment Services (SA)</a></li>
+      <li><a href="https://scielo.org.za/scielo.php?script=sci_arttext&pid=S1021-20192018000100002" target="_blank" rel="noopener">SciELO: Impact of discounted professional fees on SA structural engineering consultants</a></li>
+      <li><a href="https://www.saflii.org/za/legis/consol_act/nbrabsa1977476/" target="_blank" rel="noopener">SAFLII: National Building Regulations and Building Standards Act, 1977</a></li>
+      <li><a href="https://www.ecsa.co.za/news-archives/news-archives-2025/guideline-scope-of-services-and-professional-fees-gazetted/" target="_blank" rel="noopener">ECSA: 2025 Guideline Scope of Services and Professional Fees</a></li>
+      <li><a href="https://www.tenderflow.co.za/blog/resources-guides/explainers/how-long-tender-process-takes-advert-to-award/" target="_blank" rel="noopener">TenderFlow: How long the SA tender process takes, advert to award</a></li>
     </ul>
   </div>
 </section>
 
 <section id="brief">
   <div class="wrap">
-    <span class="eyebrow">04 — Reference</span>
+    <span class="eyebrow">05 · Reference</span>
     <h2 class="h">The <em>brief</em>, as put to council</h2>
-    <p class="lede">Every persona judged the identical statement below, so their reads are comparable.</p>
+    <p class="lede">Every persona judged the identical, updated statement below, so their reads are comparable to each other, though not directly to the first council's reads.</p>
     <div class="brief-block">
-      Maru Spaces is launching a structural/building condition assessment offering in South Africa (comparable to TÜV Rheinland's structural condition assessment service): third-party inspection and reporting on a building's structural integrity, safety, and compliance, used to support regulatory submissions, occupancy/renovation decisions, risk identification, and repair vs. demolition decisions. <strong>Target buyers:</strong> private property owners/landlords (who carry legal compliance responsibility under the National Building Regulations Act) and municipalities/state entities (under acute, well-documented budget and infrastructure-collapse pressure). <strong>Pricing model:</strong> a flat preliminary assessment fee, followed by a detailed assessment fee calculated as a percentage of the building's value and/or floor area — no specific price points set. <strong>Maru Spaces' edge:</strong> existing brand and network in the property/built-environment space, but no prior assessors or clients for this specific offering. <strong>Competitors:</strong> TÜV Rheinland (global brand, quote-only pricing) and local structural engineering firms (SRSQS, SiVEST, VIP Consulting), who compete largely on price since ECSA's fee guideline is unenforceable. Municipal/government work runs through formal tender processes; private owners can be sold to directly. <strong>Goal:</strong> land the first paying client within 30 days.
+      Maru Spaces is launching a structural/building condition assessment offering in South Africa (comparable to TÜV Rheinland's structural condition assessment service): third-party inspection and reporting on a building's structural integrity, safety, and compliance, used to support regulatory submissions, occupancy/renovation decisions, risk identification, and repair vs. demolition decisions. <strong>Target buyers:</strong> private property owners/landlords (who carry legal compliance responsibility under the National Building Regulations Act) and municipalities/state entities (under acute, well-documented budget and infrastructure-collapse pressure). <strong>Engineer of record:</strong> an ECSA-accredited structural engineer is now on record for the offering, and Maru Spaces has extensive professional relationships across the built-environment space. <strong>Pricing model:</strong> fit-for-purpose for this market, taken as a given and out of scope for this run. <strong>Competitors:</strong> TÜV Rheinland (global brand, quote-only pricing) and local structural engineering firms (SRSQS, SiVEST, VIP Consulting), who compete largely on price since ECSA's fee guideline is unenforceable. Municipal/government work runs through formal tender processes; private owners can be sold to directly. <strong>Goal:</strong> land the first paying client within 30 days.
     </div>
   </div>
 </section>
 
 <section id="contrarian">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Contrarian</em></h2>
     <p class="lede">Mandate: assume the idea fails. Find the fatal flaws and the load-bearing assumptions that are probably wrong.</p>
 
@@ -745,18 +838,18 @@ footer { padding: 56px 0 80px; }
         <div><div class="persona-name">Contrarian</div><span class="persona-role">Red team</span></div>
         <div class="persona-score">3 / 10</div>
       </div>
-      <p class="persona-stance">This dies from a two-sided cold-start problem in a market that punishes unqualified assessors with legal liability, and Maru has no delivery capability to sell against a 30-day clock.</p>
+      <p class="persona-stance">This dies from a single point of failure, one engineer of record, and a 30-day clock that only fits a buyer segment nobody has actually reached yet.</p>
       <div class="persona-body">
         <ol>
-          <li><strong>You're selling a signature you can't yet produce.</strong> A structural condition assessment report used for regulatory submissions or demolition decisions needs sign-off from a registered professional engineer (ECSA Pr Eng) carrying personal liability. Maru has no prior assessors — meaning day one, it's either subcontracting the liability-bearing work (margin gets squeezed to nothing) or issuing a report nobody can legally act on. "We're a property brand that white-labeled an engineer" is not where you want to be standing if a building later fails.</li>
-          <li><strong>The pricing model actively repels the best 30-day prospects.</strong> A fee based on % of building value with no price points set means every landlord approached in month one gets a quote-shaped question mark — exactly TÜV's "quote-only" weakness, self-inflicted, in the window with least room to lose deals.</li>
-          <li><strong>Municipal demand is real but structurally unavailable in 30 days.</strong> The acute pain (291 problem buildings, R40m in Nelson Mandela Bay, R220bn in Gauteng) sits in a tender channel that runs months, not weeks, and typically requires a track record and CIDB grading Maru doesn't have. If the 30-day plan quietly leans on municipal urgency as validation, that's a tell the plan isn't real.</li>
-          <li><strong>Private landlords are "cheap to reach, expensive to convert."</strong> NBR compliance liability sits with owners, but most aren't currently being enforced against. Absent an active notice, sale, or insurance trigger, "get assessed because the law technically requires it" is a weak pitch against firms with existing relationships and lower, known prices.</li>
-          <li><strong>Brand equity in property doesn't transfer to trust in structural safety.</strong> Being known for property isn't the same as being trusted with a repair-vs-demolish call. The first prospect's obvious question — "who's inspecting my building, and what's their track record?" — has no good answer yet.</li>
+          <li><strong>The engineer of record is a single point of failure, and everyone in this market knows it.</strong> One ECSA-accredited engineer signing off on structural assessments means the entire capacity, credibility, and liability exposure rides on one person's calendar, judgment, and willingness to put their registration number on a brand-new venture's reports. If that engineer is part-time or moonlighting, buyers will ask who's actually doing this, and the honest answer, one person backed by a company with zero track record in structural assessment, kills the deal for anyone risk-averse enough to need the assessment in the first place.</li>
+          <li><strong>The buyers who need this most can't buy it in 30 days.</strong> Municipalities and state entities under acute infrastructure-collapse pressure procure through formal tender: months of process, vendor registration, and often BBBEE/CIDB credentials Maru Spaces likely doesn't have yet. That segment is structurally excluded from the 30-day goal, which means the real target for month one is private owners, a segment that only urgently buys when forced to.</li>
+          <li><strong>Referral relationships and price competition pull in opposite directions.</strong> The pitch leans on Maru's built-environment network to get in the door, but local firms already compete on price. If Maru prices at fit-for-purpose rather than rock-bottom, the network doesn't automatically save it, those same relationships are the referral sources for SRSQS, SiVEST, and VIP Consulting, who've done this for years and get the benefit of the doubt on a first, unproven engagement.</li>
+          <li><strong>Structural assessment doesn't tolerate a soft launch.</strong> A missed defect that later causes a collapse, injury, or a failed regulatory submission is catastrophic and public, especially given South Africa's current scrutiny of infrastructure collapse. Racing to land a client in 30 days creates pressure to say yes to the first inbound lead regardless of fit or whether the one engineer has bandwidth to do it properly.</li>
+          <li><strong>An ECSA engineer of record is table stakes, not differentiation.</strong> Every credible competitor has one too, plus a portfolio of completed work Maru Spaces doesn't have yet. Nobody buys a structural assessment on marketing; they buy it because they trust the assessor's judgment will hold up under regulatory, insurance, or legal scrutiny, and that trust has to be earned, not asserted.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one thing the founder must hear</span>
-          You do not have a product yet — you have a brand and a pricing question mark wrapped around a service that requires someone else's professional signature and liability. Before spending one day on sales, answer: who is the engineer of record, what do they cost, and what price will the landlord actually see.
+          The 30-day deadline is optimizing for the wrong variable. In a liability-heavy, trust-gated category, what kills you isn't a slow start, it's a fast, wrong first engagement the one engineer of record can't properly staff, or that goes badly. That's not a lost sale, it's a live professional-indemnity and reputational event that can end the offering before it has a second customer.
         </div>
       </div>
     </div>
@@ -765,7 +858,7 @@ footer { padding: 56px 0 80px; }
 
 <section id="expansionist">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Expansionist</em></h2>
     <p class="lede">Mandate: make the strongest possible case for the idea. Find the 10x version and the leverage points the founder isn't seeing.</p>
 
@@ -774,18 +867,18 @@ footer { padding: 56px 0 80px; }
         <div><div class="persona-name">Expansionist</div><span class="persona-role">Bull case</span></div>
         <div class="persona-score">8 / 10</div>
       </div>
-      <p class="persona-stance">This is a real, fundable wedge, not a moonshot — the strongest offering in the Maru Spaces portfolio for landing revenue fast, but fragile if you compete on price or wait for tenders.</p>
+      <p class="persona-stance">This is a land-grab into a market where the incumbent won't return calls and doing nothing is about to become the riskier choice for buyers, go structural-first as the wedge into the whole built-environment compliance stack.</p>
       <div class="persona-body">
         <ol>
-          <li><strong>You're not selling an inspection, you're selling a legal liability shield.</strong> Under NBR, the owner carries personal/directorial liability if a building fails. A third-party report is the artifact that transfers risk from "I didn't know" to "I had it professionally assessed" — sold through insurers, attorneys, and body corporate managers as risk mitigation, not maintenance admin. That's a 5–10x higher price ceiling than "engineering inspection."</li>
-          <li><strong>The real leverage isn't the assessment fee, it's what comes after it.</strong> TÜV and the ECSA-guideline firms stop at the report. Maru's existing property network can close the loop: assessment → flagged remediation scope → contractor/supplier referral → repeat assessment for sign-off. The inspection becomes a lead-gen loss leader for a remediation referral fee 3–10x the assessment ticket — something liability-constrained engineering practices structurally can't do.</li>
-          <li><strong>Municipalities aren't a 12-month tender slog if you enter through the side door.</strong> Most municipal supply chain policies allow deviation procurement for imminent safety risk. Target one condemned building through a ward councillor or municipal manager as a proof-of-concept, done in weeks, then use that case study to get onto the accredited-provider panel for the next 24 months of work. First deal is a foot in the door, not the deal.</li>
-          <li><strong>The two-stage pricing model is a built-in qualification funnel — the 30-day unlock.</strong> Price the preliminary assessment as a low-friction "peace of mind" product (a few thousand rand, not a quote-only black box), and treat it as the entire go-to-market: every preliminary client becomes a qualified lead for the much bigger detailed fee on higher-value commercial buildings.</li>
-          <li><strong>Adjacent expansion is enormous and compounding.</strong> The same delivery capability extends to pre-purchase due-diligence assessments (recurring, high-margin, no tender risk), insurance-mandated periodic re-assessments, fire/electrical compliance bundling, and eventually a licensable "certified building health score" — the entry ticket into becoming the compliance-and-risk layer for South African real estate.</li>
+          <li><strong>TÜV's quote-only pricing on a price-sensitive market is a gift, not a moat.</strong> A global brand that won't publish price and won't move fast is functionally absent from the SMB landlord and mid-tier municipal segment. Maru doesn't need to out-brand TÜV, it needs to out-respond it: bookable inspection within five days, fixed price, plain-English report, and it wins every deal TÜV would take three weeks to quote.</li>
+          <li><strong>The real lever isn't the inspection, it's the compliance event that triggers it.</strong> Structural assessment is a checkpoint, not a destination: insurance renewal, sectional title dispute, pre-sale due diligence, post-flood or fire damage claims, occupancy certificate renewals, bank bond conditions on commercial property. Each is a recurring, calendar-driven demand generator that doesn't require cold prospecting, it requires sitting inside the workflow of the professionals who already trigger these events: insurers, conveyancing attorneys, bond originators, body corporate managers.</li>
+          <li><strong>Municipal collapse isn't a headwind, it's the whole opportunity.</strong> South Africa's infrastructure crisis is generating a wave of forced, budgeted, politically visible work: condemned buildings, hijacked-building remediation, post-collapse liability audits. Most municipal supply chain policies allow emergency or limited-bidder procurement below a threshold for urgent safety risk, exactly the kind of work a small firm with ECSA accreditation can win without a full tender fight. One well-documented emergency assessment, done well and fast, becomes the case study that opens the next municipality's vendor list.</li>
+          <li><strong>Existing built-environment relationships are underpriced as a distribution channel.</strong> If Maru already has trust with architects, conveyancers, property managers, or contractors, the fastest path to a first client in 30 days isn't cold outbound, it's asking a handful of those relationships who they know with a live structural concern right now.</li>
+          <li><strong>The report itself is a reusable asset, not a one-off deliverable.</strong> A well-built assessment template, a repair-vs-demolish decision framework, a compliance checklist mapped to the NBR, becomes IP Maru can license, white-label for insurers doing portfolio risk audits, or turn into a recurring structural-health-monitoring subscription for landlords with multiple properties. The inspection is the wedge; the monitoring relationship is the margin.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one thing the founder must hear</span>
-          Don't let "no assessors, no clients yet" become an excuse to slow-walk this into a tender-cycle business. The fastest path to a paying client in 30 days is one landlord or body corporate with real compliance anxiety, sold the cheap preliminary assessment directly, fulfilled by one contracted engineer brought in before any internal delivery capability is built. Prove the sales motion first; build the assessor bench after the first invoice is paid.
+          Don't sell "a structural assessment," sell "the fastest path to a signed-off decision," and go find the referral partners, insurers, attorneys, agents, one municipal official facing a condemned building, who already have a client stuck without one. The first client in 30 days comes from someone else's urgent, unresolved problem, not from cold outreach explaining what a structural condition assessment is.
         </div>
       </div>
     </div>
@@ -794,27 +887,27 @@ footer { padding: 56px 0 80px; }
 
 <section id="logician">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Logician</em></h2>
-    <p class="lede">Mandate: no outside research. Reason from first principles — does the mechanism hold together?</p>
+    <p class="lede">Mandate: no outside research. Reason from first principles: does the mechanism hold together?</p>
 
     <div class="persona-card">
       <div class="persona-head">
         <div><div class="persona-name">Logician</div><span class="persona-role">First principles</span></div>
-        <div class="persona-score">4 / 10</div>
+        <div class="persona-score">7 / 10</div>
       </div>
-      <p class="persona-stance">The demand signal is real, but the go-to-market logic as described doesn't hold together well enough to work in 30 days, and the pricing mechanism has a category error baked in.</p>
+      <p class="persona-stance">The mechanism is sound and the market timing is real; the 30-day "first client" goal is the weak link, not the business model.</p>
       <div class="persona-body">
         <ol>
-          <li><strong>Pricing mismatch is a logic error, not a detail.</strong> Cost-to-deliver scales with physical/technical variables (floor area, structural system, storeys, access, deterioration complexity), not market value. A R40m finished home and a R40m bare-concrete warehouse cost roughly the same to inspect but would be priced wildly differently under a value-based fee — location and finishes drive value, not structural complexity.</li>
-          <li><strong>The 30-day goal and the strongest pain point live in different sales cycles.</strong> The documented urgency (291 Cape Town cases, R40m NMB shortfall, R220bn Gauteng backlog) sits entirely in the municipal/tender channel — months, not weeks. The private-owner channel can close in 30 days but is explicitly the weaker-incentive segment. You can't borrow the municipal crisis story to sell to private owners and expect the same urgency.</li>
-          <li><strong>There is no product yet, only a sales motion.</strong> A report used for regulatory submission or repair-vs-demolish decisions must be signed off by an ECSA-registered professional to mean anything legally. This flips the sequencing: delivery capability is the actual bottleneck, not sales, and it's being treated as a fast-follow.</li>
-          <li><strong>Competing on price with a subcontracted delivery model is a losing structure.</strong> Local firms already compete on price with no broker markup between client and engineer. Selling and then subcontracting means either eating the engineer's margin or adding a markup that loses the price-competition game being entered.</li>
-          <li><strong>The regulatory hook only creates urgency if enforcement is real.</strong> If municipalities aren't actively auditing or penalizing private owners for non-compliance — plausible, given the same municipalities are under acute budget and capacity strain — the private-owner channel loses its urgency trigger too, reducing to "nice to have risk insurance," a much slower sell than assumed.</li>
+          <li><strong>The core mechanism checks out.</strong> Third-party structural inspection is a straightforward professional-services trade: a credentialed engineer assesses a physical asset, produces a report, and the buyer uses that report to satisfy a legal, financial, or safety decision. No novel technology risk, no two-sided marketplace problem, no adoption curve to fight.</li>
+          <li><strong>The regulatory forcing function generates demand, not marketing does.</strong> NBR compliance obligations mean private owners don't need convincing that structural risk matters, they need convincing Maru Spaces is a credible, low-friction way to discharge an obligation they already have. That only collapses the sales cycle where there's a trigger event, a sale, a renovation permit, an insurance renewal, a tenant dispute, visible damage, forcing the decision now. Without a trigger, the obligation stays theoretical and gets procrastinated.</li>
+          <li><strong>The two buyer segments have incompatible sales-cycle physics, and only one fits 30 days.</strong> Municipal and state work runs through tenders, weeks to months of process by design, structurally incompatible with a 30-day close regardless of relationship quality or need intensity. The private-owner segment is the only one where a direct sale in 30 days is mechanically possible.</li>
+          <li><strong>The engineer of record solves the buyer's real fear, but only once demonstrated, not asserted.</strong> The buyer's core risk in this category is paying for a rubber stamp instead of a real assessment that holds up legally. An engineer of record on paper answers that in principle, but a brand-new entrant has zero completed reports and zero referenceable outcomes. This is where the existing professional relationships have to do all the work: converting a warm relationship into a first transaction is categorically faster than converting a cold lead, because the trust deficit is pre-paid by the relationship.</li>
+          <li><strong>Price competition from local firms doesn't threaten the mechanism, it just sets the ceiling.</strong> That's a margin question, not a demand question, and it's already out of scope for this run.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one thing the founder must hear</span>
-          Fix the sequencing before touching pricing or sales. Lock down one registered engineer/firm as delivery partner first, and pick one narrow, urgent private-owner trigger — a pre-sale, insurance, or transfer requirement, or an active repair-vs-demolish decision — rather than general NBR compliance. Selling to a segment on a timeline its own procurement process can't honor is a category error, and should be dropped from the 30-day plan entirely.
+          The 30-day clock only makes sense pointed at the three to five warmest relationships in the existing built-environment network who have an active, dated trigger event right now, not at general market outreach and not at any municipal tender. If no one in the existing network currently has a live trigger, the 30-day target isn't a sales problem to solve, it's a false deadline that should be renegotiated before it forces a bad first engagement.
         </div>
       </div>
     </div>
@@ -823,27 +916,27 @@ footer { padding: 56px 0 80px; }
 
 <section id="researcher">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Researcher</em></h2>
-    <p class="lede">Mandate: real-world evidence only. Competitors, market signals, comparable pricing — is the world saying yes or no?</p>
+    <p class="lede">Mandate: real-world evidence only. Competitors, market signals, comparable pricing: is the world saying yes or no?</p>
 
     <div class="persona-card">
       <div class="persona-head">
         <div><div class="persona-name">Researcher</div><span class="persona-role">Evidence</span></div>
-        <div class="persona-score">5 / 10</div>
+        <div class="persona-score">7 / 10</div>
       </div>
-      <p class="persona-stance">The pain is real and well-documented, the fee model matches how the industry already prices this work, but nothing in the market makes a 30-day first sale plausible through the municipal channel — it has to be landed privately, with zero delivery track record to sell against.</p>
+      <p class="persona-stance">The market demand signal is genuinely strong, regulatory pressure, a fatal collapse still in the news, municipal collapse as a governance headline, but the 30-day timeline is mismatched to how these buyers actually purchase.</p>
       <div class="persona-body">
         <ol>
-          <li><strong>The demand signal is dated and live, not hypothetical.</strong> The George building collapse (May 2024, 34 dead, concrete tested at 13 MPa against a required 19–25 MPa, an unqualified engineer self-certifying competency) is now driving actual legislative change: the Housing Consumer Protection Act, a new CBE mandatory structural-failure reporting protocol, and a draft bill overhauling the 1996-era NBR Act. See <a href="https://www.dailymaverick.co.za/article/2025-04-04-george-building-collapse-linked-to-regulatory-lapses/" target="_blank" rel="noopener">Daily Maverick</a> and <a href="https://www.thecivilengineer.org/news/george-collapse-tragedy-final-report-a-grim-reminder-of-regulatory-lapses-in-construction" target="_blank" rel="noopener">TheCivilEngineer.org</a>.</li>
-          <li><strong>Municipal demand is confirmed at scale but the sales cycle kills the 30-day goal.</strong> Cape Town has 291 active problem-building cases with legal action against 55 owners (<a href="https://www.timeslive.co.za/news/south-africa/2024-09-08-city-probing-291-problem-building-cases-in-cape-town/" target="_blank" rel="noopener">TimesLIVE</a>); standard SA public-sector tenders run 8–16 weeks for simple procurement and 4–12 months for complex technical consultancy (<a href="https://www.tenderflow.co.za/blog/resources-guides/explainers/how-long-tender-process-takes-advert-to-award/" target="_blank" rel="noopener">TenderFlow</a>). Municipalities are a 3–9 month channel under any circumstance, never a 30-day one.</li>
-          <li><strong>The percentage-of-value pricing model is the industry default — good news and bad news.</strong> ECSA's own 2025 gazetted fee guideline calculates fees as a percentage of Cost of Works (<a href="https://www.ecsa.co.za/news-archives/news-archives-2025/guideline-scope-of-services-and-professional-fees-gazetted/" target="_blank" rel="noopener">ECSA</a>), so buyers already understand the structure. But the Competition Commission ruled ECSA's fee scale unenforceable as price-fixing (<a href="https://scielo.org.za/scielo.php?script=sci_arttext&pid=S1021-20192018000100002" target="_blank" rel="noopener">SciELO</a>), so local firms already discount off that baseline — there's no price floor and no differentiation on the pricing mechanism itself.</li>
-          <li><strong>The legal hook for private landlords is thinner than the brief implies.</strong> The NBR Act empowers authorities to demand a "documented rational assessment of structural adequacy" in specific circumstances (renovation, load changes, repairs) (<a href="https://www.saflii.org/za/legis/consol_act/nbrabsa1977476/" target="_blank" rel="noopener">SAFLII</a>), but it is not a blanket, proactive mandate the way fire or electrical compliance certificates are. The private-owner pitch has to be built on liability/insurance/renovation-decision value, not "the law requires this."</li>
-          <li><strong>TÜV Rheinland validates the category exists in SA today</strong> (<a href="https://www.tuv.com/south-africa/en/lp/structural-condition-assessment-services/" target="_blank" rel="noopener">tuv.com</a>) but publishes no pricing and no visible volume — its presence proves the market is real, not that it's easy or large enough for a second full-price entrant plus a swarm of engineering firms already undercutting on price.</li>
+          <li><strong>Demand is real, not manufactured.</strong> The George building collapse (34 dead, May 2024) is still generating headlines into July 2025, with an ECSA disciplinary tribunal finding the signing structural engineer guilty on five charges for lacking the required qualifications. That's a live, citable case that makes "get a qualified third party to check your building" a sellable, urgent pitch right now. See <a href="https://en.wikipedia.org/wiki/George_building_collapse" target="_blank" rel="noopener">George building collapse: Wikipedia</a> and <a href="https://www.dailymaverick.co.za/article/2025-07-23-george-building-collapse-tribunal-finds-engineer-who-signed-off-plans-guilty-on-five-charges/" target="_blank" rel="noopener">Daily Maverick: tribunal finds engineer guilty</a>.</li>
+          <li><strong>The municipal buyer is real but structurally the wrong channel for a 30-day win.</strong> 128 municipalities' combined operating deficit has reportedly hit R39bn, with a R129bn liquidity shortfall, and National Treasury is actively withholding equitable-share transfers from 69 municipalities including four metros. Distressed municipalities cut discretionary technical spend before anything else, and what work does happen goes through formal RFP/tender processes running months. See <a href="https://www.financialmail.businessday.co.za/features/2026-07-09-behind-the-collapse-of-south-africas-municipalities/" target="_blank" rel="noopener">Financial Mail: behind the collapse</a> and <a href="https://businesstech.co.za/news/government/854493/south-african-engineers-warning-over-critical-infrastructure-collapse/" target="_blank" rel="noopener">BusinessTech: engineers' warning</a>.</li>
+          <li><strong>Private owners are the only realistic 30-day path, and the legal hook is sharp.</strong> NBR Act obligations are explicit that structures must be structurally sound, insurers are already rejecting claims without valid compliance certificates, and property transfers stall without them. That's a fear-based, direct-sale trigger with no tender cycle in the way. See <a href="https://www.landlordsassociation.co.za/what-safety-and-compliance-certificates-do-i-need-in-south-africa/" target="_blank" rel="noopener">Landlords Association SA: safety and compliance certificates</a>.</li>
+          <li><strong>Pricing anarchy among incumbents is Maru's opening, not just a threat.</strong> The Competition Commission ruled ECSA's fee guideline non-competitive back in 2016; ECSA's 2025 re-gazetted guideline is still just a reference table, not enforceable, and lowest-cost bidding is now the market norm among local firms. TÜV Rheinland, meanwhile, is quote-only with a premium global-brand price umbrella. That's a real gap for a mid-market offering that leads with a named, credentialed engineer of record and TÜV-comparable scope. See <a href="https://www.ecsa.co.za/news-archives/news-archives-2025/guideline-scope-of-services-and-professional-fees-gazetted/" target="_blank" rel="noopener">ECSA fee guideline gazetted</a> and <a href="https://scielo.org.za/scielo.php?script=sci_arttext&pid=S1021-20192018000100002" target="_blank" rel="noopener">SciELO: impact of discounted fees</a>.</li>
+          <li><strong>No public price anchor exists for this exact service in South Africa.</strong> General home-inspection pricing isn't the right reference class, structural condition assessments for regulatory, compliance, and repair-vs-demolition decisions are a materially higher-stakes category. That's not a scrutiny of Maru's pricing, already taken as solved, it's a note that the sales conversation has to do more work to justify the fee than it would in a category with transparent pricing.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one thing the founder must hear</span>
-          The 30-day goal is only achievable through the private-owner channel — municipal tenders structurally cannot close in 30 days regardless of how acute the need is. But that channel requires winning on trust and delivery credibility with zero assessors and zero reference clients today, against a global brand on one side and price-discounting local firms on the other. The first client will be won on relationship and hustle, not market tailwinds alone.
+          Point the first 30 days entirely at private owners, landlords, and body corporates, not municipalities. The municipal channel is real and worth building relationships for now, but its tender cycle guarantees it cannot produce a paying client in this timeframe. Use the George collapse and the insurance/compliance-certificate rejection risk as the outbound hook into the existing built-environment relationships; that's the fastest path to a signed engagement.
         </div>
       </div>
     </div>
@@ -852,27 +945,27 @@ footer { padding: 56px 0 80px; }
 
 <section id="buyer">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Buyer</em></h2>
     <p class="lede">Mandate: role-play the target customer, first person. Would they actually pay?</p>
 
     <div class="persona-card">
       <div class="persona-head">
-        <div><div class="persona-name">Buyer</div><span class="persona-role">Voice of customer — private landlord</span></div>
-        <div class="persona-score">3 / 10</div>
+        <div><div class="persona-name">Buyer</div><span class="persona-role">Voice of customer (private landlord)</span></div>
+        <div class="persona-score">4 / 10</div>
       </div>
-      <p class="persona-stance">"I'd take a free preliminary look if a compliance letter is already scaring me, but I'm not paying real money for the detailed assessment until I know exactly what it costs and who's actually walking my building."</p>
+      <p class="persona-stance">"I'll listen, but I'm not signing anything until I see the accreditation on paper and know exactly what's in the deliverable."</p>
       <div class="persona-body">
         <ol>
-          <li><strong>"I don't know your name, and that's a problem."</strong> I've never heard of Maru Spaces doing structural assessments. TÜV I've at least heard of; SRSQS or VIP Consulting my managing agent has probably used before. You're asking me to be your first client while starting fresh on delivery capability — meaning if something goes wrong, or a municipal inspector questions the report, I'm the one holding it. That's my risk, not yours.</li>
-          <li><strong>"Percentage of building value pricing makes me nervous before I even see a number."</strong> My building didn't get more structurally complicated because its municipal valuation went up. That pricing model smells like you're optimizing for your revenue, not my problem. Quote me a fixed number per square meter or storey, upfront, or I'm already halfway out the door.</li>
-          <li><strong>"Who's actually signing the report, and are they ECSA-registered?"</strong> If a dispute or repair-vs-demolition call ever ends up contested, I need a registered engineer's name and number on the document — not a "Maru Spaces" letterhead. Tell me exactly who's inspecting and their credentials, first sentence of the pitch, or I stop listening.</li>
-          <li><strong>"What actually happens if I do nothing?"</strong> Most of us play the odds — NBR enforcement is spotty unless there's already a complaint, a sale in progress, or visible damage. Unless you can point to a specific trigger I'm facing, "for peace of mind" isn't a reason to spend money I don't have to spend this year.</li>
-          <li><strong>"A free or near-free preliminary assessment is the only thing that gets me to say yes today."</strong> If the flat preliminary fee is anything above a token amount — say R1,500–R3,000 — I'll shop around or wait. Free or near-free, in writing, with a same-week site visit and zero further obligation, and I'll take that meeting.</li>
+          <li><strong>"Compliant with what, exactly?"</strong> The NBR Act is a legal minefield, and every report I've seen from these firms hedges itself into uselessness. Show me a sample report before I pay a cent, not after. If it's ten pages of "recommend further investigation" for every finding, that's a report that protects the engineer, not me.</li>
+          <li><strong>"You're new, they're not."</strong> SRSQS and SiVEST have been doing this for decades and I can probably get a mate rate from someone I already know through a contractor. Your extensive built-environment relationships mean nothing to me unless one of those relationships is a personal referral I trust.</li>
+          <li><strong>"Insurance and liability."</strong> If your engineer of record signs off and something still goes wrong, who's carrying the professional indemnity, and how deep is it? TÜV's whole pitch is that the brand absorbs that risk for me. What do you absorb?</li>
+          <li><strong>"Turnaround speed."</strong> I'm usually calling because a tenant's complained, a bank wants a report for finance, or I'm mid-renovation and stuck. If you can't get someone on-site within a week and a report in my hand within two, I'll just call the engineer down the road who can.</li>
+          <li><strong>"Scope creep fear."</strong> Structural assessments have a habit of turning into "and also you need to fix these seven other things," often flagged by firms who conveniently also do remediation work. Are you selling me the assessment, or is this a foot in the door for a bigger remediation contract? Be straight about that upfront.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one thing the founder must hear</span>
-          You don't have a pricing problem, you have a trust problem. I'm being asked to bet my legal compliance on an assessor with no reference clients — before touching the fee structure, get one credible, ECSA-registered engineer's name and face on page one of the pitch. Fix the credibility gap and this moves from a 3 to a 6 or 7 fast.
+          I'm not buying "structural assessment" as a category, I'm buying a specific person's signature that a bank, insurer, tenant, or municipality will accept without a fight. Until you can prove your ECSA engineer's name carries weight with the actual downstream party I need to satisfy, you're a stranger asking me to bet my liability on your say-so. Get one recognizable local reference or one bank or insurer that already accepts your report format, and lead with that, not with the pitch.
         </div>
       </div>
     </div>
@@ -881,30 +974,30 @@ footer { padding: 56px 0 80px; }
 
 <section id="fitfinder">
   <div class="wrap">
-    <span class="eyebrow">05 — Council findings</span>
+    <span class="eyebrow">06 · Council findings</span>
     <h2 class="h">The <em>Fit Finder</em></h2>
     <p class="lede">Mandate: diagnostic, not adversarial. Locate exactly which layer of Fit is missing.</p>
 
     <div class="persona-card">
       <div class="persona-head">
-        <div><div class="persona-name">Fit Finder</div><span class="persona-role">Problem–solution · Product–market · Business model</span></div>
+        <div><div class="persona-name">Fit Finder</div><span class="persona-role">Problem-solution · Product-market · Business model</span></div>
         <div class="persona-score">4 / 10</div>
       </div>
-      <p class="persona-stance">The problem may be real, but this idea currently has more press-clipping evidence than customer evidence, and no delivery capability or differentiated promise to back a 30-day first-client goal.</p>
+      <p class="persona-stance">The offering is validated at the category level, people already pay for structural assessments, but not at the Maru Spaces level: nobody has been shown to prefer Maru Spaces specifically.</p>
       <div class="persona-body">
         <div class="fit-layers">
-          <div class="fit-layer"><span class="lname">Problem–Solution</span><span class="lscore">5/10</span></div>
-          <div class="fit-layer"><span class="lname">Product–Market</span><span class="lscore">3/10</span></div>
+          <div class="fit-layer"><span class="lname">Problem-Solution</span><span class="lscore">7/10</span></div>
+          <div class="fit-layer"><span class="lname">Product-Market</span><span class="lscore">3/10</span></div>
           <div class="fit-layer"><span class="lname">Business Model</span><span class="lscore">4/10</span></div>
         </div>
         <ol>
-          <li><strong>Problem–Solution Fit — 5/10.</strong> The macro evidence is real (291 problem buildings, R220bn Gauteng backlog, an NBR obligation that should generate urgency), but this is desk research about system-level distress, not buyer-level urgency. Two open questions the brief doesn't answer: do private landlords actually search for or budget for third-party assessments today, or does the NBR Act go as unenforced as ECSA's own fee guideline? Frequency is likely low (episodic, trigger-based) but value-at-stake could be high — this layer could clear the bar, but only with direct evidence, not sector statistics.</li>
-          <li><strong>Product–Market Fit — 3/10, the weakest layer.</strong> There is no value proposition yet, only a service description and a pricing mechanism. "Third-party structural assessment and report" is a feature/output, not a promise — TÜV and every local firm already deliver exactly that. Maru's only stated differentiator is brand/network adjacency, which helps lead generation, not why a buyer chooses Maru over an incumbent. Zero assessors, zero prior clients, zero traction signals for this specific offering.</li>
-          <li><strong>Business Model Fit — 4/10.</strong> Pricing is undefined, so CLV vs. CAC can't be evaluated. The two buyer segments have opposite sales motions — slow, competitive tenders on one side, direct one-off hustle on the other — neither a repeatable, scalable acquisition engine. Serving both simultaneously with no price point set is itself a "too many segments at once" red flag, and structural inspection is a commodity-like service local firms already compete on price for.</li>
+          <li><strong>Problem-Solution Fit (7/10).</strong> The macro case is real, not founder-invented: NBR Act compliance liability and documented municipal infrastructure-collapse pressure are independently verifiable, not assumptions. Stronger than customer interviews: the existence of TÜV Rheinland, SRSQS, SiVEST, and VIP Consulting already competing for this work is revealed-preference proof that people currently pay for it. What's missing is anything from Maru Spaces' own customer contact: no conversation, inbound inquiry, or expressed urgency from a named property owner or municipal official confirms this specific audience is problem-aware and searching right now, versus the category simply being provably solvable in general.</li>
+          <li><strong>Product-Market Fit (3/10), the layer most likely to break first.</strong> This is a features list, not a value proposition. "Third-party inspection and reporting on structural integrity, safety, and compliance" describes the service category, identical to what every competitor already delivers. Extensive professional relationships and an ECSA-accredited engineer of record are not differentiators, ECSA accreditation is table stakes for anyone legally allowed to sign off this work, and competitors have it too. Nothing shows why a landlord facing a compliance deadline, or a municipality facing collapse risk, would choose Maru Spaces over SRSQS or TÜV specifically, and there's zero traction: no pilot, no testimonial, no referral, no case study, no pipeline.</li>
+          <li><strong>Business Model Fit (4/10).</strong> Two structurally incompatible acquisition motions are bolted together: direct sale to private owners and formal tender to municipalities. Tender-based government revenue is lumpy and gated by panel status and compliance scoring, not repeatable on a 30-day timeline; private-sale acquisition via personal network is founder-led hustle, not yet a scalable channel. Competing on price against local firms with lower overhead compresses margin exactly where lifetime value needs room to exceed acquisition cost. Pricing itself is out of scope for this run, but the underlying dynamic, two disconnected go-to-market motions, is a business-model risk independent of the price chosen.</li>
         </ol>
         <div class="callout">
           <span class="lbl">The one piece of missing evidence</span>
-          A signed letter of intent — or better, a paid pilot booking — from an actual private property owner or landlord who has committed money to a Maru-delivered assessment specifically. Not a general statement that the market needs inspections. Without that, there's no proof Maru's brand/network adjacency converts into a <em>chosen</em> provider relationship rather than just an <em>aware</em> one.
+          One concrete conversation that surfaces both a differentiated promise and a real prospect's reaction to it, not just a relationship that could theoretically be activated. That single data point would move Product-Market Fit, and the overall score, more than anything else on this list.
         </div>
       </div>
     </div>
@@ -917,15 +1010,15 @@ footer { padding: 56px 0 80px; }
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-note">
-        Produced with <strong style="color:var(--text)">/find-fit</strong> — a six-persona council (Contrarian, Expansionist, Logician, Researcher, Buyer, Fit Finder) that pressure-tests an idea from every angle before a Judge synthesizes one decisive verdict. Council scores are independent reads on each persona's own lens, not inputs to an average — the Judge's verdict resolves the tension between them.
+        Produced with <strong style="color:var(--text)">/find-fit</strong>: a six-persona council (Contrarian, Expansionist, Logician, Researcher, Buyer, Fit Finder) that pressure-tests an idea from every angle before a Judge synthesizes one decisive verdict. Council scores are independent reads on each persona's own lens, not inputs to an average: the Judge's verdict resolves the tension between them.
         <br><br>
-        Built with the actual Maru Spaces logo and logomark, and the brand system's own four-register type set: <strong style="color:var(--text)">DM Serif Display</strong> (headlines), <strong style="color:var(--text)">Cormorant Garamond</strong> italic (accent), <strong style="color:var(--text)">DM Sans</strong> (body/UI), and <strong style="color:var(--text)">JetBrains Mono</strong> (data/labels) — self-hosted from Google Fonts, matched against the Bone / Sand / Clay / Terracotta / Ink palette sampled directly from the Maru Spaces brand guide.
+        Built with the actual Maru Spaces logo and logomark, and the brand system's own four-register type set: <strong style="color:var(--text)">DM Serif Display</strong> (headlines), <strong style="color:var(--text)">Cormorant Garamond</strong> italic (accent), <strong style="color:var(--text)">DM Sans</strong> (body/UI), and <strong style="color:var(--text)">JetBrains Mono</strong> (data/labels); self-hosted from Google Fonts, matched against the Bone / Sand / Clay / Terracotta / Ink palette sampled directly from the Maru Spaces brand guide.
       </div>
       <div class="foot-meta">
         <div><b>Prepared for</b> Maru Spaces</div>
         <div><b>Date</b> 19 July 2026</div>
         <div><b>Method</b> /find-fit</div>
-        <div><b>Status</b> Internal — for review with Mapula</div>
+        <div><b>Status</b> Internal: for review with Mapula</div>
       </div>
     </div>
     <div class="foot-mark">
@@ -953,6 +1046,19 @@ footer { padding: 56px 0 80px; }
     var next = currentIsDark() ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
     try { localStorage.setItem('maru-theme', next); } catch (e) {}
+  });
+})();
+
+(function() {
+  var top = document.getElementById('backToTop');
+  function sync() {
+    if (window.scrollY > 480) top.classList.add('visible');
+    else top.classList.remove('visible');
+  }
+  window.addEventListener('scroll', sync, { passive: true });
+  sync();
+  top.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 })();
 </script>
