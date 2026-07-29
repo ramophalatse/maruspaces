@@ -1,0 +1,11 @@
+.DS_Store
+
+# Raw Higgsfield generation-pipeline scratch assets — not needed to serve
+# the site, kept locally only (source renders live in scroll-world/build/).
+website/scroll-world/encoded/
+website/scroll-world/frames/
+website/scroll-world/posters/
+website/scroll-world/prompts/
+website/scroll-world/refs/
+website/scroll-world/renders/
+website/scroll-world/build/server.log

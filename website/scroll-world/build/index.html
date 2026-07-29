@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Maru Spaces — Design. Interiors. Landscape. Assessed.</title>
+  <meta name="description" content="Scroll through the Maru Spaces design ethos — design, interiors, landscape and conditional assessments." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Brand kit — per Maru Spaces brand guide (MS · BG · 2026.01):
+       Display = DM Serif Display, Editorial = Cormorant Garamond (italic),
+       Body/UI = DM Sans, Technical/labels = JetBrains Mono. All Google Fonts. */
+    :root, .sw-root {
+      --sw-bg: #EDE6D8;
+      --sw-ink: #1B1712;
+      --sw-ink-soft: #6b6156;
+      --sw-accent: #AE5A34;
+      --sw-font-display: 'DM Serif Display', Georgia, serif;
+      --sw-font-editorial: 'Cormorant Garamond', Georgia, serif;
+      --sw-font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+      --sw-font-mono: 'JetBrains Mono', monospace;
+    }
+    :root[data-theme="dark"], .sw-root[data-theme="dark"] {
+      --sw-bg: #1B1712;
+      --sw-ink: #EDE6D8;
+      --sw-ink-soft: #a89c8d;
+      --sw-accent: #c9704a;
+    }
+    body { margin: 0; }
+
+    /* Day/night switch — same pill-with-knob component as the Sanctuary
+       Mandela hero, so the two builds read as one brand once merged. */
+    .theme-switch {
+      position: fixed; z-index: 200; top: clamp(64px, 9vw, 86px); right: clamp(18px, 5vw, 64px);
+      display: flex; align-items: center; justify-content: space-between;
+      width: 62px; height: 34px; padding: 0 7px;
+      background: rgba(27, 23, 18, 0.92); border: none; border-radius: 999px;
+      backdrop-filter: blur(8px); box-shadow: 0 10px 30px -8px rgba(0,0,0,0.5);
+      cursor: pointer;
+      transition: top .5s cubic-bezier(.16,.8,.24,1);
+    }
+    .theme-switch .icon { position: absolute; top: 10px; z-index: 1; display: flex; color: #8A7F6C; transition: color 0.3s ease; }
+    .theme-switch .icon svg { width: 14px; height: 14px; display: block; }
+    .theme-switch .icon.sun { left: 10px; }
+    .theme-switch .icon.moon { left: 38px; }
+    .theme-switch[aria-checked="false"] .icon.sun { color: #AE5A34; }
+    .theme-switch[aria-checked="true"] .icon.moon { color: #F1EAD9; }
+    .theme-switch .knob {
+      position: absolute; top: 3px; left: 3px; width: 28px; height: 28px;
+      border-radius: 50%; background: #F6F1E7; box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      transition: transform 0.4s cubic-bezier(.16,.8,.24,1), background 0.4s ease;
+    }
+    .theme-switch[aria-checked="true"] .knob { transform: translateX(28px); background: #AE5A34; }
+    .theme-switch:focus-visible { outline: 2px solid var(--sw-accent); outline-offset: 3px; }
+    body.sw-past-hero .theme-switch { top: clamp(14px, 2.4vw, 26px); }
+
+    /* the switch floats fixed in the same corner as the topbar's CTA pill —
+       give the CTA breathing room so the two don't overlap */
+    .sw-topcta { margin-right: clamp(64px, 8vw, 76px); }
+
+    /* Wordmark — centered above the nav row, only present over the first
+       (Design) scene, same behavior as the Sanctuary Mandela hero's
+       brand-mark: it scrolls/fades away once you're past that scene, and
+       the nav pill / CTA / switch rise to reclaim the space it held
+       (driven by the body.sw-past-hero class the engine toggles). */
+    #world .sw-nav { top: clamp(64px, 9vw, 86px); }
+    #world .sw-topbar { padding-top: clamp(64px, 9vw, 86px); justify-content: flex-end; }
+    body.sw-past-hero #world .sw-topbar { padding-top: clamp(14px, 2.4vw, 26px); }
+    body.sw-past-hero #world .sw-nav { top: clamp(14px, 2.4vw, 26px); }
+    .sw-wordmark {
+      position: fixed; z-index: 55; top: clamp(14px, 2.4vw, 26px); left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      transition: opacity .5s ease, transform .5s cubic-bezier(.16,.8,.24,1);
+    }
+    .sw-wordmark svg, .sw-wordmark--bottom svg {
+      height: 34px; width: auto; display: block; color: var(--sw-ink);
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.25));
+      transition: color .3s ease;
+    }
+    body.sw-past-hero .sw-wordmark { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+
+    /* Bottom-centre wordmark — the inverse of the top one: hidden over the
+       first (Design) scene, fades in once past-hero (nav has already
+       risen to the top and the top wordmark has faded out). */
+    .sw-wordmark--bottom {
+      position: fixed; z-index: 55; bottom: clamp(14px, 2.4vw, 26px); left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .5s ease, transform .5s cubic-bezier(.16,.8,.24,1);
+    }
+    body.sw-past-hero .sw-wordmark--bottom { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .sw-wordmark--bottom svg { color: #fff; }
+
+    /* Scene 4 (Conditional Assessments) service-category overlay.
+       Higgsfield video can't render legible text, so these are real DOM
+       elements pinned over the birds-eye clip, faded via JS mirroring that
+       scene's own opacity (see script at bottom of body). */
+    #assessments-overlay {
+      position: fixed; inset: 0; z-index: 15; pointer-events: none; opacity: 0;
+    }
+    #assessments-overlay .aow-tag {
+      position: absolute;
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 12px 18px; border-radius: 14px;
+      background: color-mix(in srgb, var(--sw-bg) 72%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid color-mix(in srgb, var(--sw-accent) 35%, transparent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      font-family: var(--sw-font-body);
+    }
+    #assessments-overlay .aow-tag i {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--sw-accent);
+      position: absolute; top: -4px; left: -4px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--sw-accent) 25%, transparent);
+    }
+    #assessments-overlay .aow-tag b {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--sw-accent);
+    }
+    #assessments-overlay .aow-tag span {
+      font-size: 0.8rem; color: var(--sw-ink-soft);
+    }
+    #assessments-overlay .aow-tag--structural { top: 24%; left: 12%; }
+    #assessments-overlay .aow-tag--safety { top: 16%; right: 14%; }
+    #assessments-overlay .aow-tag--compliance { bottom: 20%; left: 46%; }
+    @media (max-width: 860px) {
+      #assessments-overlay .aow-tag { padding: 9px 14px; }
+      #assessments-overlay .aow-tag--structural { top: 18%; left: 8%; }
+      #assessments-overlay .aow-tag--safety { top: 12%; right: 8%; }
+      #assessments-overlay .aow-tag--compliance { bottom: 30%; left: 30%; }
+    }
+  </style>
+</head>
+<body>
+  <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Switch to night view" title="Switch to night view">
+    <span class="icon sun" aria-hidden="true"><svg viewBox="0 -960 960 960" fill="currentColor"><path d="M450-810v-110h60v110h-60Zm0 770v-110h60v110h-60Zm360-410v-60h110v60H810Zm-770 0v-60h110v60H40Zm702-250-43-43 66-66 43 43-66 66ZM195-151l-43-43 66-66 43 43-66 66Zm570 0-66-66 43-43 66 66-43 43ZM218-700l-66-66 43-43 66 66-43 43Zm102.5 379.5Q255-386 255-480t65.5-159.5Q386-705 480-705t159.5 65.5Q705-574 705-480t-65.5 159.5Q574-255 480-255t-159.5-65.5ZM597-363q48-48 48-117t-48-117q-48-48-117-48t-117 48q-48 48-48 117t48 117q48 48 117 48t117-48ZM480-480Z"/></svg></span>
+    <span class="knob"></span>
+    <span class="icon moon" aria-hidden="true"><svg viewBox="0 -960 960 960" fill="currentColor"><path d="M614-668 508-774l106-106 106 106-106 106Zm200 120-66-66 66-66 66 66-66 66ZM483-80q-84 0-157.5-32t-128-86.5Q143-253 111-326.5T79-484q0-146 93-257.5T409-880q-18 98 11 192.63 29 94.64 100 165.74 71 71.1 165.5 100.14Q780-392.45 879-410.47q-26 144.2-138 237.34Q629-80 483-80Zm0-60q100 0 182-57t132-145q-90-8-173-41.5T477.5-480Q414-543 381-625.5T340-797q-88 48-144.5 130.5T139-484q0 143.33 100.33 243.67Q339.67-140 483-140Zm-6-340Z"/></svg></span>
+  </button>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="maru-wordmark" viewBox="0 0 354.2 119.13">
+        <path d="M95.83,76.46c-1.27-.94-2.06-2.37-2.37-4.31-.31-1.93-.47-6.02-.47-12.28V13.96c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h2.93V1.11h-24.38l-28.95,65.74L24.2,1.11H0v2.7h2.17c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v34.57c0,6.56-.23,11.06-.7,13.48-.47,2.42-1.77,4.46-3.9,6.12-2.13,1.66-4.89,2.59-8.29,2.78v2.7h28.42v-2.7c-3.67-.23-6.52-1.22-8.55-2.96-2.03-1.74-3.24-3.76-3.63-6.06-.39-2.3-.59-6.64-.59-13.01V9.32l31.7,71.25h2.75L81.56,9.32v50.57c0,6.64-.19,10.87-.56,12.69-.37,1.82-1.21,3.15-2.52,4.01-1.31.86-3.64,1.29-7,1.29h-2.81v2.7h37.97v-2.7h-3.52c-3.59,0-6.03-.47-7.29-1.41Z"/>
+        <path d="M327.66,1.11v2.7c3.63.23,6.29.88,7.97,1.93,1.68,1.05,2.77,2.48,3.28,4.28.51,1.8.76,4.94.76,9.43v27.07c0,6.17-.21,10.69-.64,13.56-.43,2.87-1.61,5.66-3.54,8.38-1.93,2.72-4.88,4.98-8.85,6.8-3.96,1.82-8.37,2.72-13.21,2.72-6.17,0-11.11-1.36-14.82-4.07-3.71-2.71-5.97-5.89-6.77-9.52-.8-3.63-1.2-9.79-1.2-18.46v-25.02c0-.36,0-.71,0-1.05v-5.91c0-4.47-2.87-10.13-8.17-10.13h17.28c.51-.01,1.04-.02,1.61-.02h1.58V1.11h-36.27v2.7h1.82c4.02,0,6.63.35,7.82,1.05,1.19.7,1.97,1.97,2.34,3.81.37,1.84.56,5.92.56,12.25v24.73l-.06,8.14c0,6.41,1.04,11.51,3.13,15.32,2.09,3.81,5.59,6.91,10.49,9.32,4.9,2.4,10.89,3.6,17.96,3.6,5.98,0,11.25-.94,15.82-2.81s8.12-4.39,10.63-7.56,4.04-6.39,4.57-9.67.79-8.3.79-15.06v-26.43c0-4.84.2-8.1.59-9.79.39-1.68,1.46-3.19,3.19-4.54,1.74-1.35,4.37-2.14,7.88-2.37V1.11h-26.54Z"/>
+        <path d="M265.25,73.89c-3.44-2.5-8.17-7.79-14.18-15.88-7.38-9.96-12.74-15.74-16.05-17.34,7.42-.9,13.05-3.18,16.88-6.86,3.83-3.67,5.74-8.1,5.74-13.3,0-4.45-1.46-8.28-4.39-11.48-2.93-3.2-6.77-5.51-11.51-6.91s-10.95-1-18.53-1h-29.37v2.7h1.35c4.02,0,6.64.35,7.85,1.05s1.99,1.97,2.34,3.81c.35,1.84.53,5.92.53,12.25v38.96c0,6.64-.18,10.87-.53,12.69s-1.18,3.15-2.49,4.01c-1.31.86-3.66,1.29-7.06,1.29h-2.58v2.7h38.03v-2.7h-3.81c-3.59,0-6.03-.47-7.29-1.41s-2.05-2.37-2.34-4.31-.44-6.02-.44-12.28v-17.64h3.16c2.15,0,3.73.36,4.75,1.08,1.02.72,2.87,2.73,5.57,6.04,2.7,3.3,5.29,6.75,7.79,10.34,7.81,11.25,13.61,18.2,17.4,20.86h21.39v-2.7c-4.69-.16-8.75-1.48-12.19-3.98ZM226.46,39.2c-3.12.16-6.15.27-9.08.35V12.99c-.38-4.28-3.2-9.16-8.12-9.16h8.12c1.88-.16,3.62,0,4.99,0,12.2,0,15.45.84,18.24,4.2,2.79,3.36,4.19,7.83,4.19,13.42,0,3.2-.41,5.9-1.23,8.09-.82,2.19-1.94,3.96-3.37,5.3-1.43,1.35-3.29,2.37-5.6,3.08s-5.02,1.13-8.14,1.29Z"/>
+        <path d="M184.72,75.85c-1.39-1.07-2.49-2.55-3.31-4.42l-3.63-8.32L151.23,0h-2.29l-23.09,55.14c-1.68,3.95-2.62,6.21-2.81,6.8-2.42,6.21-4.49,10.28-6.21,12.22-1.72,1.93-4.34,3.17-7.85,3.72v2.7h23.61v-2.7c-2.54,0-4.62-.62-6.24-1.85-1.62-1.23-2.43-3.04-2.43-5.42,0-2.23,1.52-6.99,4.57-14.3l.97-2.39h0,0s1.08-2.65,1.08-2.65h.02l2.78-6.7,12.32-29.8,14.06,33.87h-.04l.41,1.03,1.72,4.26h0l5,12.06c1.8,4.26,2.7,6.82,2.7,7.68,0,1.68-.67,2.8-2.02,3.37-1.35.57-3.94.85-7.76.85v2.7h31.23v-2.7c-2.77-.27-4.85-.95-6.24-2.02Z"/>
+        <path d="M15.03,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14s2.11.81,3.53.81c1.25,0,2.3-.21,3.15-.63.85-.42,1.51-.98,1.96-1.67.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.18-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37.7.36,1.51.69,2.45.99.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+        <path d="M71.12,118.7v-25.2h7.92c1.94,0,3.55.32,4.82.95,1.27.64,2.21,1.5,2.81,2.59.6,1.09.9,2.33.9,3.73s-.3,2.6-.9,3.71c-.6,1.1-1.53,1.98-2.79,2.63-1.26.65-2.87.97-4.84.97h-5.4v10.62h-2.52ZM73.64,105.92h5.4c2.14,0,3.66-.46,4.57-1.39.91-.92,1.37-2.18,1.37-3.76s-.46-2.9-1.37-3.8-2.44-1.35-4.57-1.35h-5.4v10.3Z"/>
+        <path d="M130.05,118.7l9.29-25.2h2.59l9.29,25.2h-2.66l-7.92-21.89-7.92,21.89h-2.66ZM134.3,111.89l.76-2.09h11.12l.76,2.09h-12.64Z"/>
+        <path d="M207.78,119.13c-2.42,0-4.52-.55-6.3-1.64-1.78-1.09-3.14-2.62-4.1-4.57s-1.44-4.23-1.44-6.82.48-4.87,1.44-6.82,2.33-3.48,4.12-4.57c1.79-1.09,3.88-1.64,6.28-1.64,2.83,0,5.13.67,6.89,2,1.76,1.33,2.9,3.21,3.4,5.63h-2.77c-.38-1.63-1.2-2.95-2.45-3.94-1.25-1-2.94-1.49-5.08-1.49-1.85,0-3.47.43-4.86,1.3-1.39.86-2.47,2.11-3.24,3.73-.77,1.62-1.15,3.56-1.15,5.81s.38,4.19,1.15,5.81c.77,1.62,1.85,2.86,3.24,3.73,1.39.86,3.01,1.3,4.86,1.3,2.14,0,3.82-.49,5.06-1.48,1.24-.98,2.06-2.28,2.47-3.89h2.77c-.53,2.38-1.66,4.23-3.4,5.56s-4.04,2-6.89,2Z"/>
+        <path d="M265.84,118.7v-25.2h15.3v2.09h-12.78v9.4h11.7v2.09h-11.7v9.54h12.78v2.09h-15.3Z"/>
+        <path d="M337.12,119.13c-1.85,0-3.45-.34-4.81-1.01-1.36-.67-2.39-1.61-3.11-2.83-.72-1.21-1.08-2.6-1.08-4.16h2.63c0,1.06.24,2.03.72,2.92.48.89,1.19,1.6,2.12,2.14.94.54,2.11.81,3.53.81,1.25,0,2.3-.21,3.15-.63s1.51-.98,1.96-1.67c.46-.7.68-1.49.68-2.38,0-1.06-.22-1.91-.67-2.56-.44-.65-1.05-1.18-1.82-1.58-.77-.41-1.64-.76-2.61-1.06-.97-.3-2-.63-3.08-.99-1.94-.67-3.37-1.5-4.28-2.48-.91-.98-1.38-2.24-1.4-3.78,0-1.32.31-2.49.92-3.51.61-1.02,1.51-1.82,2.68-2.41,1.17-.59,2.57-.88,4.18-.88s2.92.29,4.09.88c1.16.59,2.07,1.4,2.72,2.45.65,1.04.97,2.24.97,3.58h-2.59c0-.77-.2-1.52-.59-2.25-.4-.73-.98-1.33-1.76-1.8-.78-.47-1.77-.7-2.97-.7-.98,0-1.85.17-2.61.52-.76.35-1.35.85-1.78,1.51-.43.66-.65,1.43-.65,2.32s.19,1.57.58,2.12c.38.55.92,1.01,1.62,1.37s1.51.69,2.45.99c.94.3,1.98.64,3.13,1.03,1.18.41,2.22.9,3.13,1.48.91.58,1.63,1.31,2.16,2.21.53.9.79,2.03.79,3.4,0,1.18-.31,2.3-.92,3.37s-1.54,1.93-2.79,2.59c-1.25.66-2.81.99-4.68.99Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="sw-wordmark" aria-hidden="true">
+    <svg viewBox="0 0 354.2 119.13" fill="currentColor" role="img" aria-label="Maru Spaces"><use href="#maru-wordmark"/></svg>
+  </div>
+
+  <div class="sw-wordmark--bottom" aria-hidden="true">
+    <svg viewBox="0 0 354.2 119.13" fill="currentColor" role="img" aria-label="Maru Spaces"><use href="#maru-wordmark"/></svg>
+  </div>
+
+  <div id="top"></div>
+  <div id="world"></div>
+
+  <div id="assessments-overlay" style="display:none;">
+    <div class="aow-tag aow-tag--structural"><i></i><b>Structural Integrity</b><span>Full engineering survey</span></div>
+    <div class="aow-tag aow-tag--safety"><i></i><b>Safety</b><span>Fire, access &amp; egress compliance</span></div>
+    <div class="aow-tag aow-tag--compliance"><i></i><b>Compliance</b><span>Regulatory &amp; heritage sign-off</span></div>
+  </div>
+
+  <script src="scrub-engine-daynight.js"></script>
+  <script>
+    mountScrollWorld(document.getElementById('world'), {
+      cta: { label: 'Start a project', href: '#' },
+      hint: 'scroll to fly through',
+      diveScroll: 1.4,
+      connScroll: 0.9,
+      sections: [
+        {
+          id: 'design', label: 'Design',
+          still: 'assets/img/leg1_day.jpg', clip: 'assets/vid/leg1_day.mp4',
+          stillNight: 'assets/img/leg1_night.jpg', clipNight: 'assets/vid/leg1_night.mp4',
+          accent: '#AE5A34',
+          scroll: 1.7, linger: 0.4,
+          copyTheme: 'dark',
+          eyebrow: 'Turnkey Architectural Design',
+          title: 'Spaces with purpose, light, and a quiet centre.',
+          body: 'Maru Spaces is a boutique architecture studio. We craft timeless interiors, innovative builds, and turnkey projects for commercial, public infrastructure and hospitality briefs across South Africa and Namibia.',
+          tags: [],
+        },
+        {
+          id: 'interior', label: 'Interior',
+          still: 'assets/img/leg2_day.jpg', clip: 'assets/vid/leg2_day.mp4',
+          stillNight: 'assets/img/leg2_night.jpg', clipNight: 'assets/vid/leg2_night.mp4',
+          accent: '#8F8270',
+          eyebrow: 'Interior Architecture',
+          title: 'Where craft meets calm.',
+          body: 'We take interiors from spatial planning through to final fit-out: joinery, lighting design, material selection and furniture curation, handled as one integrated service.',
+          tags: [],
+        },
+        {
+          id: 'landscape', label: 'Landscape',
+          still: 'assets/img/leg3_day.jpg', clip: 'assets/vid/leg3_day.mp4',
+          stillNight: 'assets/img/leg3_night.jpg', clipNight: 'assets/vid/leg3_night.mp4',
+          accent: '#5C7A5A',
+          eyebrow: 'Landscape Design',
+          title: 'The building doesn’t end at the wall.',
+          body: 'Gardens conceived alongside the architecture, not after it. Every threshold is designed to carry the eye outward.',
+          tags: [],
+        },
+        {
+          id: 'assessments', label: 'Assessments',
+          still: 'assets/img/leg4_day.jpg', clip: 'assets/vid/leg4_day.mp4',
+          stillNight: 'assets/img/leg4_night.jpg', clipNight: 'assets/vid/leg4_night.mp4',
+          accent: '#3E5C76',
+          scroll: 1.6, linger: 0.4,
+          copyAlign: 'right',
+          eyebrow: 'Conditional Assessments',
+          title: 'Where we stand.',
+          body: 'A structured condition survey across finishes, structure, services, envelope and life-safety, captured, graded and photographed. Where specialist certification is needed, we say so, giving you an evidenced basis for transactions, insurance and planning decisions.',
+          tags: [],
+          cta: { primary: { label: 'Start a project', href: '#' } },
+        },
+      ],
+      connectors: [],
+    });
+
+    // Day/night toggle — same switch component and data-theme attribute
+    // pattern as the Sanctuary Mandela hero build, so the two merge cleanly.
+    const toggle = document.getElementById('theme-toggle');
+    function setTheme(dark) {
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      toggle.setAttribute('aria-checked', dark ? 'true' : 'false');
+      toggle.setAttribute('aria-label', dark ? 'Switch to day view' : 'Switch to night view');
+      toggle.setAttribute('title', dark ? 'Switch to day view' : 'Switch to night view');
+    }
+    setTheme(false);
+    toggle.addEventListener('click', () => setTheme(document.documentElement.dataset.theme !== 'dark'));
+
+    // Assessments overlay — mirrors scene 4's own opacity (the engine computes
+    // per-scene crossfade opacity each frame on .sw-scene elements in DOM
+    // order; with no connectors, SEGMENTS order === SECTIONS order, so the
+    // 4th .sw-scene is Assessments).
+    const overlay = document.getElementById('assessments-overlay');
+    function syncOverlay() {
+      const scenes = document.querySelectorAll('#world .sw-scene');
+      const assessmentsScene = scenes[3];
+      if (assessmentsScene) overlay.style.opacity = assessmentsScene.style.opacity || 0;
+      requestAnimationFrame(syncOverlay);
+    }
+    requestAnimationFrame(syncOverlay);
+  </script>
+</body>
+</html>
