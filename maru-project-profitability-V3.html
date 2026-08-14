@@ -602,7 +602,9 @@ function calcBudget(p) {
   STAGE_KEYS.forEach(k=>{scBudget[k]=a.subConsultBudget[k]||0;});
   const totalScBudget=STAGE_KEYS.reduce((s,k)=>s+scBudget[k],0);
   const staffStageBudget={};
-  STAGE_KEYS.forEach(k=>{staffStageBudget[k]=Math.max(0,stageBudgets[k]-scBudget[k]);});
+  STAGE_KEYS.forEach(k=>{staffStageBudget[k]=Math.max(0,stageBudgets[k]*(a.costPct/100)-scBudget[k]);});
+  const stageCostBudget={};
+  STAGE_KEYS.forEach(k=>{stageCostBudget[k]=staffStageBudget[k]+scBudget[k];});
   const stageAlloc={},budgetHours={};
   STAGE_KEYS.forEach(k=>{
     stageAlloc[k]={};budgetHours[k]={};
@@ -616,7 +618,7 @@ function calcBudget(p) {
   const totalHoursAll=CK.reduce((s,c)=>s+totalBudgetHours[c],0);
   const totalStageHours={};
   STAGE_KEYS.forEach(k=>{totalStageHours[k]=CK.reduce((s,c)=>s+budgetHours[k][c],0);});
-  return {productionBudget,stageBudgets,staffStageBudget,scBudget,totalScBudget,stageAlloc,budgetHours,totalBudgetHours,totalHoursAll,totalStageHours,rates};
+  return {productionBudget,stageBudgets,staffStageBudget,stageCostBudget,scBudget,totalScBudget,stageAlloc,budgetHours,totalBudgetHours,totalHoursAll,totalStageHours,rates};
 }
 
 function calcActuals(p,b) {
@@ -813,7 +815,7 @@ function renderBudgetPanel(p) {
         <tbody>
           ${CK.map((c,ci)=>{const th=b.totalBudgetHours[c],tc=STAGE_KEYS.reduce((s,k)=>s+b.stageAlloc[k][c],0);return `<tr><td>${CL[ci]}</td><td>R${fmt(b.rates[c])}/hr</td>${STAGE_KEYS.map(k=>`<td>R${fmt(b.stageAlloc[k][c])}</td>`).join('')}<td style="font-weight:600">${th.toFixed(1)}</td><td style="font-weight:600">R${fmt(tc)}</td></tr>`;}).join('')}
           <tr class="subconsult-row"><td>Sub-Consultants</td><td>— rand cost</td>${STAGE_KEYS.map(k=>`<td>R${fmt(b.scBudget[k])}</td>`).join('')}<td>—</td><td style="font-weight:600">R${fmt(b.totalScBudget)}</td></tr>
-          <tr class="total-row"><td>Total</td><td>—</td>${STAGE_KEYS.map(k=>`<td>R${fmt(b.stageBudgets[k])}</td>`).join('')}<td>${b.totalHoursAll.toFixed(1)}</td><td>R${fmt(b.productionBudget)}</td></tr>
+          <tr class="total-row"><td>Total</td><td>—</td>${STAGE_KEYS.map(k=>`<td>R${fmt(b.stageCostBudget[k])}</td>`).join('')}<td>${b.totalHoursAll.toFixed(1)}</td><td>R${fmt(b.productionBudget)}</td></tr>
         </tbody>
       </table></div>
     </div>`;
@@ -830,7 +832,7 @@ function renderActualsPanel(p) {
     const sActHrs=CK.reduce((s,c)=>s+(p.actuals.staff[k][c]||0),0);
     const sActStaffCost=CK.reduce((s,c)=>s+act.actStaffCost[k][c],0);
     const sActSc=p.actuals.subConsult[k]||0, sActTotal=sActStaffCost+sActSc;
-    const sBudTotal=b.stageBudgets[k], sCostVar=sBudTotal-sActTotal, sHrVar=b.totalStageHours[k]-sActHrs;
+    const sBudTotal=b.stageCostBudget[k], sCostVar=sBudTotal-sActTotal, sHrVar=b.totalStageHours[k]-sActHrs;
     html+=`<tr class="stage-header"><td>${STAGES[si]}</td><td style="text-align:center">R${fmt(sBudTotal)}</td><td style="text-align:center">R${fmt(sActTotal)}</td><td style="text-align:center;color:${sCostVar>=0?'var(--green)':'var(--red)'}">${sCostVar>=0?'+':'−'}R${fmt(Math.abs(sCostVar))}</td><td style="text-align:center">${b.totalStageHours[k].toFixed(1)} hrs</td><td style="text-align:center">${sActHrs.toFixed(1)} hrs</td><td style="text-align:center;color:${sHrVar>=0?'var(--green)':'var(--red)'}">${sHrVar>=0?'+':''}${sHrVar.toFixed(1)} hrs</td></tr>`;
     CK.forEach((c,ci)=>{
       const bh=b.budgetHours[k][c],ah=p.actuals.staff[k][c]||0,hv=bh-ah,bc=b.stageAlloc[k][c],ac=act.actStaffCost[k][c],cv=bc-ac;
@@ -884,7 +886,7 @@ function renderSummaryPanel(p) {
     <div class="panel-section">
       <div class="section-title">Stage Progress (Cost)</div>
       <div style="display:flex;flex-direction:column;gap:14px">
-        ${STAGE_KEYS.map((k,i)=>{const bud=b.stageBudgets[k],actS=CK.reduce((s,c)=>s+act.actStaffCost[k][c],0)+(p.actuals.subConsult[k]||0),pct=bud>0?Math.min(100,actS/bud*100):0,cv=bud-actS,bc=pct>100?'var(--red)':pct>80?'var(--amber)':'var(--green)';return `<div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:var(--mono);font-size:11px;color:var(--text2)">${STAGES[i]}</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">R${fmt(actS)} / R${fmt(bud)} &nbsp;·&nbsp; <span style="color:${cv>=0?'var(--green)':'var(--red)'}">${cv>=0?'+':'−'}R${fmt(Math.abs(cv))} var</span></span></div><div class="var-bar-wrap"><div class="var-bar-track"><div class="var-bar-fill" style="width:${Math.min(100,pct)}%;background:${bc}"></div></div><div class="var-bar-label" style="color:${bc}">${pct.toFixed(0)}%</div></div></div>`;}).join('')}
+        ${STAGE_KEYS.map((k,i)=>{const bud=b.stageCostBudget[k],actS=CK.reduce((s,c)=>s+act.actStaffCost[k][c],0)+(p.actuals.subConsult[k]||0),pct=bud>0?Math.min(100,actS/bud*100):0,cv=bud-actS,bc=pct>100?'var(--red)':pct>80?'var(--amber)':'var(--green)';return `<div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-family:var(--mono);font-size:11px;color:var(--text2)">${STAGES[i]}</span><span style="font-family:var(--mono);font-size:11px;color:var(--text3)">R${fmt(actS)} / R${fmt(bud)} &nbsp;·&nbsp; <span style="color:${cv>=0?'var(--green)':'var(--red)'}">${cv>=0?'+':'−'}R${fmt(Math.abs(cv))} var</span></span></div><div class="var-bar-wrap"><div class="var-bar-track"><div class="var-bar-fill" style="width:${Math.min(100,pct)}%;background:${bc}"></div></div><div class="var-bar-label" style="color:${bc}">${pct.toFixed(0)}%</div></div></div>`;}).join('')}
       </div>
     </div>
     <div class="panel-section">
