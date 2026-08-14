@@ -511,6 +511,8 @@ function flashSave() {
 function getProject(id) { return projects.find(p=>p.id===id); }
 
 function derivedRate(salary,mult) { return Math.round((salary/WORKING_HRS)*mult); }
+// 40 hrs/week (8hrs x 5 days); WORKING_HRS/12 hrs/month, consistent with the 2000 hrs/year basis used for rates.
+function hrsAsWeeksMonths(hrs) { return `${(hrs/40).toFixed(1)} weeks · ${(hrs/(WORKING_HRS/12)).toFixed(1)} months`; }
 function getRates(p) {
   const a=p.assumptions;
   const rates={partners: a.rates.partners};
@@ -799,8 +801,8 @@ function renderBudgetPanel(p) {
       <div style="overflow-x:auto"><table class="data-table">
         <thead><tr><th>Stage</th><th>% of Fee</th><th>Stage Budget (R)</th><th>Sub-Consultants (R)</th><th>Staff Budget (R)</th>${CL.map(c=>`<th>${c} (hrs)</th>`).join('')}<th>Total Staff Hrs</th></tr></thead>
         <tbody>
-          ${STAGE_KEYS.map((k,i)=>`<tr><td>${STAGES[i]}</td><td>${p.assumptions.stageSplits[k]}%</td><td>R${fmt(b.stageBudgets[k])}</td><td style="color:var(--purple)">R${fmt(b.scBudget[k])}</td><td>R${fmt(b.staffStageBudget[k])}</td>${CK.map(c=>`<td>${b.budgetHours[k][c].toFixed(1)}</td>`).join('')}<td style="color:var(--text);font-weight:600">${b.totalStageHours[k].toFixed(1)}</td></tr>`).join('')}
-          <tr class="total-row"><td>Total</td><td>100%</td><td>R${fmt(p.fee)}</td><td style="color:var(--purple)">R${fmt(b.totalScBudget)}</td><td>R${fmt(b.productionBudget-b.totalScBudget)}</td>${CK.map(c=>`<td>${b.totalBudgetHours[c].toFixed(1)}</td>`).join('')}<td>${b.totalHoursAll.toFixed(1)}</td></tr>
+          ${STAGE_KEYS.map((k,i)=>`<tr><td>${STAGES[i]}</td><td>${p.assumptions.stageSplits[k]}%</td><td>R${fmt(b.stageBudgets[k])}</td><td style="color:var(--purple)">R${fmt(b.scBudget[k])}</td><td>R${fmt(b.staffStageBudget[k])}</td>${CK.map(c=>`<td>${b.budgetHours[k][c].toFixed(1)}</td>`).join('')}<td style="color:var(--text);font-weight:600;cursor:default" title="${hrsAsWeeksMonths(b.totalStageHours[k])}">${b.totalStageHours[k].toFixed(1)}</td></tr>`).join('')}
+          <tr class="total-row"><td>Total</td><td>100%</td><td>R${fmt(p.fee)}</td><td style="color:var(--purple)">R${fmt(b.totalScBudget)}</td><td>R${fmt(b.productionBudget-b.totalScBudget)}</td>${CK.map(c=>`<td>${b.totalBudgetHours[c].toFixed(1)}</td>`).join('')}<td style="cursor:default" title="${hrsAsWeeksMonths(b.totalHoursAll)}">${b.totalHoursAll.toFixed(1)}</td></tr>
         </tbody>
       </table></div>
     </div>
